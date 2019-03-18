@@ -162,6 +162,8 @@ elif [[ $(7z l $romzip | grep "image.*.zip") ]]; then
     thezipfile=`echo $thezip | rev | cut -d "/" -f 1 | rev`
     mv $thezipfile temp.zip
     $LOCALDIR/zip2img.sh temp.zip
+    rm temp.zip
+    exit 1
 fi
 
 $simg2img system.img system.img-2 >/dev/null
