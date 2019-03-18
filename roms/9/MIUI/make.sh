@@ -7,6 +7,7 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 #cp -fpr $thispath/build.prop $1/
 $thispath/../../../scripts/propcleanner.sh $1/build.prop > $thispath/../../../tmp/build.prop
 cp -fpr $thispath/../../../tmp/build.prop $1/
+echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 # AOSP libs
 cp -fpr $thispath/lib/* $1/lib/
 cp -fpr $thispath/lib64/* $1/lib64/
@@ -17,6 +18,10 @@ rm -rf $1/etc/permissions/qti_permissions.xml
 rm -rf $1/priv-app/DiracAudioControlService
 # remove phh qtiaudio
 rm -rf $1/priv-app/QtiAudio
+# drop FingerprintExtensionService
+rm -rf $1/app/FingerprintExtensionService
+# drop nfc
+rm -rf $1/app/NQNfcNci
 
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
