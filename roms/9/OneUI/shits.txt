@@ -1,0 +1,6 @@
+[drop not neededs]
+vold
+vdc
+inits
+rootdirs
+file_contexts

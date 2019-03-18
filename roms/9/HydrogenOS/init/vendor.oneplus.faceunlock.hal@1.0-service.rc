@@ -1,0 +1,11 @@
+service faceulnative /system/bin/hw/vendor.oneplus.faceunlock.hal@1.0-service
+	class late_start
+	user system
+	group system
+
+
+on post-fs-data
+    #Create directories for faceunlock
+    mkdir /data/vendor/misc 01771 system system
+    mkdir /data/vendor/misc/qsee 0770 system system
+    mkdir /data/vendor/misc/qsee/face 0770 system system

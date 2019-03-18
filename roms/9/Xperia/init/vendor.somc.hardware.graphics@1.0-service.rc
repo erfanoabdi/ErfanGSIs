@@ -1,0 +1,4 @@
+service gfx-ext-1-0 /system/bin/hw/vendor.somc.hardware.graphics@1.0-service
+    class hal
+    user system
+    group system

@@ -1,0 +1,4 @@
+service oneplus_wifi_service /system/bin/hw/vendor.oneplus.hardware.wifi@1.0-service
+    class hal
+    user wifi
+    group wifi

@@ -1,0 +1,4 @@
+service vendor.opcamera-provider-1-0 /system/bin/hw/vendor.oneplus.camera.CameraHIDL@1.0-service
+    class hal
+    user cameraserver
+    group audio camera input drmrpc sdcard_rw system sysfs_graphics

@@ -1,0 +1,316 @@
+on early-init
+
+	# MUIC
+    chown system radio /sys/class/sec/switch/otg_test
+    chown system radio /sys/class/sec/switch/uart_sel
+    chown system radio /sys/class/sec/switch/usb_sel
+    chown system radio /sys/class/sec/switch/afc_disable
+    chown system radio /sys/class/sec/switch/apo_factory
+    chown system radio /sys/class/sec/switch/afc_set_voltage
+    chown system radio /sys/class/sec/switch/vbus_value
+    chown system radio /sys/class/sec/switch/vbus_rawdata
+
+on init
+
+    ffu
+
+# [ SEC_SELINUX_PORTING_COMMON
+    # for audit message
+    chown system system /proc/avc_msg
+    chmod 0660 /proc/avc_msg
+# ] SEC_SELINUX_PORTING_COMMON
+
+# LPM mode for ccic
+    chown system radio /sys/class/sec/ccic/lpm_mode
+
+# CCIC control option
+    chown system radio /sys/class/sec/ccic/ccic_control_option
+    chown system radio /sys/class/sec/ccic/fw_update
+    chown system radio /sys/class/sec/ccic/control_gpio
+    chown system usb /dev/ccic_misc
+    chmod 0664 /dev/ccic_misc
+
+    # System Intelligence
+    chown system system /proc/intelligence/state
+    chown system system /proc/intelligence/task_state
+    chmod 0444 /proc/intelligence/state
+    chmod 0664 /proc/intelligence/task_state
+
+    mkdir /mnt/secure 0700 root root
+    # Samsung ODE >>>
+    # Create private mountpoint so we can MS_MOVE from staging
+    mount tmpfs tmpfs /mnt/secure mode=0700,uid=0,gid=0
+    # Directory for staging bindmounts
+    mkdir /mnt/secure/staging 0700 root root
+    restorecon_recursive /mnt/secure/staging
+    # Samsung ODE <<<
+
+# Mount filesystems and start core system services.
+on late-init
+    trigger mmi
+
+on post-fs
+    # Samsung ODE >>>
+    mount tmpfs tmpfs /mnt/secure private rec
+    # Samsung ODE <<<
+
+    # VOLD for move to sdcard.
+    mount tmpfs tmpfs /mnt/secure/asec shared rec
+
+    # make fsdbg on /dev for filesystem debug info.
+    mkdir /dev/fsdbg 0775 root system
+
+    omc_update
+    start scs
+
+# LPM
+service lpm /system/bin/lpm
+    class sec-charger
+    user root
+    group system radio input
+    critical
+
+# pvclicense
+service pvclicense_sample /system/bin/pvclicense_sample
+   class core
+   user system
+   group system
+   disabled
+   oneshot
+
+# [ SEC_SELINUX_PORTING_COMMON
+service auditd /system/bin/auditd -k
+    class main
+    seclabel u:r:auditd:s0
+    disabled
+    oneshot
+
+on property:sys.seandroid.restoreapp=start
+    restore_appdata    
+# ] SEC_SELINUX_PORTING_COMMON
+
+service scs /system/bin/scs
+    class main
+    user root
+    group root
+    oneshot
+    disabled
+
+# mobicore
+service tbaseLoader /system/vendor/bin/tbaseLoader tbase
+    class core
+    user system
+    group system
+    disabled
+    oneshot
+
+# insthk
+service insthk /system/bin/insthk
+    class core
+    user system
+    group system
+    disabled
+    oneshot
+
+# dp hdcp 1x
+service dhkprov1x /system/bin/dhkprov insthkey 1x
+    class core
+    user system
+    group system
+    disabled
+    oneshot
+
+# dp hdcp 2x
+service dhkprov2x /system/bin/dhkprov insthkey 2x
+    class core
+    user system
+    group system
+    disabled
+    oneshot
+
+# Stork Daemon
+service storkd /system/bin/storkd
+    user system
+    group system
+    disabled
+
+# barnswallow daemon
+service bsd /system/bin/bsd
+    user system
+    group system
+    disabled
+
+service run-mobicore /vendor/bin/mcDriverDaemon
+    class core
+    user system
+    group system
+    disabled
+
+on property:vendor.sys.qseecomd.enable=true
+    start insthk
+    start dhkprov1x
+    start dhkprov2x
+    start bsd
+    start pvclicense_sample
+
+on property:sys.pvclicense.loaded=true
+    stop pvclicense_sample
+    start tbaseLoader
+
+on property:vendor.sys.mobicore.loaded=true
+    start run-mobicore
+
+# sem_daemon
+service sem_daemon /system/bin/sem_daemon
+    class core
+    user system
+    group system nfc
+    disabled
+
+on property:sys.boot_completed=1
+    setprop security.semdaemonfinish 0
+    start sem_daemon
+
+on property:security.semdaemonfinish=1
+    stop sem_daemon
+
+# prepare_param
+service prepare_param /system/bin/prepare_param.sh /dev/block/bootdevice/by-name/param
+    class core
+    user root
+    group root
+    seclabel u:r:prepare_param:s0
+    oneshot
+
+# icd
+service icd /vendor/bin/icd
+    class main
+    user system
+    group system log
+    onrestart check_icd
+    disabled
+    oneshot
+
+# icd
+on property:init.svc.media=restarting
+    check_icd
+    start icd
+
+## SecProductFeature_KNOX.SEC_PRODUCT_FEATURE_KNOX_SUPPORT_MDM{
+## EDM AuditLog
+service edmaudit /system/bin/edmaudit
+    class main
+    user root
+    disabled
+
+on property:security.edmaudit=true
+    start edmaudit
+
+on property:security.edmaudit=false
+    stop edmaudit
+## } SecProductFeature_KNOX.SEC_PRODUCT_FEATURE_KNOX_SUPPORT_MDM
+
+# strongSwan VPN
+service charon /system/bin/charon
+    class main
+    socket charon stream 600 system system
+    # charon will setuid to vpn after getting necessary resources.
+    user vpn
+    group vpn inet shell
+    capabilities NET_ADMIN NET_BIND_SERVICE NET_RAW
+    disabled
+    oneshot
+
+# hide carrier apps
+on property:ro.csc.sales_code=*
+    mount none /system/carrier/${ro.csc.sales_code} /system/carrier bind
+
+# VaultKeeper
+service vaultkeeperd /system/bin/vaultkeeperd
+    class core
+
+# esecomm
+service esecomm /system/bin/tlc_server ESECOMM
+    user system
+    group system
+    disabled
+
+on property:security.ucm_ese_applet_installed=1
+    start esecomm
+    setprop security.ucm_ese_applet_installed 0
+
+# [ Wi-Fi init
+service wlandutservice /system/bin/wlandutservice
+    class main
+    user system
+    group system wifi net_raw net_admin inet
+    disabled
+    oneshot
+# ] Wi-Fi init
+
+# IO stats Deamon
+service iod /system/bin/iod
+    user system
+    group shell
+    class main
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start iod
+
+# Pageboostd
+on property:sys.boot_completed=1
+    mkdir /data/misc/pageboost 0771 system system
+
+# knox_changer service
+# UCM ODE mode
+service ucs_enable /sbin/knox_changer -u
+    class main
+    seclabel u:r:kapd:s0
+    disabled
+    oneshot
+
+service ucs_disable /sbin/knox_changer -v
+    class main
+    seclabel u:r:kapd:s0
+    disabled
+    oneshot
+
+service ucs_reset /sbin/knox_changer -w
+    class main
+    seclabel u:r:kapd:s0
+    disabled
+    oneshot
+
+on property:security.knox_ucs_mode=true
+    chmod 0655 /efs/sec_efs/odeConfig
+    start ucs_enable
+
+on property:security.knox_ucs_mode=false
+    chmod 0655 /efs/sec_efs/odeConfig
+    start ucs_disable
+
+on property:security.knox_ucs_mode=reset
+    chmod 0655 /efs/sec_efs/odeConfig
+    start ucs_reset
+
+# s.fan - hide carrier apps
+on property:ro.csc.sales_code=*
+    mount none /system/carrier/${ro.csc.sales_code} /system/carrier bind
+
+# turn on the trace in case it has  mid or high debug level
+on property:ro.boot.debug_level=0x494d
+    write /sys/kernel/debug/tracing/tracing_on 1
+on property:ro.boot.debug_level=0x4948
+    write /sys/kernel/debug/tracing/tracing_on 1
+
+on post-fs-data
+    mount none /system/bin/android.hardware.wifi@1.0-service /vendor/bin/hw/android.hardware.wifi@1.0-service bind
+    mount none /system/bin/hostapd /vendor/bin/hw/hostapd bind
+    mount none /system/bin/wpa_supplicant /vendor/bin/hw/wpa_supplicant bind
+    mount none /system/bin/vendor.qti.gnss@2.0-service /vendor/bin/hw/vendor.qti.gnss@2.0-service bind
+    mount none /system/bin/vendor.qti.gnss@2.0-service /vendor/bin/hw/vendor.qti.gnss@1.0-service bind
+    mount none /system/erfan/libgnss.so /vendor/lib64/libgnss.so bind
+    mount none /system/bin/rild /vendor/bin/hw/rild bind
+    mount none /system/erfan/libril.so /vendor/lib64/libril.so bind

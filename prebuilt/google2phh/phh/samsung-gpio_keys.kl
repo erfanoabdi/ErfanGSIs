@@ -1,0 +1,11 @@
+# Copyright (C) 2018 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+
+key 114   VOLUME_DOWN
+key 115   VOLUME_UP
+key 116   POWER
+key 703   ASSIST
+key 103   SYSTEM_NAVIGATION_UP
+key 105   SYSTEM_NAVIGATION_LEFT
+key 106   SYSTEM_NAVIGATION_RIGHT
+key 108   SYSTEM_NAVIGATION_DOWN

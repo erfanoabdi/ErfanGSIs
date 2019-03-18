@@ -1,0 +1,6 @@
+# set up the global environment
+on init
+    export BOOTCLASSPATH /system/framework/qtiNetworkLib.jar:/system/framework/com.qualcomm.qti.camera.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/core-oj.jar:/system/framework/core-libart.jar:/system/framework/conscrypt.jar:/system/framework/okhttp.jar:/system/framework/bouncycastle.jar:/system/framework/apache-xml.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.hidl.base-V1.0-java.jar:/system/framework/android.hidl.manager-V1.0-java.jar:/system/framework/framework-oahl-backward-compatibility.jar:/system/framework/android.test.base.jar:/system/framework/telephony-ext.jar:/system/framework/tcmiface.jar:/system/framework/WfdCommon.jar:/system/framework/vendor.qti.voiceprint-V1.0-java.jar
+    export SYSTEMSERVERCLASSPATH /system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar:/system/framework/com.android.location.provider.jar
+    
+    

@@ -1,0 +1,49 @@
+# Copyright (C) 2019 Erfan Abdi (erfangplus@gmail.com)
+
+on init
+    mkdir /bionic 0755 root root
+    mkdir /bionic/bin 0755 root root
+    mkdir /bionic/lib 0755 root root
+    mkdir /bionic/lib64 0755 root root
+    symlink /apex/com.android.runtime/bin/linker /bionic/bin/linker
+    symlink /apex/com.android.runtime/bin/linker64 /bionic/bin/linker64
+    symlink /apex/com.android.runtime/lib/bionic/libc.so /bionic/lib/libc.so
+    symlink /apex/com.android.runtime/lib/bionic/libdl.so /bionic/lib/libdl.so
+    symlink /apex/com.android.runtime/lib/bionic/libm.so /bionic/lib/libm.so
+    symlink /apex/com.android.runtime/lib64/bionic/libc.so /bionic/lib64/libc.so
+    symlink /apex/com.android.runtime/lib64/bionic/libdl.so /bionic/lib64/libdl.so
+    symlink /apex/com.android.runtime/lib64/bionic/libm.so /bionic/lib64/libm.so
+
+on post-fs-data
+    exec - system system -- /system/bin/vdc checkpoint prepareCheckpoint
+
+    # Start apexd as soon as we can
+    start apexd
+
+    mkdir /data/preloads 0775 system system
+    mkdir /data/apex 0750 root system
+    mkdir /data/staging 0750 system system
+    mkdir /data/system/dropbox 0700 system system
+
+    # Check any timezone data in /data is newer than the copy in the runtime module, delete if not.
+    exec - system system -- /system/bin/tzdatacheck /apex/com.android.runtime/etc/tz /data/misc/zoneinfo
+
+    # load fsverity keys
+    exec -- /system/bin/mini-keyctl -c /product/etc/security/cacerts_fsverity,/vendor/etc/security/cacerts_fsverity -k .fs-verity
+
+    # Wait for apexd to finish activating APEXes before starting more processes.
+    # This certainly reduces the parallelism but is required to make as many processes
+    # as possible to use the bionic libs from the runtime APEX. This takes less than 50ms
+    # so the impact on the booting time is not significant.
+    wait_for_prop apexd.status ready
+    setup_runtime_bionic
+    parse_apex_configs
+
+    mount none /apex/com.android.runtime/bin/linker /system/bin/linker bind
+    mount none /apex/com.android.runtime/bin/linker64 /system/bin/linker64 bind
+    mount none /apex/com.android.runtime/lib/bionic/libc.so /system/lib/libc.so bind
+    mount none /apex/com.android.runtime/lib/bionic/libdl.so /system/lib/libdl.so bind
+    mount none /apex/com.android.runtime/lib/bionic/libm.so /system/lib/libm.so bind
+    mount none /apex/com.android.runtime/lib64/bionic/libc.so /system/lib64/libc.so bind
+    mount none /apex/com.android.runtime/lib64/bionic/libdl.so /system/lib64/libdl.so bind
+    mount none /apex/com.android.runtime/lib64/bionic/libm.so /system/lib64/libm.so bind

@@ -1,0 +1,2 @@
+# If ro.vndk.version is not defined, import init.vndk-27.rc.
+import /system/etc/init/gsi/init.vndk-${ro.vndk.version:-27}.rc

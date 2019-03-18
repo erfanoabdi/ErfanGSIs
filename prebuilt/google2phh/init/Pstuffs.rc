@@ -1,0 +1,13 @@
+# Copyright (C) 2019 Erfan Abdi (erfangplus@gmail.com)
+
+on late-fs
+    mkdir /data/misc/carrierid 0770 system radio
+    mkdir /data/misc/apns 0770 system radio
+    mkdir /data/misc/network_watchlist 0774 system system
+    mkdir /data/misc/update_engine_log 02750 root log
+    mkdir /data/misc/wmtrace 0700 system system
+    mkdir /data/vendor_ce 0771 root root
+    mkdir /data/vendor_de 0771 root root
+    mkdir /data/local/traces 0777 shell shell
+    mkdir /data/vendor/tombstones 0771 root root
+    mkdir /data/vendor/tombstones/wifi 0771 wifi wifi

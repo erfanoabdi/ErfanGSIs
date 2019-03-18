@@ -1,0 +1,6 @@
+/system/bin/android.hardware.wifi@1.0-service			u:object_r:update_engine_exec:s0
+/system/bin/hostapd			u:object_r:update_engine_exec:s0
+/system/bin/vendor.qti.gnss@2.0-service			u:object_r:update_engine_exec:s0
+/system/bin/rild			u:object_r:update_engine_exec:s0
+/system/bin/wpa_supplicant			u:object_r:update_engine_exec:s0
+/system/bin/hw/android.hardware.health@2.0-service.samsung 		u:object_r:hal_allocator_default_exec:s0

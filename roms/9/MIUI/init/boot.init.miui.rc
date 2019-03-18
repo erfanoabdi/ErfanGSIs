@@ -1,0 +1,296 @@
+on init
+    # Create cgroup mount point for memory and freezer
+    mount tmpfs none /sys/fs/cgroup mode=0750,uid=0,gid=1000
+    mkdir /sys/fs/cgroup/memory 0750 root system
+    mount cgroup none /sys/fs/cgroup/memory memory
+    mkdir /sys/fs/cgroup/freezer 0750 root system
+    mount cgroup none /sys/fs/cgroup/freezer freezer
+    # set log buffersize
+    setprop persist.logd.size.radio "4M"
+    setprop persist.logd.size.system "4M"
+    setprop persist.logd.size.crash "1M"
+
+on late-init
+    # set vr related cpuset
+    mkdir /dev/cpuset/vr
+    write /dev/cpuset/vr/mems 0
+
+    # change permissions for vr cpusets as we'll touch at runtime
+    chown system system /dev/cpuset/foreground/boost/cpus
+    chmod 0664 /dev/cpuset/foreground/cpus
+    chown root system /dev/cpuset/foreground/cpus
+    chown system system /dev/cpuset/vr
+    chown system system /dev/cpuset/vr/cpu_exclusive
+    chown system system /dev/cpuset/vr/cpus
+    chown system system /dev/cpuset/vr/tasks
+    chmod 0664 /dev/cpuset/top-app/cpus
+    chown root system /dev/cpuset/top-app/cpus
+    chown system system /dev/cpuset/top-app/boost
+    chown system system /dev/cpuset/top-app/boost/tasks
+    chown system system /dev/cpuset/top-app/boost/cpus
+    chmod 0664 /dev/cpuset/vr/cpu_exclusive
+    chmod 0664 /dev/cpuset/vr/cpus
+    chmod 0664 /dev/cpuset/vr/tasks
+    chmod 0664 /dev/cpuset/top-app/boost/tasks
+
+on late-init
+    # put some heavy-load thread into this cpuset for performance
+    mkdir /dev/cpuset/game
+    write /dev/cpuset/game/mems 0
+    chown system system /dev/cpuset/game
+    chown system system /dev/cpuset/game/tasks
+    chown system system /dev/cpuset/game/cgroup.procs
+    chmod 0660 /dev/cpuset/game/tasks
+    chmod 0660 /dev/cpuset/game/cgroup.procs
+    # put some light-load thread into this cpuset for battery life
+    mkdir /dev/cpuset/gamelite
+    write /dev/cpuset/gamelite/mems 0
+    chown system system /dev/cpuset/gamelite
+    chown system system /dev/cpuset/gamelite/tasks
+    chown system system /dev/cpuset/gamelite/cgroup.procs
+    chmod 0660 /dev/cpuset/gamelite/tasks
+    chmod 0660 /dev/cpuset/gamelite/cgroup.procs
+
+on fs
+   start  mqsasd
+
+on post-fs-data
+    mkdir /data/system 0775 system system
+    mkdir /data/system/mcd 0755 system system
+    mkdir /data/system/whetstone 0770 system system
+    restorecon_recursive /data/system/mcd
+    restorecon_recursive /data/system/whetstone
+    restorecon /sys/kernel/debug/system_stats
+    restorecon /sys/kernel/debug/msm_subsys/modem
+
+on post-fs-data
+    chown system system /sys/hwconf
+    chown system system /sys/hwconf/hw_info
+    chown system system /sys/hwconf/hw_mon
+    restorecon_recursive /sys/hwconf
+
+on post-fs-data
+    restorecon_recursive /sys/kernel/debug/rtmm
+    restorecon /sys/kernel/debug/extfrag/extfrag_index
+
+    mount none /mnt/phh/empty_dir /vendor/app bind
+
+
+#mdbd
+service mdbd /sbin/mdbd
+    class core
+    socket mdbd stream 660 system system
+    disabled
+    seclabel u:r:mdbd:s0
+
+service shelld /system/xbin/shelld
+    class main
+
+#service for su
+service su_daemon /system/xbin/su --daemon
+    class main
+
+# service for mcd init
+service mcd_init /system/bin/mcd init
+    user root
+    group system
+    class main
+    disabled
+    oneshot
+
+on property:init.svc.zygote=running
+    setprop mcd.extra.params "4"
+    start mcd_init
+
+#service for mcd main service
+service mcd_service /system/bin/mcd
+    class main
+    disabled
+
+on property:sys.boot_completed=1
+    start mcd_service
+    start miui-post-boot
+    start restartc
+
+service mdb_svc  /system/xbin/mdb_svc
+    class late_start
+    disabled
+
+service otad /bin/otad
+    class main
+    socket otad stream 0660 updater updater
+    seclabel u:r:otad:s0
+
+# will delete this service, /system may be invalidate yet when post-fs-data triggered
+service checkpath /system/xbin/miuioneshots check-sdk-path
+    class main
+    user root
+    group system
+    disabled
+    oneshot
+
+on post-fs-data
+    start checkpath
+
+service checksdkpath /system/xbin/miuioneshots check-sdk-path
+    class main
+    user root
+    group system
+    disabled
+    oneshot
+
+on property:init.svc.zygote=running
+    start checksdkpath
+
+# for NativeDebug
+on post-fs-data
+    mkdir /data/system/nativedebug 0771 system system
+    chown system system /data/system/nativedebug
+    chmod 0771 /data/system/nativedebug
+    restorecon /data/system/nativedebug
+
+# for theme
+on post-fs-data
+    mkdir /data/system/theme 0775 theme theme
+    chown theme theme /data/system/theme
+    chmod 0775 /data/system/theme
+    restorecon /data/system/theme
+    chown theme theme /data/system/theme/lock_wallpaper
+    chmod 0775 /data/system/theme/lock_wallpaper
+    restorecon /data/system/theme/lock_wallpaper
+    mkdir /data/system/theme_magic 0775 theme theme
+    chown theme theme /data/system/theme_magic
+    chmod 0775 /data/system/theme_magic
+    restorecon /data/system/theme_magic
+    mkdir /data/system/theme_magic/customized_icons 0775 theme theme
+    chown theme theme /data/system/theme_magic/customized_icons
+    chmod 0775 /data/system/theme_magic/customized_icons
+    restorecon /data/system/theme_magic/customized_icons
+
+service fdpp /system/bin/fdpp daemon
+    class main
+    user root
+    group system
+
+# mqsasd
+service mqsasd /system/xbin/mqsasd daemon
+    user root
+    group system cache log
+
+on post-fs-data
+    mkdir /data/mqsas 0775 system system
+    mkdir /data/system/miuilog 0775 system system
+
+#adb input
+on property:persist.security.adbinput=*
+    restart adbd
+
+service miui-early-boot /system/bin/sh /init.miui.early_boot.sh
+    class main
+    user root
+    oneshot
+    seclabel u:r:miui_init_shell:s0
+
+
+service system_perf_init /system/xbin/system_perf_init
+    class main
+    user root
+    oneshot
+
+service miui-post-boot /system/bin/sh /init.miui.post_boot.sh
+    class late_start
+    user root
+    disabled
+    oneshot
+
+service hardcoder /system/xbin/hardcoder
+    class main
+    user root
+    socket miui_wechat stream 660 system system
+    oneshot
+
+on boot
+    # cpu trace
+    chown root system /d/ktrace/sched/pids
+    chmod 0660 /d/ktrace/sched/pids
+    chown system system /d/ktrace/sched/zygote_pid
+    chmod 0660 /d/ktrace/sched/zygote_pid
+    chown system system /d/ktrace/sched/zygote64_pid
+    chmod 0660 /d/ktrace/sched/zygote64_pid
+    chown system system /d/ktrace/events/mm/slowpath/reset
+
+    # rtmm
+    chown system system /d/rtmm/reclaim/auto_reclaim
+    chmod 0660 /d/rtmm/reclaim/auto_reclaim
+    chown system system /d/rtmm/reclaim/global_reclaim
+    chmod 0660 /d/rtmm/reclaim/global_reclaim
+    chown system system /d/rtmm/reclaim/proc_reclaim
+    chmod 0660 /d/rtmm/reclaim/proc_reclaim
+    chown system system /d/rtmm/reclaim/kill
+    chmod 0660 /d/rtmm/reclaim/kill
+
+    mkdir /dev/cpuctl/fg_service
+    chown system system /dev/cpuctl/fg_service/tasks
+    chmod 0666 /dev/cpuctl/fg_service/tasks
+    write /dev/cpuctl/bg_non_interactive/cpu.rt_runtime_us 300000
+    write /dev/cpuctl/fg_service/cpu.shares 256
+    write /dev/cpuctl/fg_service/cpu.rt_runtime_us 400000
+    write /dev/cpuctl/fg_service/cpu.rt_period_us 1000000
+
+    mkdir /dev/cpuctl/fg_service/fg_limited
+    chown system system /dev/cpuctl/fg_service/fg_limited/tasks
+    chmod 0666 /dev/cpuctl/fg_service/fg_limited/tasks
+    write /dev/cpuctl/fg_service/fg_limited/cpu.shares 256
+    write /dev/cpuctl/fg_service/fg_limited/cpu.rt_runtime_us 400000
+    write /dev/cpuctl/fg_service/fg_limited/cpu.rt_period_us 1000000
+
+on property:persist.sys.miui_bg_binder=true
+    write /sys/kernel/debug/binder/bg_enable "1"
+
+on property:persist.sys.miui_spo_test=true
+    write /cache/boot_flag "disable"
+
+on property:sys.boot_completed=1 && property:ro.debuggable=1
+    # 工厂running测试需求
+    # gsort路径权限打开
+    chmod 0777 /dev/block/sda5
+    # input_suspend节点权限打开
+    chown system system sys/class/power_supply/battery/input_suspend
+    chmod 0777 sys/class/power_supply/battery/input_suspend
+    # /data/local/tmp路径权限打开
+    mkdir /data/local/tmp
+    chown system system /data/local/tmp
+    chmod 0777 /data/local/tmp
+
+# MI ADD
+# miui bugreport need to get bugreport
+
+# on property:sys.miui.bugreport_file=*
+# on property:sys.miui.dest_path=*
+# start copy_bugreport_file
+
+service copy_bugreport_file /system/bin/sh /system/bin/copy_bugreport_file.sh ${sys.miui.bugreport_file} ${sys.miui.dest_path}
+    user shell
+    group shell sdcard_rw system net_raw
+    oneshot
+    disabled
+    seclabel u:r:shell:s0
+#-MI ADD
+
+service restartc  /system/bin/sh /sbin/restart.sh boot_completed
+    class main
+    user root
+    seclabel u:r:init:s0
+    disabled
+    oneshot
+
+# nativedebug rc
+
+on property:sys.miui.ndcd=on
+    mkdir /data/system/nativedebug/core 0777 root root
+    chmod 0777 /data/system/nativedebug/core
+    restorecon /data/system/nativedebug/core
+    write /proc/sys/kernel/core_pattern "|/system/bin/micd %e %p"
+
+on property:sys.miui.ndcd=off
+    write /proc/sys/kernel/core_pattern "/dev/null"

@@ -1,0 +1,5 @@
+service somc_wifidriver_hal_service /system/bin/hw/vendor.somc.hardware.wifidriver@1.0-service
+    class hal
+    user wifi
+    group wifi net_raw net_admin
+    capabilities NET_RAW NET_ADMIN

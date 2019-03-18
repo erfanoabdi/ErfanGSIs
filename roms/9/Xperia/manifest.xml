@@ -1,0 +1,52 @@
+    <hal format="hidl">
+        <name>vendor.semc.hardware.light</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IExtLight</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::IExtLight/default</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.somc.hardware.graphics</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ISomcGfx</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::ISomcGfx/default</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.somc.hardware.wifi</name>
+        <transport>hwbinder</transport>
+        <version>2.0</version>
+        <interface>
+            <name>ISomcWifi</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@2.0::ISomcWifi/default</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.somc.hardware.wifidriver</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ISomcWifiDriver</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::ISomcWifiDriver/default</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.somc.hardware.radio</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ISomcHook</name>
+            <instance>somchook</instance>
+            <instance>somchook2</instance>
+        </interface>
+        <fqname>@1.0::ISomcHook/somchook</fqname>
+        <fqname>@1.0::ISomcHook/somchook2</fqname>
+    </hal>

@@ -1,0 +1,5 @@
+ro.adb.secure=0
+#Some devices have sdcardfs kernel panicing on 8.0
+#Disable for everyone for the moment
+ro.sys.sdcardfs=0
+persist.sys.overlay.nightmode=true
