@@ -15,6 +15,8 @@ mkdir -p "$cachedir"
 
 romzip=$1
 
+cd $LOCALDIR
+
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     simg2img="$toolsdir/linux/bin/simg2img"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -24,7 +26,7 @@ else
     exit 1
 fi
 
-if [[ ! $(7z l $romzip | grep ".*system.ext4.tar.*\|.*tar.md5\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin" | grep -v ".*chunk.*\.so$") ]]; then
+if [[ ! $(7z l $romzip | grep ".*system.ext4.tar.*\|.*tar.md5\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin\|image.*.zip" | grep -v ".*chunk.*\.so$") ]]; then
 	echo -e "sorry not this zip"
 	echo ""
     exit 1
@@ -153,6 +155,13 @@ elif [[ $(7z l $romzip | grep payload.bin) ]]; then
         exit 1
     fi
     romrawimg="$cachedir/system.img"
+elif [[ $(7z l $romzip | grep "image.*.zip") ]]; then
+    thezip=$(7z l $romzip | grep "image.*.zip" | gawk '{ print $6 }')
+    echo "image zip firmware"
+    7z e $romzip $thezip
+    thezipfile=`echo $thezip | rev | cut -d "/" -f 1 | rev`
+    mv $thezipfile temp.zip
+    $LOCALDIR/zip2img.sh temp.zip
 fi
 
 $simg2img system.img system.img-2 >/dev/null
