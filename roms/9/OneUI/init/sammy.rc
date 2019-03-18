@@ -304,13 +304,3 @@ on property:ro.boot.debug_level=0x494d
     write /sys/kernel/debug/tracing/tracing_on 1
 on property:ro.boot.debug_level=0x4948
     write /sys/kernel/debug/tracing/tracing_on 1
-
-on post-fs-data
-    mount none /system/bin/android.hardware.wifi@1.0-service /vendor/bin/hw/android.hardware.wifi@1.0-service bind
-    mount none /system/bin/hostapd /vendor/bin/hw/hostapd bind
-    mount none /system/bin/wpa_supplicant /vendor/bin/hw/wpa_supplicant bind
-    mount none /system/bin/vendor.qti.gnss@2.0-service /vendor/bin/hw/vendor.qti.gnss@2.0-service bind
-    mount none /system/bin/vendor.qti.gnss@2.0-service /vendor/bin/hw/vendor.qti.gnss@1.0-service bind
-    mount none /system/erfan/libgnss.so /vendor/lib64/libgnss.so bind
-    mount none /system/bin/rild /vendor/bin/hw/rild bind
-    mount none /system/erfan/libril.so /vendor/lib64/libril.so bind

@@ -73,9 +73,6 @@ on post-fs-data
     restorecon_recursive /sys/kernel/debug/rtmm
     restorecon /sys/kernel/debug/extfrag/extfrag_index
 
-    mount none /mnt/phh/empty_dir /vendor/app bind
-
-
 #mdbd
 service mdbd /sbin/mdbd
     class core

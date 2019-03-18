@@ -18,6 +18,8 @@ rm -rf $1/priv-app/DiracAudioControlService
 # remove phh qtiaudio
 rm -rf $1/priv-app/QtiAudio
 
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
+
 rm -rf $1/app/cit
 rm -rf $1/app/MiuiCompass
 rm -rf $1/app/MiuiScreenRecorder

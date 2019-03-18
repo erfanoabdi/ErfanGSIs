@@ -24,7 +24,7 @@ cp -fpr $thispath/vndk-28-arm32/* $1/lib/vndk-28/
 cp -fpr $thispath/vndk-28-arm64/* $1/lib64/vndk-28/
 
 # Copy phh stuffs
-#cp -fpr $thispath/rw-system.sh $1/bin/
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
 # Append file_context
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts

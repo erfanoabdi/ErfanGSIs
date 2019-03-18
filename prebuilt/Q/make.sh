@@ -14,3 +14,5 @@ cp -fpr $thispath/ld/* $1/etc/
 cp -fpr $thispath/init/* $1/etc/init/
 cp -fpr $thispath/permissions/* $1/etc/permissions/
 #cp -fpr $thispath/app/* $1/app/
+
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
