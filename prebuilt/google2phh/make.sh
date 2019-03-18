@@ -43,3 +43,7 @@ sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.
 rm -rf $1/priv-app/DiracAudioControlService
 rm -rf $1/app/DiracManager
 echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
+
+# cleanup build prop
+$thispath/../../scripts/propcleanner.sh $1/build.prop > $thispath/../../tmp/build.prop
+cp -fpr $thispath/../../tmp/build.prop $1/
