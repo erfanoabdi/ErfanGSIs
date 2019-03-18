@@ -23,3 +23,4 @@ echo "qemu.hw.mainkeys=0" >> $1/etc/prop.default
 
 # small debloat
 rm -rf $1/product_services/app/YouTube
+rm -rf $1/app/datastatusnotification
