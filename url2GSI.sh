@@ -10,7 +10,7 @@ wget $url -O downlaods/temp.zip
 ./zip2img.sh downlaods/temp.zip
 mkdir system
 mount cache/system.img system
-./make.sh system $srctype AB size
-./make.sh system $srctype Aonly size
+./make.sh system $srctype AB $size
+./make.sh system $srctype Aonly $size
 
 ls -ln out/
