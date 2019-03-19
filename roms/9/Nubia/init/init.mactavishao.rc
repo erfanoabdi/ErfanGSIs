@@ -1,0 +1,55 @@
+
+#Nubia add for freezer
+service freezerd /system/bin/freezerd
+    class main
+    user root
+    group root
+    
+    start freezerd
+#Nubia add end
+
+
+#Nubia add start, for fileobserverd
+service fileobserverd /system/bin/fileobserverd
+    class main
+    socket fileobserverd stream 0666 system system
+#Nubia add end
+
+# nubia add for databackup
+service appdatabackup /system/bin/appdatabackup
+    class main
+    socket appdatabackup stream 600 system system
+# nubia databakcup end
+
+#nubia add for bootsound
+on property:sys.zte.boot.sound.completed=1
+    start audio-hal-2-0
+    start audioserver
+
+on property:sys.nubia.power.sound=reset
+   rm /persist/bootsoundproperty/persistsyspowersound
+
+chmod 0664 /system/media/audio/ui/bootup.wav
+chmod 0755 /system/bin/bootsound.sh
+#nubia add end
+
+# MacTavishAO edits
+
+#nubia ADD begin for the theme
+service FontsWilluse /system/bin/sh /system/etc/fonts_check.sh
+    class main
+    user root
+    group root
+    oneshot
+#nubia ADD end
+
+on post-fs-data
+    #nubia add for nubiaconfigd can start before zygote
+    start nubiaconfigd
+    #nubia add end
+
+    # nubia add begin for theme
+    # ThemeResource Path change from [/data/system/theme] to [/data/theme] Since Android N
+    # due to Permission Issues of Android N
+    mkdir /data/theme 0775 system system
+    # nubia add end
