@@ -7,6 +7,7 @@ grep -oE 'init_[0-9_]+' /vendor/etc/selinux/nonplat_sepolicy.cil | \
 	sed -E 's/.*init_([0-9]+).*/\1/g' | \
 while read version;do
 	setprop persist.sys.vndk $version
+    setprop ro.vndk.version $version
 done
 
 if [ -d /sys/module/five ];then
