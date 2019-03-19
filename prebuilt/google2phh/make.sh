@@ -48,3 +48,11 @@ echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
 # cleanup build prop
 $thispath/../../scripts/propcleanner.sh $1/build.prop > $thispath/../../tmp/build.prop
 cp -fpr $thispath/../../tmp/build.prop $1/
+
+# cleanup props
+plat_property=$1/etc/selinux/plat_property_contexts
+sed -i "/ro.opengles.version/d" $plat_property
+sed -i "/sys.usb.configfs/d" $plat_property
+sed -i "/sys.usb.controller/d" $plat_property
+sed -i "/sys.usb.config/d" $plat_property
+sed -i "/ro.build.fingerprint/d" $plat_property
