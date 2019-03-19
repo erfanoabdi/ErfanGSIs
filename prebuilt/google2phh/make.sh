@@ -38,6 +38,7 @@ sed -i "/reserved_disk/d" $1/etc/init/vold.rc
 
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml
+rm -rf $1/etc/permissions/com.qti.dpmframework.xml
 
 sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.default
 rm -rf $1/priv-app/DiracAudioControlService
