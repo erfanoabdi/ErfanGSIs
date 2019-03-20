@@ -86,6 +86,13 @@ else
     cd "$LOCALDIR"
 fi
 
+# Detect is the src treble ro.treble.enabled=true
+istreble=`cat $systemdir/system/build.prop | grep ro.treble.enabled | cut -d "=" -f 2`
+if [[ ! "$istreble" == "true" ]]; then
+    echo "The source is not treble supported"
+    exit 1
+fi
+
 # Detect Source API level
 sourcever=`cat $systemdir/system/build.prop | grep ro.build.version.release | cut -d "=" -f 2`
 flag=false
