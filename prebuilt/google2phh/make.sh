@@ -49,6 +49,8 @@ echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
 $thispath/../../scripts/propcleanner.sh $1/build.prop > $thispath/../../tmp/build.prop
 cp -fpr $thispath/../../tmp/build.prop $1/
 
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
+
 # cleanup props
 plat_property=$1/etc/selinux/plat_property_contexts
 sed -i "/ro.opengles.version/d" $plat_property

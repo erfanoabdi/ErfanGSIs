@@ -6,7 +6,7 @@
 #	debug=1 exec sh -x "$(readlink -f -- "$0")" > /cache/phh/logs 2>&1
 #fi
 
-vndk="$(getprop persist.sys.vndk)"
+vndk="$(getprop ro.vndk.version)"
 setprop sys.usb.ffs.aio_compat true
 
 fixSPL() {
