@@ -67,7 +67,7 @@ on post-fs
     # The bind+remount combination allows this to work in containers.
     mount rootfs rootfs / remount bind ro nodev
 
-on post-fs-data
+on property:ro.vndk.version=28 && post-fs-data
     rm /data/system/packages.xml
 
 on boot
