@@ -136,13 +136,22 @@ if [ "$outputtype" == "Aonly" ]; then
     $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
 fi
 
+if [[ $(grep "ro.build.display.id" $systemdir/system/build.prop) ]]; then
+    displayid="ro.build.display.id"
+elif [[ $(grep "ro.build.id" $systemdir/system/build.prop) ]]; then
+    displayid="ro.build.id"
+fi
+displayid2=$(echo "$displayid" | sed 's/\./\\./g')
+bdisplay=$(grep "$displayid" $systemdir/system/build.prop | sed 's/\./\\./g; s:/:\\/:g; s/\,/\\,/g; s/\ /\\ /g')
+sed -i "s/$bdisplay/$displayid2=Built\.with\.ErfanGSI\.Tools/" $systemdir/system/build.prop
+
 if [ "$5" == "" ]; then
-echo "Create out dir"
-outdirname="out"
-outdir="$LOCALDIR/$outdirname"
-mkdir -p "$outdir"
+    echo "Create out dir"
+    outdirname="out"
+    outdir="$LOCALDIR/$outdirname"
+    mkdir -p "$outdir"
 else
-outdir=$5
+    outdir=$5
 fi
 
 date=`date +%Y%m%d`
