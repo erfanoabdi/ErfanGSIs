@@ -4,15 +4,14 @@
 
 usage()
 {
-echo "Usage: $0 <Path to GSI system> <Firmware type> <Output type> <System Partition Size> [Output Dir]"
+echo "Usage: $0 <Path to GSI system> <Firmware type> <Output type> [Output Dir]"
     echo -e "\tPath to GSI system: Mount GSI and set mount point"
     echo -e "\tFirmware type: Firmware mode"
     echo -e "\tOutput type: AB or A-Only"
-    echo -e "\tSystem Partition Size: set system Partition Size"
     echo -e "\tOutput Dir: set output dir"
 }
 
-if [ "$4" == "" ]; then
+if [ "$3" == "" ]; then
     echo "ERROR: Enter all needed parameters"
     usage
     exit 1
@@ -22,7 +21,6 @@ LOCALDIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 sourcepath=$1
 romtype=$2
 outputtype=$3
-systemsize=$4
 
 flag=false
 roms=("$LOCALDIR"/roms/*/*)
@@ -153,6 +151,9 @@ if [ "$5" == "" ]; then
 else
     outdir=$5
 fi
+
+# Getting system size and add approximately 150MB on it just for free space
+systemsize=`du -sk $systemdir | awk '{$1*=1024;$1+=150000000;printf $1}'`
 
 date=`date +%Y%m%d`
 outputname="$romtype-$outputtype-$sourcever-$date-ErfanGSI.img"
