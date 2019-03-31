@@ -7,10 +7,6 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/overlay/* $1/product/overlay/
 
-# build.prop
-$thispath/../../../scripts/propcleanner.sh $1/build.prop > $thispath/../../../tmp/build.prop
-cp -fpr $thispath/../../../tmp/build.prop $1/
-
 # Append file_context
 sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.default
 echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default

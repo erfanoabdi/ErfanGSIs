@@ -18,8 +18,6 @@ cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml
 
 # build.prop
 #cp -fpr $thispath/build.prop $1/
-$thispath/../../../scripts/propcleanner.sh $1/build.prop > $thispath/../../../tmp/build.prop
-cp -fpr $thispath/../../../tmp/build.prop $1/
 echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 # Append file_context
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts

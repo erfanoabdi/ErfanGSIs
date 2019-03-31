@@ -46,8 +46,8 @@ rm -rf $1/app/DiracManager
 echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
 
 # cleanup build prop
-$thispath/../../scripts/propcleanner.sh $1/build.prop > $thispath/../../tmp/build.prop
-cp -fpr $thispath/../../tmp/build.prop $1/
+$thispath/../../scripts/propcleanner.sh $1/build.prop > $1/../../build.prop
+cp -fpr $1/../../build.prop $1/
 
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
