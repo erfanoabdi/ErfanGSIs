@@ -1,0 +1,23 @@
+# File made by MacTavishAO
+
+on post-fs-data
+    mkdir /data/theme 0775 system system
+
+service freezerd /system/bin/freezerd
+    class main
+    user root
+    group root
+
+service fileobserverd /system/bin/fileobserverd
+    class main
+    socket fileobserverd stream 0666 system system
+
+service appdatabackup /system/bin/appdatabackup
+    class main
+    socket appdatabackup stream 600 system system
+
+service FontsWilluse /system/bin/sh /system/etc/fonts_check.sh
+    class main
+    user root
+    group root
+    oneshot
