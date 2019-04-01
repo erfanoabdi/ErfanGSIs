@@ -58,3 +58,8 @@ sed -i "/sys.usb.configfs/d" $plat_property
 sed -i "/sys.usb.controller/d" $plat_property
 sed -i "/sys.usb.config/d" $plat_property
 sed -i "/ro.build.fingerprint/d" $plat_property
+
+if [ ! -d  $1/product ]; then
+    rm -rf $1/product
+    mkdir -p $1/product
+fi
