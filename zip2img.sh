@@ -72,16 +72,16 @@ elif [[ $(7z l $romzip | grep system.ext4.tar.a) ]]; then
 	romzip=""
 	mv system.ext4.tar.a system.ext4.tar
 	romtar="system.ext4.tar"
-elif [[ $(7z l $romzip | grep tar.md5) && ! $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep ^AP_) ]]; then
+elif [[ $(7z l $romzip | grep tar.md5) && ! $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_) ]]; then
 	tarmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }')
 	echo "extracting tarmd5..."
 	7z e $romzip $tarmd5
 	echo "extract img"
 	if [[ $(tar -tf $tarmd5 | grep system.img.ext4) ]]; then
-		tar -xf $tarmd5 system.img.ext4 7z
+		tar -xf $tarmd5 system.img.ext4
 		mv system.img.ext4 system.img
 	elif [[ $(tar -tf $tarmd5 | grep system.img) ]]; then
-		tar -xf $tarmd5 system.img 7z
+		tar -xf $tarmd5 system.img
 	fi
 	if [[ -f system.img ]]; then
 		rm -rf $tarmd5
@@ -92,18 +92,20 @@ elif [[ $(7z l $romzip | grep tar.md5) && ! $(7z l $romzip | grep tar.md5 | gawk
 	fi
 	romzip=""
 	romimg="system.img"
-elif [[ $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep ^AP_) ]]; then
-	mainmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep ^AP_)
-	cscmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep ^CSC_)
+elif [[ $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_) ]]; then
+	mainmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_)
+	cscmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep CSC_)
 	echo "extract_tar_md5"
 	7z e $romzip $mainmd5 $cscmd5
+    mainmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_ | rev | cut -d "/" -f 1 | rev)
+    cscmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep CSC_ | rev | cut -d "/" -f 1 | rev)
 	echo "extract_img"
 	for i in "$mainmd5" "$cscmd5"; do
 		tarulist=$(tar -tf $i | grep -e ".*system.*\.img.*\|.*system.*ext4")
 		echo "$tarulist" | while read line; do
-            tar -xf "$i" "$line" 7z
+            tar -xf "$i" "$line"
             if [[ $(echo "$line" | grep "\.lz4") ]]; then
-	            "$lz4" "$line"
+	            lz4 "$line"
 	            rm -f "$line"
 	            line=$(echo "$line" | sed 's/\.lz4$//')
             fi
