@@ -122,15 +122,12 @@ $scriptsdir/nukeABstuffs.sh "$systemdir/system"
 $prebuiltdir/google2phh/make.sh "$systemdir/system"
 $prebuiltdir/$sourcever/make.sh "$systemdir/system"
 $prebuiltdir/$sourcever/makeroot.sh "$systemdir"
-if [ "$outputtype" == "Aonly" ]; then
-    $prebuiltdir/$sourcever/makeA.sh "$systemdir/system"
-fi
 $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
-
 $romsdir/$sourcever/$romtype/make.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/makeroot.sh "$systemdir"
 if [ "$outputtype" == "Aonly" ]; then
+    $prebuiltdir/$sourcever/makeA.sh "$systemdir/system"
     $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
 fi
 
