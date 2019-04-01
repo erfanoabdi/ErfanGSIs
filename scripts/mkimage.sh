@@ -53,6 +53,10 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/publiccert.pem         u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/sepolicy_version       u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/cust                   u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/donuts_key             u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/v_key                  u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/carrier                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/dqmdbg                 u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     fcontexts="-S $tempdir/file_contexts"
 fi
 sudo rm -rf "$systemdir/persist"
