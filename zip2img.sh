@@ -23,10 +23,18 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     simg2img="$toolsdir/mac/bin/simg2img"
 else
     echo "Not Supported OS for simg2img"
-    exit 1
 fi
 
-if [[ ! $(7z l $romzip | grep ".*system.ext4.tar.*\|.*tar.md5\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin\|image.*.zip" | grep -v ".*chunk.*\.so$") ]]; then
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    packsparseimg="$toolsdir/linux/bin/packsparseimg"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "Not Supported OS for packsparseimg"
+else
+    echo "Not Supported OS for packsparseimg"
+fi
+
+
+if [[ ! $(7z l $romzip | grep ".*system.ext4.tar.*\|.*tar.md5\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin\|image.*.zip\|.*system_.*" | grep -v ".*chunk.*\.so$") ]]; then
 	echo -e "sorry not this zip"
 	echo ""
     exit 1
@@ -145,6 +153,19 @@ elif [[ $(7z l $romzip | grep chunk | grep -v ".*\.so$") ]]; then
     fi
     mv "system.img" "$cachedir/system.img"
     romrawimg="$cachedir/system.img"
+elif [[ $(7z l $romzip | grep rawprogram) ]]; then
+    echo "extract_QFIL"
+    systems=$(7z l $romzip | gawk '{ print $6 }' | grep system_)
+    rawprograms=$(7z l $romzip | gawk '{ print $6 }' | grep rawprogram)
+    7z e $romzip $systems $rawprograms
+    if [ -f rawprogram_unsparse.xml ]; then
+        $packsparseimg
+    else
+        $packsparseimg -x $rawprograms
+    fi
+    mv "system.raw" "$cachedir/system.img"
+    romrawimg="$cachedir/system.img"
+    rm -rf $systems $rawprograms
 elif [[ $(7z l $romzip | grep payload.bin) ]]; then
     echo "extract_ABota"
     7z e $romzip payload.bin
