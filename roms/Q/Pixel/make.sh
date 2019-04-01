@@ -6,6 +6,7 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 # AOSP libs
 cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/overlay/* $1/product/overlay/
+#cp -fpr $thispath/priv-app/* $1/priv-app/
 
 # Append file_context
 sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.default
@@ -17,6 +18,4 @@ echo "ro.config.alarm_alert=Bright_morning.ogg" >> $1/etc/prop.default
 echo "persist.sys.overlay.pixelrecents=true" >> $1/etc/prop.default
 echo "qemu.hw.mainkeys=0" >> $1/etc/prop.default
 
-# small debloat
-rm -rf $1/product_services/app/YouTube
-rm -rf $1/app/datastatusnotification
+sed -i "/dataservice_app/d" $1/product/etc/selinux/product_seapp_contexts
