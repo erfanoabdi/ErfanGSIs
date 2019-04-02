@@ -9,6 +9,7 @@ cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/bin-hw/* $1/bin/hw/
 cp -fpr $thispath/init/* $1/etc/init/
+cp -fpr $thispath/priv-app/* $1/priv-app/
 #cp -fpr $thispath/manifest.xml $1/etc/vintf/
 cp -fpr $thispath/vndk-27-arm32/* $1/lib/vndk-27/
 cp -fpr $thispath/vndk-27-arm64/* $1/lib64/vndk-27/
