@@ -131,6 +131,13 @@ if [ "$outputtype" == "Aonly" ]; then
     $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
 fi
 
+# Resign to AOSP keys
+if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
+    echo "Resigning to AOSP keys"
+    python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security
+    $prebuiltdir/resigned/make.sh "$systemdir/system"
+fi
+
 if [[ $(grep "ro.build.display.id" $systemdir/system/build.prop) ]]; then
     displayid="ro.build.display.id"
 elif [[ $(grep "ro.build.id" $systemdir/system/build.prop) ]]; then
