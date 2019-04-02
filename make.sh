@@ -119,7 +119,7 @@ fi
 echo "Patching started..."
 $scriptsdir/fixsymlinks.sh "$systemdir/system"
 $scriptsdir/nukeABstuffs.sh "$systemdir/system"
-$prebuiltdir/google2phh/make.sh "$systemdir/system"
+$prebuiltdir/common/make.sh "$systemdir/system"
 $prebuiltdir/$sourcever/make.sh "$systemdir/system"
 $prebuiltdir/$sourcever/makeroot.sh "$systemdir"
 $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
