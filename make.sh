@@ -115,6 +115,16 @@ if [[ ! -d "$systemdir/system/lib64" ]]; then
     # do something here?
 fi
 
+# Debloat
+$romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system"
+
+# Resign to AOSP keys
+if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
+    echo "Resigning to AOSP keys"
+    python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security
+    $prebuiltdir/resigned/make.sh "$systemdir/system"
+fi
+
 # Start patching
 echo "Patching started..."
 $scriptsdir/fixsymlinks.sh "$systemdir/system"
@@ -124,18 +134,10 @@ $prebuiltdir/$sourcever/make.sh "$systemdir/system"
 $prebuiltdir/$sourcever/makeroot.sh "$systemdir"
 $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/make.sh "$systemdir/system"
-$romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/makeroot.sh "$systemdir"
 if [ "$outputtype" == "Aonly" ]; then
     $prebuiltdir/$sourcever/makeA.sh "$systemdir/system"
     $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
-fi
-
-# Resign to AOSP keys
-if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
-    echo "Resigning to AOSP keys"
-    python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security
-    $prebuiltdir/resigned/make.sh "$systemdir/system"
 fi
 
 if [[ $(grep "ro.build.display.id" $systemdir/system/build.prop) ]]; then
