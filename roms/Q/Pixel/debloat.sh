@@ -5,6 +5,7 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 # small debloat
 rm -rf $1/product_services/app/YouTube
+rm -rf $1/product/app/YouTube
 rm -rf $1/app/datastatusnotification
 rm -rf $1/app/QAS_DVC_MSP_VZW
 rm -rf $1/app/VZWAPNLib
@@ -20,5 +21,6 @@ rm -rf $1/product/priv-app/MyVerizonServices
 rm -rf $1/product/priv-app/SprintDM
 rm -rf $1/product/priv-app/SprintHM
 rm -rf $1/product_services/priv-app/PrebuiltGmsCorePi/app_chimera
+rm -rf $1/system/product/priv-app/PrebuiltGmsCoreQt/app_chimera
 rm -rf $1/etc/permissions/com.google.android.camera.experimental2017.xml
 rm -rf $1/product/app/GoogleCamera
