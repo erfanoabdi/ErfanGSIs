@@ -14,11 +14,14 @@ on init
     symlink /apex/com.android.runtime/lib64/bionic/libdl.so /bionic/lib64/libdl.so
     symlink /apex/com.android.runtime/lib64/bionic/libm.so /bionic/lib64/libm.so
 
+    # Start apexd as soon as we can
+    start apexd
+
 on post-fs-data
     exec - system system -- /system/bin/vdc checkpoint prepareCheckpoint
 
-    # Start apexd as soon as we can
-    start apexd
+    # /data/apex is now available. Let apexd to scan and activate APEXes.
+    setprop apexd.data.status ready
 
     mkdir /data/preloads 0775 system system
     mkdir /data/apex 0750 root system
@@ -38,12 +41,3 @@ on post-fs-data
     wait_for_prop apexd.status ready
     setup_runtime_bionic
     parse_apex_configs
-
-    mount none /apex/com.android.runtime/bin/linker /system/bin/linker bind
-    mount none /apex/com.android.runtime/bin/linker64 /system/bin/linker64 bind
-    mount none /apex/com.android.runtime/lib/bionic/libc.so /system/lib/libc.so bind
-    mount none /apex/com.android.runtime/lib/bionic/libdl.so /system/lib/libdl.so bind
-    mount none /apex/com.android.runtime/lib/bionic/libm.so /system/lib/libm.so bind
-    mount none /apex/com.android.runtime/lib64/bionic/libc.so /system/lib64/libc.so bind
-    mount none /apex/com.android.runtime/lib64/bionic/libdl.so /system/lib64/libdl.so bind
-    mount none /apex/com.android.runtime/lib64/bionic/libm.so /system/lib64/libm.so bind

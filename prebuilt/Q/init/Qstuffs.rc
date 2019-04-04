@@ -67,9 +67,6 @@ on post-fs
     # The bind+remount combination allows this to work in containers.
     mount rootfs rootfs / remount bind ro nodev
 
-on property:ro.vndk.version=28 && post-fs-data
-    rm /data/system/packages.xml
-
 on boot
     # System server manages zram writeback
     chown root system /sys/block/zram0/idle
