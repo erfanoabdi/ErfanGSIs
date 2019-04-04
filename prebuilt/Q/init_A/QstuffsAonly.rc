@@ -1,6 +1,64 @@
 # Copyright (C) 2019 Erfan Abdi (erfangplus@gmail.com)
 
+on early-init
+    # Mount shared so changes propagate into child namespaces
+    # Do this before other processes are started from init. Otherwise,
+    # processes launched while the propagation type of / is 'private'
+    # won't get mount events from others.
+    mount rootfs rootfs / shared rec
+
+    # memory.pressure_level used by lmkd
+    chown root system /dev/memcg/memory.pressure_level
+    chmod 0040 /dev/memcg/memory.pressure_level
+
+    # Mount cgroup mount point for cpu accounting
+    mount cgroup none /acct nodev noexec nosuid cpuacct
+    chmod 0555 /acct
+
+    mkdir /dev/memcg 0700 root system
+    mount cgroup none /dev/memcg nodev noexec nosuid memory
+
 on init
+    mkdir /dev/stune
+    mount cgroup none /dev/stune nodev noexec nosuid schedtune
+    mkdir /dev/cpuctl
+    mount cgroup none /dev/cpuctl nodev noexec nosuid cpu
+    mkdir /dev/cpuset
+    mount cpuset none /dev/cpuset nodev noexec nosuid
+    mkdir /dev/cg2_bpf
+    mount cgroup2 cg2_bpf /dev/cg2_bpf nodev noexec nosuid
+
+    mkdir /apex 0755 root root
+
+    copy /system/etc/prop.default /dev/urandom
+
+    export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
+
+    symlink /proc/self/fd/0 /dev/stdin
+    symlink /proc/self/fd/1 /dev/stdout
+    symlink /proc/self/fd/2 /dev/stderr
+
+    mkdir /mnt/runtime/full 0755 root root
+    mkdir /mnt/runtime/full/self 0755 root root
+
+    chown system log /sys/fs/pstore
+    chmod 0550 /sys/fs/pstore
+
+    # This is used by Bionic to select optimized routines.
+    write /dev/cpu_variant:${ro.bionic.arch} ${ro.bionic.cpu_variant}
+    chmod 0444 /dev/cpu_variant:${ro.bionic.arch}
+    write /dev/cpu_variant:${ro.bionic.2nd_arch} ${ro.bionic.2nd_cpu_variant}
+    chmod 0444 /dev/cpu_variant:${ro.bionic.2nd_arch}
+
+    # Setup APEX mount point and its security context
+    mount tmpfs tmpfs /apex nodev noexec nosuid
+    chmod 0755 /apex
+    chown root root /apex
+    restorecon /apex
+
+    # Start logd before any other services run to ensure we capture all of their logs.
+    start logd
+
     mkdir /bionic 0755 root root
     mkdir /bionic/bin 0755 root root
     mkdir /bionic/lib 0755 root root
@@ -16,6 +74,22 @@ on init
 
     # Start apexd as soon as we can
     start apexd
+
+    # Start essential services.
+    start servicemanager
+    start hwservicemanager
+    start vndservicemanager
+
+on post-fs
+    # The bind+remount combination allows this to work in containers.
+    mount rootfs rootfs / remount bind ro nodev
+
+on boot
+    # System server manages zram writeback
+    chown root system /sys/block/zram0/idle
+    chmod 0664 /sys/block/zram0/idle
+    chown root system /sys/block/zram0/writeback
+    chmod 0664 /sys/block/zram0/writeback
 
 on post-fs-data
     exec - system system -- /system/bin/vdc checkpoint prepareCheckpoint
@@ -41,3 +115,8 @@ on post-fs-data
     wait_for_prop apexd.status ready
     setup_runtime_bionic
     parse_apex_configs
+
+on property:security.perf_harden=0
+    write /proc/sys/kernel/perf_event_max_sample_rate ${debug.perf_event_max_sample_rate:-100000}
+    write /proc/sys/kernel/perf_cpu_time_max_percent ${debug.perf_cpu_time_max_percent:-25}
+    write /proc/sys/kernel/perf_event_mlock_kb ${debug.perf_event_mlock_kb:-516}
