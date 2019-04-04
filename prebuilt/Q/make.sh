@@ -16,3 +16,4 @@ cp -fpr $thispath/permissions/* $1/etc/permissions/
 #cp -fpr $thispath/app/* $1/app/
 
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
+echo "persist.bluetooth.bluetooth_audio_hal.disabled=true" >> $1/build.prop
