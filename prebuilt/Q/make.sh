@@ -17,3 +17,6 @@ cp -fpr $thispath/permissions/* $1/etc/permissions/
 
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 echo "persist.bluetooth.bluetooth_audio_hal.disabled=true" >> $1/build.prop
+
+# Append file_context
+cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
