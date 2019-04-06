@@ -4,7 +4,6 @@ systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 # AOSP libs
-cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/overlay/* $1/product/overlay/
 
 # Append file_context
