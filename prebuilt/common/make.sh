@@ -30,6 +30,7 @@ sed -i "s/u:object_r:logcat_exec:s0/u:object_r:logd_exec:s0/g" $1/etc/selinux/pl
 # disable any setupwizard mode
 sed -i "/ro.setupwizard.mode/d" $1/etc/prop.default
 sed -i "/ro.setupwizard.mode/d" $1/build.prop
+sed -i "/ro.setupwizard.mode/d" $1/product/build.prop
 
 # disable RescureParty
 echo "persist.sys.disable_rescue=true" >> $1/etc/prop.default
