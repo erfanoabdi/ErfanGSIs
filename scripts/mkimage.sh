@@ -57,7 +57,7 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/v_key                  u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/carrier                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/dqmdbg                 u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
-    fcontexts="-S $tempdir/file_contexts"
+    fcontexts="$tempdir/file_contexts"
 fi
 sudo rm -rf "$systemdir/persist"
 sudo rm -rf "$systemdir/bt_firmware"
