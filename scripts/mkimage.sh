@@ -68,23 +68,8 @@ sudo mkdir -p "$systemdir/persist"
 sudo mkdir -p "$systemdir/firmware"
 sudo mkdir -p "$systemdir/dsp"
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    if [[ $(getconf LONG_BIT) = "64" ]]; then
-        make_ext4fs="$toolsdir/linux/bin/make_ext4fs_64"
-    else
-        make_ext4fs="$toolsdir/linux/bin/make_ext4fs_32"
-    fi
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    make_ext4fs="$toolsdir/mac/bin/make_ext4fs"
-else
-    echo "Not Supported OS for make_ext4fs"
-    echo "Removing Temp dir"
-    sudo rm -rf "$tempdir"
-    exit 1
-fi
-
 if [ "$outputtype" == "Aonly" ]; then
-    sudo $make_ext4fs -T 0 $fcontexts -l $syssize -L system -a system -s "$output" "$systemdir/system"
+    sudo $toolsdir/mkuserimg_mke2fs.sh -s "$systemdir/system" "$output" ext4 system $syssize -T 0 -L system $fcontexts
 else
-    sudo $make_ext4fs -T 0 $fcontexts -l $syssize -L / -a / -s "$output" "$systemdir/"
+    sudo $toolsdir/mkuserimg_mke2fs.sh -s "$systemdir/" "$output" ext4 / $syssize -T 0 -L / $fcontexts
 fi
