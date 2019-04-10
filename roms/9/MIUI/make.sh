@@ -23,31 +23,6 @@ rm -rf $1/app/NQNfcNci
 
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
-sed -i 's/<bool name="support_round_corner">true/<bool name="support_round_corner">false/' $1/etc/*
+sed -i 's/<bool name="support_round_corner">true/<bool name="support_round_corner">false/' $1/etc/device_features/*
 
-rm -rf $1/app/cit
-rm -rf $1/app/MiuiCompass
-rm -rf $1/app/MiuiScreenRecorder
-rm -rf $1/app/MiuiVideoGlobal
-rm -rf $1/app/Notes
-rm -rf $1/app/PaymentService
-rm -rf $1/app/Calculator
-rm -rf $1/priv-app/Backup
-rm -rf $1/priv-app/Browser
-rm -rf $1/priv-app/Calendar
-rm -rf $1/priv-app/CleanMaster
-rm -rf $1/priv-app/MiRecycle
-rm -rf $1/priv-app/MiuiScanner
-rm -rf $1/priv-app/MiWebView
-rm -rf $1/priv-app/Updater
-rm -rf $1/priv-app/Velvet
-rm -rf $1/priv-app/Weather
-rm -rf $1/priv-app/WeatherProvider
-
-#rm -rf $1/fonts/NotoSansEgyptianHieroglyphs-Regular.ttf
-#rm -rf $1/fonts/NotoSansTibetan-Bold.ttf
-#rm -rf $1/fonts/NotoSansTibetan-Regular.ttf
-#rm -rf $1/fonts/NotoSerifCJK-Regular.ttc
-#rm -rf $1/fonts/NotoSansCJK-Regular.ttc
-#rm -rf $1/fonts/NotoSansCuneiform-Regular.ttf
-#rm -rf $1/media/theme/miui_mod_icons
+sed -i "/miui.notch/d" $1/build.prop
