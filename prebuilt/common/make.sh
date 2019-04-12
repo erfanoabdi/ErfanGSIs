@@ -64,3 +64,4 @@ if [ ! -d  $1/product ]; then
     rm -rf $1/product
     mkdir -p $1/product
 fi
+mkdir -p $1/product/overlay

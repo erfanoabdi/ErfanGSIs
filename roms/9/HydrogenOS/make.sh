@@ -10,8 +10,7 @@ cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/bin-hw/* $1/bin/hw/
 cp -fpr $thispath/init/* $1/etc/init/
 #cp -fpr $thispath/manifest.xml $1/etc/vintf/
-cp -fpr $thispath/vndk-27-arm32/* $1/lib/vndk-27/
-cp -fpr $thispath/vndk-27-arm64/* $1/lib64/vndk-27/
+cp -fpr $thispath/overlay/* $1/product/overlay/
 
 python $thispath/../../../scripts/custom_manifest.py $thispath/../../../tmp/manifest.xml $thispath/manifest.xml $1/etc/vintf/manifest.xml
 cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml
