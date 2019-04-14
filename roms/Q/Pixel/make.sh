@@ -14,6 +14,7 @@ echo "ro.config.ringtone=The_big_adventure.ogg" >> $1/etc/prop.default
 echo "ro.config.notification_sound=Popcorn.ogg" >> $1/etc/prop.default
 echo "ro.config.alarm_alert=Bright_morning.ogg" >> $1/etc/prop.default
 echo "persist.sys.overlay.pixelrecents=true" >> $1/etc/prop.default
+echo "persist.sys.overlay.photness=true" >> $1/etc/prop.default
 echo "qemu.hw.mainkeys=0" >> $1/etc/prop.default
 
 sed -i "/dataservice_app/d" $1/product/etc/selinux/product_seapp_contexts
