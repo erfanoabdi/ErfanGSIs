@@ -9,7 +9,7 @@ cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/bin-hw/* $1/bin/hw/
 cp -fpr $thispath/init/* $1/etc/init/
-cp -fpr $thispath/priv-app/* $1/priv-app/
+#cp -fpr $thispath/priv-app/* $1/priv-app/
 #cp -fpr $thispath/manifest.xml $1/etc/vintf/
 cp -fpr $thispath/overlay/* $1/product/overlay/
 
@@ -37,3 +37,6 @@ sed -i "s/M-185,0 H183.34 c-9.77.44-19.57,0.08-29.28,1.24-20.33,1.14-41.18,5.17-
 
 # fix op6 notch
 sed -i "s/M 0,0 L -183, 0 A 24.0, 24.0, 0, 0, 1, -159.0, 22.0 A 64.0, 64.0, 0, 0, 0, -95.0, 80.0 L 95.0, 80.0 A 64.0, 64.0, 0, 0, 0, 159.0, 22.0 A 24.0, 24.0, 0, 0, 1, 183.0, 0 Z/000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/" $1/framework/framework-res.apk
+
+# fix round corner
+$thispath/../../../scripts/apkedit.sh $1/priv-app/oneplus-framework-res/oneplus-framework-res.apk $thispath/oneplus-framework-res.sh platform
