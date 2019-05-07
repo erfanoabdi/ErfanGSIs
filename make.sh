@@ -96,7 +96,7 @@ sourcever=`cat $systemdir/system/build.prop | grep ro.build.version.release | cu
 flag=false
 case "$sourcever" in
     *"9"*) flag=true7z ;;
-    *"Q"*) flag=true7z ;;
+    *"10"*) flag=true7z ;;
 esac
 if [ "$flag" == "false" ]; then
     echo "$sourcever is not supported"
