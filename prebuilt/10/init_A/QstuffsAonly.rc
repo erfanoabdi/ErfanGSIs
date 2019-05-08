@@ -1,12 +1,6 @@
 # Copyright (C) 2019 Erfan Abdi (erfangplus@gmail.com)
 
 on early-init
-    # Mount shared so changes propagate into child namespaces
-    # Do this before other processes are started from init. Otherwise,
-    # processes launched while the propagation type of / is 'private'
-    # won't get mount events from others.
-    mount rootfs rootfs / shared rec
-
     # memory.pressure_level used by lmkd
     chown root system /dev/memcg/memory.pressure_level
     chmod 0040 /dev/memcg/memory.pressure_level
@@ -17,6 +11,11 @@ on early-init
 
     mkdir /dev/memcg 0700 root system
     mount cgroup none /dev/memcg nodev noexec nosuid memory
+
+    # Run apexd-bootstrap so that APEXes that provide critical libraries
+    # become available. Note that this is executed as exec_start to ensure that
+    # the libraries are available to the processes started after this statement.
+    exec_start apexd-bootstrap
 
 on init
     mkdir /dev/stune
@@ -43,6 +42,10 @@ on init
 
     chown system log /sys/fs/pstore
     chmod 0550 /sys/fs/pstore
+
+    # make the PSI monitor accessible to others
+    chown system system /proc/pressure/memory
+    chmod 0664 /proc/pressure/memory
 
     # This is used by Bionic to select optimized routines.
     write /dev/cpu_variant:${ro.bionic.arch} ${ro.bionic.cpu_variant}
@@ -72,9 +75,6 @@ on init
     symlink /apex/com.android.runtime/lib64/bionic/libdl.so /bionic/lib64/libdl.so
     symlink /apex/com.android.runtime/lib64/bionic/libm.so /bionic/lib64/libm.so
 
-    # Start apexd as soon as we can
-    start apexd
-
     # Start essential services.
     start servicemanager
     start hwservicemanager
@@ -91,29 +91,40 @@ on boot
     chown root system /sys/block/zram0/writeback
     chmod 0664 /sys/block/zram0/writeback
 
+    # F2FS tuning. Set cp_interval larger than dirty_expire_centisecs
+    # to avoid power consumption when system becomes mostly idle. Be careful
+    # to make it too large, since it may bring userdata loss, if they
+    # are not aware of using fsync()/sync() to prepare sudden power-cut.
+    write /sys/fs/f2fs/${dev.mnt.blk.data}/cp_interval 200
+
 on post-fs-data
+    mkdir /metadata/password_slots 0771 root system
+    mkdir /metadata/apex 0700 root system
+    mkdir /metadata/apex/sessions 0700 root system
+
     exec - system system -- /system/bin/vdc checkpoint prepareCheckpoint
 
-    # /data/apex is now available. Let apexd to scan and activate APEXes.
-    setprop apexd.data.status ready
+    # Load fsverity keys. This needs to happen before apexd, as post-install of
+    # APEXes may rely on keys.
+    exec -- /system/bin/fsverity_init
+
+    # /data/apex is now available. Start apexd to scan and activate APEXes.
+    mkdir /data/apex 0750 root system
+    mkdir /data/apex/active 0750 root system
+    mkdir /data/apex/backup 0700 root system
+    mkdir /data/apex/sessions 0700 root system
+    mkdir /data/pkg_staging 0750 system system
+    start apexd
 
     mkdir /data/preloads 0775 system system
-    mkdir /data/apex 0750 root system
     mkdir /data/staging 0750 system system
     mkdir /data/system/dropbox 0700 system system
 
     # Check any timezone data in /data is newer than the copy in the runtime module, delete if not.
     exec - system system -- /system/bin/tzdatacheck /apex/com.android.runtime/etc/tz /data/misc/zoneinfo
 
-    # load fsverity keys
-    exec -- /system/bin/mini-keyctl -c /product/etc/security/cacerts_fsverity,/vendor/etc/security/cacerts_fsverity -k .fs-verity
-
     # Wait for apexd to finish activating APEXes before starting more processes.
-    # This certainly reduces the parallelism but is required to make as many processes
-    # as possible to use the bionic libs from the runtime APEX. This takes less than 50ms
-    # so the impact on the booting time is not significant.
     wait_for_prop apexd.status ready
-    setup_runtime_bionic
     parse_apex_configs
 
 on property:security.perf_harden=0
