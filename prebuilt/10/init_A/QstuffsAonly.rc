@@ -32,6 +32,7 @@ on init
     copy /system/etc/prop.default /dev/urandom
 
     export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
+    export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
 
     symlink /proc/self/fd/0 /dev/stdin
     symlink /proc/self/fd/1 /dev/stdout
@@ -61,19 +62,6 @@ on init
 
     # Start logd before any other services run to ensure we capture all of their logs.
     start logd
-
-    mkdir /bionic 0755 root root
-    mkdir /bionic/bin 0755 root root
-    mkdir /bionic/lib 0755 root root
-    mkdir /bionic/lib64 0755 root root
-    symlink /apex/com.android.runtime/bin/linker /bionic/bin/linker
-    symlink /apex/com.android.runtime/bin/linker64 /bionic/bin/linker64
-    symlink /apex/com.android.runtime/lib/bionic/libc.so /bionic/lib/libc.so
-    symlink /apex/com.android.runtime/lib/bionic/libdl.so /bionic/lib/libdl.so
-    symlink /apex/com.android.runtime/lib/bionic/libm.so /bionic/lib/libm.so
-    symlink /apex/com.android.runtime/lib64/bionic/libc.so /bionic/lib64/libc.so
-    symlink /apex/com.android.runtime/lib64/bionic/libdl.so /bionic/lib64/libdl.so
-    symlink /apex/com.android.runtime/lib64/bionic/libm.so /bionic/lib64/libm.so
 
     # Start essential services.
     start servicemanager
