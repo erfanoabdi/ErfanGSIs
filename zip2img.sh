@@ -196,6 +196,13 @@ else
     mv system.img-2 system.img
 fi
 
+offset=$(LANG=C grep -aobP -m1 '\x53\xEF' system.img | head -1 | gawk '{print $1 - 1080}')
+
+if [ ! $offset == "0" ]; then
+    dd if=system.img of=system.img-2 ibs=$offset skip=1 2>&1
+    mv system.img-2 system.img
+fi
+
 mv "system.img" "$cachedir/system.img"
 
 echo "$cachedir/system.img"
