@@ -57,6 +57,13 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/v_key                  u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/carrier                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/dqmdbg                 u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/ADF                    u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/ADF                    u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/APD                    u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/asdf                   u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/batinfo                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/voucher                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/xrom                   u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     fcontexts="$tempdir/file_contexts"
 fi
 sudo rm -rf "$systemdir/persist"
