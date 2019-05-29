@@ -22,6 +22,13 @@ sourcepath=$1
 romtype=$2
 outputtype=$3
 
+if [[ $romtype == *":"* ]]; then
+    romtypename=`echo "$romtype" | cut -d ":" -f 2`
+    romtype=`echo "$romtype" | cut -d ":" -f 1`
+else
+    romtypename=$romtype
+fi
+
 flag=false
 roms=("$LOCALDIR"/roms/*/*)
 for dir in "${roms[@]}"
@@ -173,7 +180,7 @@ fi
 systemsize=`du -sk $systemdir | awk '{$1*=1024;$1=int($1*1.05);printf $1}'`
 
 date=`date +%Y%m%d`
-outputname="$romtype-$outputtype-$sourcever-$date-ErfanGSI.img"
+outputname="$romtypename-$outputtype-$sourcever-$date-ErfanGSI.img"
 output="$outdir/$outputname"
 
 echo "Creating Image: $outputname"
