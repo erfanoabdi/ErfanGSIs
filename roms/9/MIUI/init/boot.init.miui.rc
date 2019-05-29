@@ -148,20 +148,20 @@ on post-fs-data
 
 # for theme
 on post-fs-data
-    mkdir /data/system/theme 0775 theme theme
+    mkdir /data/system/theme 0777 theme theme
     chown theme theme /data/system/theme
-    chmod 0775 /data/system/theme
+    chmod 0777 /data/system/theme
     restorecon /data/system/theme
     chown theme theme /data/system/theme/lock_wallpaper
-    chmod 0775 /data/system/theme/lock_wallpaper
+    chmod 0777 /data/system/theme/lock_wallpaper
     restorecon /data/system/theme/lock_wallpaper
     mkdir /data/system/theme_magic 0775 theme theme
     chown theme theme /data/system/theme_magic
-    chmod 0775 /data/system/theme_magic
+    chmod 0777 /data/system/theme_magic
     restorecon /data/system/theme_magic
     mkdir /data/system/theme_magic/customized_icons 0775 theme theme
     chown theme theme /data/system/theme_magic/customized_icons
-    chmod 0775 /data/system/theme_magic/customized_icons
+    chmod 0777 /data/system/theme_magic/customized_icons
     restorecon /data/system/theme_magic/customized_icons
 
 service fdpp /system/bin/fdpp daemon
