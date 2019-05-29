@@ -64,6 +64,7 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/batinfo                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/voucher                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/xrom                   u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/custom                 u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     fcontexts="$tempdir/file_contexts"
 fi
 sudo rm -rf "$systemdir/persist"
