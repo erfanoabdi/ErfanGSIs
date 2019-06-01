@@ -15,3 +15,6 @@ cp -fpr $thispath/bin/* $1/bin/
 # hack bootprof
 sed -i "s|/sys/bootprof/bootprof|/system/erfan/bootprof|g" $1/lib/libsurfaceflinger.so
 sed -i "s|/sys/bootprof/bootprof|/system/erfan/bootprof|g" $1/lib64/libsurfaceflinger.so
+
+# Append file_context
+cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
