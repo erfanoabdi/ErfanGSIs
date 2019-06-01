@@ -184,7 +184,11 @@ outputname="$romtypename-$outputtype-$sourcever-$date-ErfanGSI.img"
 output="$outdir/$outputname"
 
 echo "Creating Image: $outputname"
-$scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output
+# Use ext4fs to make image in P or older!
+if [ "$sourcever" -lt "10" ]; then
+    useold="--old"
+fi
+$scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output $useold
 
 echo "Remove Temp dir"
 rm -rf "$tempdir"

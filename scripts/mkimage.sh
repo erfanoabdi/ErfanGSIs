@@ -4,13 +4,15 @@
 
 usage()
 {
-    echo "Usage: $0 <Path to GSI system> <System Partition Size> <Output File>"
+    echo "Usage: $0 <Path to GSI system> <Output Type> <System Partition Size> <Output File> [--old]"
     echo -e "\tPath to GSI system : Mount GSI and set mount point"
+    echo -e "\tOutput type : AB or A-Only"
     echo -e "\tSystem Partition Size : set system Partition Size"
     echo -e "\tOutput File : set Output file path (system.img)"
+    echo -e "\told : use ext4fs to make image"
 }
 
-if [ "$3" == "" ]; then
+if [ "$4" == "" ]; then
     echo "ERROR: Enter all needed parameters"
     usage
     exit 1
@@ -76,8 +78,28 @@ sudo mkdir -p "$systemdir/persist"
 sudo mkdir -p "$systemdir/firmware"
 sudo mkdir -p "$systemdir/dsp"
 
-if [ "$outputtype" == "Aonly" ]; then
-    sudo $toolsdir/mkuserimg_mke2fs.sh -s "$systemdir/system" "$output" ext4 system $syssize -T 0 -L system $fcontexts
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    if [[ $(getconf LONG_BIT) = "64" ]]; then
+        make_ext4fs="$toolsdir/linux/bin/make_ext4fs_64"
+    else
+        make_ext4fs="$toolsdir/linux/bin/make_ext4fs_32"
+fi
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    make_ext4fs="$toolsdir/mac/bin/make_ext4fs"
 else
-    sudo $toolsdir/mkuserimg_mke2fs.sh -s "$systemdir/" "$output" ext4 / $syssize -T 0 -L / $fcontexts
+    echo "Not Supported OS for make_ext4fs"
+fi
+
+if [ "$5" == "--old" ]; then
+    if [ "$outputtype" == "Aonly" ]; then
+        sudo $make_ext4fs -T 0 -S $fcontexts -l $syssize -L system -a system -s "$output" "$systemdir/system"
+    else
+        sudo $make_ext4fs -T 0 -S $fcontexts -l $syssize -L / -a / -s "$output" "$systemdir/"
+    fi
+else
+    if [ "$outputtype" == "Aonly" ]; then
+        sudo $toolsdir/mkuserimg_mke2fs.sh -s "$systemdir/system" "$output" ext4 system $syssize -T 0 -L system $fcontexts
+    else
+        sudo $toolsdir/mkuserimg_mke2fs.sh -s "$systemdir/" "$output" ext4 / $syssize -T 0 -L / $fcontexts
+    fi
 fi
