@@ -11,6 +11,8 @@ cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/erfan $1/
 cp -fpr $thispath/init/* $1/etc/init/
 cp -fpr $thispath/bin/* $1/bin/
+cp -fpr $thispath/overlay/* $1/product/overlay/
+cp -fpr $thispath/framework/* $1/framework/
 
 # hack bootprof
 sed -i "s|/sys/bootprof/bootprof|/system/erfan/bootprof|g" $1/lib/libsurfaceflinger.so
