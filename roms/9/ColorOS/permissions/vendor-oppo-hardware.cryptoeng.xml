@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<permissions>
+    <library name="vendor-oppo-hardware.cryptoeng-V1.0"
+          file="/system/framework/vendor.oppo.hardware.cryptoeng-V1.0-java.jar"/>
+</permissions>
+

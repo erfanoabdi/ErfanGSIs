@@ -11,7 +11,10 @@ cp -fpr $thispath/SetupWizard $1/priv-app/
 
 # Custom files
 cp -fpr $thispath/init/* $1/etc/init/
+cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/bin/* $1/bin/
+cp -fpr $thispath/bin-hw/* $1/bin/hw/
+cp -fpr $thispath/permissions/* $1/etc/permissions/
 
 # drop QVRservice
 rm -rf $1/bin/qvrservice
@@ -22,9 +25,7 @@ cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 # Fix packageinstaller
 echo "ro.build.version.sdk=28" >> $1/build.prop
 
-# oppo hacks
-sed -i "s/vendor.oppo.hardware.cryptoeng/vendor.fuck.hardware.cryptoeng/g" $1/etc/vintf/manifest.xml
-
+# oppo boot stage hacks
 sed -i "s|/proc/phoenix|/data/erf/phx|g" $1/framework/boot-framework.vdex
 sed -i "s|/proc/phoenix|/data/erf/phx|g" $1/lib/libphoenix_native.so
 sed -i "s|/proc/phoenix|/data/erf/phx|g" $1/lib64/libphoenix_native.so
