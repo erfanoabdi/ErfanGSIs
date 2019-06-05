@@ -12,6 +12,16 @@ on early-init
     mkdir /dev/memcg 0700 root system
     mount cgroup none /dev/memcg nodev noexec nosuid memory
 
+    # Setup APEX mount point and its security context
+    mkdir /apex 0755 root root
+    mount tmpfs tmpfs /apex nodev noexec nosuid
+    chmod 0755 /apex
+    chown root root /apex
+    restorecon /apex
+
+    export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
+    export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
+
     # Run apexd-bootstrap so that APEXes that provide critical libraries
     # become available. Note that this is executed as exec_start to ensure that
     # the libraries are available to the processes started after this statement.
@@ -27,12 +37,7 @@ on init
     mkdir /dev/cg2_bpf
     mount cgroup2 cg2_bpf /dev/cg2_bpf nodev noexec nosuid
 
-    mkdir /apex 0755 root root
-
     copy /system/etc/prop.default /dev/urandom
-
-    export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
-    export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
 
     symlink /proc/self/fd/0 /dev/stdin
     symlink /proc/self/fd/1 /dev/stdout
@@ -53,12 +58,6 @@ on init
     chmod 0444 /dev/cpu_variant:${ro.bionic.arch}
     write /dev/cpu_variant:${ro.bionic.2nd_arch} ${ro.bionic.2nd_cpu_variant}
     chmod 0444 /dev/cpu_variant:${ro.bionic.2nd_arch}
-
-    # Setup APEX mount point and its security context
-    mount tmpfs tmpfs /apex nodev noexec nosuid
-    chmod 0755 /apex
-    chown root root /apex
-    restorecon /apex
 
     # Start logd before any other services run to ensure we capture all of their logs.
     start logd
