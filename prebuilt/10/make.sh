@@ -3,10 +3,10 @@
 systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
-rm -rf $1/lib/vndk-Q
-rm -rf $1/lib64/vndk-Q
-rm -rf $1/lib/vndk-sp-Q
-rm -rf $1/lib64/vndk-sp-Q
+rm -rf $1/lib/vndk-29
+rm -rf $1/lib64/vndk-29
+rm -rf $1/lib/vndk-sp-29
+rm -rf $1/lib64/vndk-sp-29
 
 # Copy phh stuffs
 cp -fpr $thispath/bin/* $1/bin/
