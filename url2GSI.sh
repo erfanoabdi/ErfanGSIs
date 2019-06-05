@@ -3,10 +3,10 @@
 url=$1
 srctype=$2
 
-mkdir downlaods
+mkdir downloads
 
-wget $url -O downlaods/temp.zip
-./zip2img.sh downlaods/temp.zip
+wget $url -O downloads/temp.zip
+./zip2img.sh downloads/temp.zip
 mkdir system
 mount cache/system.img system
 ./make.sh system $srctype AB
