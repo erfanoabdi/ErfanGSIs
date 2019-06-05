@@ -28,6 +28,9 @@ echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml
 
+# fix bt audio for op gsi
+sed -i "/\/vendor\/etc\/audio/d" $1/bin/rw-system.sh
+
 # drop dirac
 rm -rf $1/priv-app/DiracAudioControlService
 rm -rf $1/app/DiracManager
