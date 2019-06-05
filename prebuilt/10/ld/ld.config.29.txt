@@ -116,7 +116,6 @@ namespace.media.permitted.paths = /apex/com.android.media/${LIB}/extractors
 
 namespace.media.links = default
 namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
-namespace.media.link.default.shared_libs += libandroid.so
 namespace.media.link.default.shared_libs += libbinder_ndk.so
 namespace.media.link.default.shared_libs += libmediametrics.so
 namespace.media.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
@@ -219,7 +218,7 @@ namespace.rs.visible = true
 
 namespace.rs.search.paths  = /odm/${LIB}/vndk-sp
 namespace.rs.search.paths += /vendor/${LIB}/vndk-sp
-namespace.rs.search.paths += /system/${LIB}/vndk-sp-Q
+namespace.rs.search.paths += /system/${LIB}/vndk-sp-29
 namespace.rs.search.paths += /odm/${LIB}
 namespace.rs.search.paths += /vendor/${LIB}
 
@@ -232,8 +231,8 @@ namespace.rs.asan.search.paths  = /data/asan/odm/${LIB}/vndk-sp
 namespace.rs.asan.search.paths +=           /odm/${LIB}/vndk-sp
 namespace.rs.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
 namespace.rs.asan.search.paths +=           /vendor/${LIB}/vndk-sp
-namespace.rs.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-Q
-namespace.rs.asan.search.paths +=           /system/${LIB}/vndk-sp-Q
+namespace.rs.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-29
+namespace.rs.asan.search.paths +=           /system/${LIB}/vndk-sp-29
 namespace.rs.asan.search.paths += /data/asan/odm/${LIB}
 namespace.rs.asan.search.paths +=           /odm/${LIB}
 namespace.rs.asan.search.paths += /data/asan/vendor/${LIB}
@@ -265,7 +264,7 @@ namespace.vndk.visible = true
 
 namespace.vndk.search.paths  = /odm/${LIB}/vndk-sp
 namespace.vndk.search.paths += /vendor/${LIB}/vndk-sp
-namespace.vndk.search.paths += /system/${LIB}/vndk-sp-Q
+namespace.vndk.search.paths += /system/${LIB}/vndk-sp-29
 
 namespace.vndk.permitted.paths  = /odm/${LIB}/hw
 namespace.vndk.permitted.paths += /odm/${LIB}/egl
@@ -273,14 +272,14 @@ namespace.vndk.permitted.paths += /vendor/${LIB}/hw
 namespace.vndk.permitted.paths += /vendor/${LIB}/egl
 namespace.vndk.permitted.paths += /system/vendor/${LIB}/egl
 # This is exceptionally required since android.hidl.memory@1.0-impl.so is here
-namespace.vndk.permitted.paths += /system/${LIB}/vndk-sp-Q/hw
+namespace.vndk.permitted.paths += /system/${LIB}/vndk-sp-29/hw
 
 namespace.vndk.asan.search.paths  = /data/asan/odm/${LIB}/vndk-sp
 namespace.vndk.asan.search.paths +=           /odm/${LIB}/vndk-sp
 namespace.vndk.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
 namespace.vndk.asan.search.paths +=           /vendor/${LIB}/vndk-sp
-namespace.vndk.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-Q
-namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk-sp-Q
+namespace.vndk.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-29
+namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk-sp-29
 
 namespace.vndk.asan.permitted.paths  = /data/asan/odm/${LIB}/hw
 namespace.vndk.asan.permitted.paths +=           /odm/${LIB}/hw
@@ -291,8 +290,8 @@ namespace.vndk.asan.permitted.paths +=           /vendor/${LIB}/hw
 namespace.vndk.asan.permitted.paths += /data/asan/vendor/${LIB}/egl
 namespace.vndk.asan.permitted.paths +=           /vendor/${LIB}/egl
 
-namespace.vndk.asan.permitted.paths += /data/asan/system/${LIB}/vndk-sp-Q/hw
-namespace.vndk.asan.permitted.paths +=           /system/${LIB}/vndk-sp-Q/hw
+namespace.vndk.asan.permitted.paths += /data/asan/system/${LIB}/vndk-sp-29/hw
+namespace.vndk.asan.permitted.paths +=           /system/${LIB}/vndk-sp-29/hw
 
 # When these NDK libs are required inside this namespace, then it is redirected
 # to the default namespace. This is possible since their ABI is stable across
@@ -322,10 +321,10 @@ namespace.default.search.paths += /vendor/${LIB}/vndk
 namespace.default.search.paths += /vendor/${LIB}/vndk-sp
 
 # Access to system libraries is allowed
-namespace.default.search.paths += /system/${LIB}/vndk-sp-Q
+namespace.default.search.paths += /system/${LIB}/vndk-sp-29
 namespace.default.search.paths += /system/${LIB}
 namespace.default.search.paths += /system/product/${LIB}
-namespace.default.search.paths += /system/${LIB}/vndk-Q
+namespace.default.search.paths += /system/${LIB}/vndk-29
 
 namespace.default.asan.search.paths  = /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
@@ -339,15 +338,15 @@ namespace.default.asan.search.paths += /data/asan/vendor/${LIB}/vndk
 namespace.default.asan.search.paths +=           /vendor/${LIB}/vndk
 namespace.default.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
 namespace.default.asan.search.paths +=           /vendor/${LIB}/vndk-sp
-namespace.default.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-Q
-namespace.default.asan.search.paths +=           /system/${LIB}/vndk-sp-Q
+namespace.default.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-29
+namespace.default.asan.search.paths +=           /system/${LIB}/vndk-sp-29
 namespace.default.asan.search.paths += /data/asan/system/${LIB}
 namespace.default.asan.search.paths +=           /system/${LIB}
 namespace.default.asan.search.paths += /data/asan/product/${LIB}
 namespace.default.asan.search.paths +=           /system/product/${LIB}
 namespace.default.asan.search.paths += /data/asan/product_services/${LIB}
-namespace.default.asan.search.paths += /data/asan/system/${LIB}/vndk-Q
-namespace.default.asan.search.paths +=           /system/${LIB}/vndk-Q
+namespace.default.asan.search.paths += /data/asan/system/${LIB}/vndk-29
+namespace.default.asan.search.paths +=           /system/${LIB}/vndk-29
 
 namespace.default.links = runtime
 namespace.default.link.runtime.shared_libs  = libdexfile_external.so
@@ -438,7 +437,6 @@ namespace.media.permitted.paths = /apex/com.android.media/${LIB}/extractors
 
 namespace.media.links = default
 namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
-namespace.media.link.default.shared_libs += libandroid.so
 namespace.media.link.default.shared_libs += libbinder_ndk.so
 namespace.media.link.default.shared_libs += libmediametrics.so
 namespace.media.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so

@@ -5,6 +5,7 @@ libGLESv3.so
 libRS.so
 libandroid_net.so
 libc.so
+libcgrouprc.so
 libclang_rt.asan-aarch64-android.so
 libclang_rt.asan-arm-android.so
 libclang_rt.hwasan-aarch64-android.so

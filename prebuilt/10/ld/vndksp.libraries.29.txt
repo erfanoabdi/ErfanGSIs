@@ -1,7 +1,9 @@
 android.hardware.graphics.common@1.0.so
 android.hardware.graphics.common@1.1.so
+android.hardware.graphics.common@1.2.so
 android.hardware.graphics.mapper@2.0.so
 android.hardware.graphics.mapper@2.1.so
+android.hardware.graphics.mapper@3.0.so
 android.hardware.renderscript@1.0.so
 android.hidl.memory.token@1.0.so
 android.hidl.memory@1.0.so
@@ -25,7 +27,9 @@ libhidltransport.so
 libhwbinder.so
 libhwbinder_noltopgo.so
 libion.so
+libjsoncpp.so
 liblzma.so
+libprocessgroup.so
 libunwindstack.so
 libutils.so
 libutilscallstack.so
