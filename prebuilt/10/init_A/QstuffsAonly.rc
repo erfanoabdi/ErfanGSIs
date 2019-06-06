@@ -84,6 +84,13 @@ on boot
     # are not aware of using fsync()/sync() to prepare sudden power-cut.
     write /sys/fs/f2fs/${dev.mnt.blk.data}/cp_interval 200
 
+    setprop ro.product.brand ${ro.product.vendor.brand}
+    setprop ro.product.device ${ro.product.vendor.device}
+    setprop ro.product.manufacturer ${ro.product.vendor.manufacturer}
+    setprop ro.product.model ${ro.product.vendor.model}
+    setprop ro.product.name ${ro.product.vendor.name}
+    setprop ro.build.fingerprint ${ro.vendor.build.fingerprint}
+
 on post-fs-data
     mkdir /metadata/password_slots 0771 root system
     mkdir /metadata/apex 0700 root system
