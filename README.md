@@ -2,14 +2,15 @@
 - protobuf
 - LZMA
 - 7z
+- lz4
 ### Linux
 ```
-apt install liblzma-dev python-pip openjdk-8-jre-headless brotli
+apt install liblzma-dev python-pip openjdk-8-jre-headless brotli lz4
 pip install backports.lzma protobuf
 ```
 ### Mac
 ```
-brew install protobuf liblzma-dev brotli
+brew install protobuf liblzma-dev brotli lz4
 pip install backports.lzma protobuf
 ```
 
