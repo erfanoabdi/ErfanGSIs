@@ -14,6 +14,12 @@ brew install protobuf liblzma-dev brotli lz4
 pip install backports.lzma protobuf
 ```
 
+## Released GSIs
+Download links: https://mirrors.lolinet.com/firmware/gsi/  
+XDA thread: https://forum.xda-developers.com/project-treble/trebleenabled-device-development/pie-erfan-gsi-ports-t3906486  
+Telegram group: https://t.me/ErfanGSIs  
+Telegram channel: https://t.me/ErfanGSI  
+
 ## How to use
 
 ### Download tools
