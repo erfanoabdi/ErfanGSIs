@@ -147,6 +147,11 @@ if [ "$outputtype" == "Aonly" ]; then
     $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
 fi
 
+# Fix HydrogenOS Package Installer Force Close
+if [ "$romtypename" == "HydrogenOS" ]; then
+    $romsdir/$sourcever/$romtype/hydrogen-package-installer.sh "$systemdir/system"
+fi
+
 # Fixing environ
 if [ "$outputtype" == "Aonly" ]; then
     if [[ ! $(ls "$systemdir/system/etc/init/" | grep *environ*) ]]; then
