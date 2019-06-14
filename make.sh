@@ -124,12 +124,15 @@ fi
 
 # Debloat
 $romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system"
+$romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system"
 
 # Resign to AOSP keys
-if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
-    echo "Resigning to AOSP keys"
-    python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security
-    $prebuiltdir/resigned/make.sh "$systemdir/system"
+if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
+    if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
+        echo "Resigning to AOSP keys"
+        python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security
+        $prebuiltdir/resigned/make.sh "$systemdir/system"
+    fi
 fi
 
 # Start patching
@@ -142,6 +145,11 @@ $prebuiltdir/$sourcever/makeroot.sh "$systemdir"
 $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/make.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/makeroot.sh "$systemdir"
+$romsdir/$sourcever/$romtype/$romtypename/make.sh "$systemdir/system"
+$romsdir/$sourcever/$romtype/$romtypename/makeroot.sh "$systemdir"
+if [ "$outputtype" == "Aonly" ]; then
+    $romsdir/$sourcever/$romtype/$romtypename/makeA.sh "$systemdir/system"
+fi
 if [ "$outputtype" == "Aonly" ]; then
     $prebuiltdir/$sourcever/makeA.sh "$systemdir/system"
     $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
