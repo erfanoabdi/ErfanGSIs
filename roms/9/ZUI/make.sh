@@ -17,3 +17,6 @@ cp -fpr $thispath/SetupWizard $1/priv-app/
 # remove phh qtiaudio
 rm -rf $1/priv-app/QtiAudio
 rm -rf $1/app/NQNfcNci
+
+# fix notch
+sed -i "s/M -50,0 L -50,90 L 50,90 L 50,0 Z/000000000000000000000000000000000/" $1/framework/framework-res.apk
