@@ -161,7 +161,7 @@ elif [[ $(7z l $romzip | grep rawprogram) ]]; then
     if [ -f rawprogram_unsparse.xml ]; then
         $packsparseimg
     else
-        rawprogramsfile=`echo $rawprograms | rev | cut -d "/" -f 1 | rev`
+        rawprogramsfile=`grep -rlw system rawprogram*`
         $packsparseimg -x $rawprogramsfile
     fi
     mv "system.raw" "$cachedir/system.img"
