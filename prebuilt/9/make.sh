@@ -23,9 +23,9 @@ $thispath/overlays/make.sh "$systempath"
 
 # Enable Brightness fix for Android P
 # But some systems are using custom light services, don't apply this patch on those roms
-if [ "$romtype" == "MIUI" ]; then
-echo "MIUI detected - skip applying brightness patch"
-lighthts=no
+if [ -f $romsdir/$sourcever/$romtype/DONTPATCHLIGHT ]; then
+	echo "Patching lights on $romtype isn't working. Skipping..."
+	lighthts=no
 fi
 
 # Only patch this if our system support tools
