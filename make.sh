@@ -145,9 +145,11 @@ $prebuiltdir/$sourcever/makeroot.sh "$systemdir"
 $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/make.sh "$systemdir/system"
 $romsdir/$sourcever/$romtype/makeroot.sh "$systemdir"
-$romsdir/$sourcever/$romtype/$romtypename/make.sh "$systemdir/system"
-$romsdir/$sourcever/$romtype/$romtypename/makeroot.sh "$systemdir"
-if [ "$outputtype" == "Aonly" ]; then
+if [ ! "$romtype" == "$romtypename" ]; then
+    $romsdir/$sourcever/$romtype/$romtypename/make.sh "$systemdir/system"
+    $romsdir/$sourcever/$romtype/$romtypename/makeroot.sh "$systemdir"
+fi
+if [ "$outputtype" == "Aonly" ] && [ ! "$romtype" == "$romtypename" ]; then
     $romsdir/$sourcever/$romtype/$romtypename/makeA.sh "$systemdir/system"
 fi
 if [ "$outputtype" == "Aonly" ]; then
