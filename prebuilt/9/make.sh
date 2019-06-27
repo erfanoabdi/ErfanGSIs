@@ -2,11 +2,12 @@
 
 systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
+toolsdir=$thispath/../../tools
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     dexhackt="$toolsdir/linux/bin"
-    if [ ! -f "$toolsdir/linux/bin/vdexExtractor" ];then
-    unzip $toolsdir/linux/cdextools.zip -d bin
+    if [ ! -f "$toolsdir/linux/bin/compact_dex_converters" ];then
+    unzip $toolsdir/linux/cdextools.zip -d $toolsdir/linux/bin/
     chmod 0777 $toolsdir/linux/*
     fi
     lighthts=yes
@@ -41,19 +42,22 @@ if [ "$lighthts" == "yes" ]; then
 	# Fix no permission to run
 	chmod 0777 $dexhackt/*
 	# Let us do this on a tmp dir
-	mkdir $thisdir/tmp
-	mkdir $thisdir/tmp/services_original
+	mkdir $thispath/tmp
+	mkdir $thispath/tmp/services_original
         if [ "$vdex" == "yes" ]; then
         echo "Converting vdex to cdex"
-	cp $systempath/framework/services.jar $thisdir/tmp/services_original/
+	cp $systempath/framework/services.jar $thispath/tmp/services_original/
+        cp $systempath/framework/oat/arm64/services.vdex $thispath/tmp/services_original/
 	# vdex -> cdex
-	$dexhackt/vdexExtractor -i $thisdir/tmp/services_original/services.vdex
-	rm -rf $thisdir/tmp/services_original/services.vdex
-	mv $thisdir/tmp/services_original/services_classes.cdex $thisdir/tmp/services_original/services.cdex
-	cd $thisdir/tmp/services_original
+	$dexhackt/vdexExtractor -i $thispath/tmp/services_original/services.vdex
+	rm -rf $thispath/tmp/services_original/services.vdex
+	mv $thispath/tmp/services_original/services_classes.cdex $thispath/tmp/services_original/services.cdex
+	cd $thispath/tmp/services_original
 	$dexhackt/compact_dex_converters services.cdex
 	rm -rf services.cdex
 	mv services.cdex.new services.dex
+        unzip services.jar
+        rm -rf services.jar
 	# Merge dex into jar so that we can use apktool
 	zip -r services_original.jar *
 	mv services_original.jar ../
@@ -63,43 +67,55 @@ if [ "$lighthts" == "yes" ]; then
 	java -jar $toolsdir/apktool/apktool.jar d services_original.jar
 	cd services_original.jar.out
 	# let us patch it
-	cd original/smali_services/server/lights
+	cd smali_services/com/android/server/lights
 	rm -rf *.*
-	cp $thisdir/brightness/* ./
+	cp $thispath/brightness/* ./
 	# repack it
 	echo "Start repacking"
-	cd $thisdir/tmp
+	cd $thispath/tmp
+        # For unknown reason apktool didn't pack META-INF
+        # So we had to repack it ourselves
 	java -jar $toolsdir/apktool/apktool.jar b services_original.jar.out
+        mkdir services_new
+        unzip services_original.jar.out/dist/services_original.jar -d $thispath/tmp/new/
+	cp -r services_original.jar.out/original/* $thispath/tmp/new/
+	cd $thispath/tmp/new
+	zip -r ../services_new.jar *
 	# replace
 	rm -rf $systempath/framework/oat/arm64/services.*
 	rm -rf $systempath/framework/services.jar
-	cp services_original.jar.out/dist/services_original.jar $systempath/framework/services.jar
-	cd $thisdir
+	cp ../services_new.jar $systempath/framework/services.jar
+	cd $thispath
 	# cleanup
 	rm -rf tmp
 	fi
 
 	if [ "$vdex" == "no" ]; then
 	# generic services jar
-	cp $systempath/framework/services.jar $thisdir/tmp/services_original.jar
-	cd $thisdir/tmp
+	cp $systempath/framework/services.jar $thispath/tmp/services_original.jar
+	cd $thispath/tmp
 	java -jar $toolsdir/apktool/apktool.jar d services_original.jar
 	cd services_original.jar.out
 	# let us patch it
-	cd original/smali_services/server/lights
+	cd smali_services/com/android/server/lights
 	rm -rf *.*
-	cp $thisdir/brightness/* ./
+	cp $thispath/brightness/* ./
 	# repack it
 	echo "Start repacking"
-	cd $thisdir/tmp
+	cd $thispath/tmp
+        # For unknown reason apktool didn't pack META-INF
+        # So we had to repack it ourselves
 	java -jar $toolsdir/apktool/apktool.jar b services_original.jar.out
+        mkdir services_new
+        unzip services_original.jar.out/dist/services_original.jar -d $thispath/tmp/new/
+	cp -r services_original.jar.out/original/* $thispath/tmp/new/
+	cd $thispath/tmp/new
+	zip -r ../services_new.jar *
 	# replace
-	rm -rf $systempath/framework/oat/arm64/services.*
 	rm -rf $systempath/framework/services.jar
-	cp services_original.jar.out/dist/services_original.jar $systempath/framework/services.jar
-	cd $thisdir
+	cp ../services_new.jar $systempath/framework/services.jar
+	cd $thispath
 	# cleanup
 	rm -rf tmp
 	fi
-
 fi
