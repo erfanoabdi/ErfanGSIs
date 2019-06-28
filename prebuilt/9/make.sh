@@ -10,7 +10,7 @@ $thispath/overlays/make.sh "$systempath"
 # Brightness fix for Android P
 # But some systems are using custom light services, don't apply this patch on those roms
 if [ -f $romdir/DONTPATCHLIGHT ]; then
-	echo "Patching lights on $romtype isn't working. Skipping..."
+    echo "Patching lights on $romtype isn't working. Skipping..."
 else
     $thispath/brightnessfix/make.sh "$systempath"
 fi
