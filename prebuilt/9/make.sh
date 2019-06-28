@@ -82,7 +82,6 @@ if [ "$lighthts" == "yes" ]; then
 	cd $thispath/tmp/new
 	zip -r ../services_new.jar *
 	# replace
-	rm -rf $systempath/framework/oat/arm64/services.*
 	rm -rf $systempath/framework/services.jar
 	cp ../services_new.jar $systempath/framework/services.jar
 	cd $thispath
