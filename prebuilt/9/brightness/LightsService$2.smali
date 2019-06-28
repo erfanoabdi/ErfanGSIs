@@ -22,7 +22,7 @@
 .method constructor <init>(Lcom/android/server/lights/LightsService;)V
     .locals 0
 
-    .line 230
+    .line 260
     iput-object p1, p0, Lcom/android/server/lights/LightsService$2;->this$0:Lcom/android/server/lights/LightsService;
 
     invoke-direct {p0}, Landroid/os/Handler;-><init>()V
@@ -35,14 +35,14 @@
 .method public handleMessage(Landroid/os/Message;)V
     .locals 0
 
-    .line 233
+    .line 263
     iget-object p1, p1, Landroid/os/Message;->obj:Ljava/lang/Object;
 
     check-cast p1, Lcom/android/server/lights/LightsService$LightImpl;
 
-    .line 234
+    .line 264
     invoke-static {p1}, Lcom/android/server/lights/LightsService$LightImpl;->access$300(Lcom/android/server/lights/LightsService$LightImpl;)V
 
-    .line 235
+    .line 265
     return-void
 .end method
