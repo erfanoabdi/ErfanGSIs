@@ -66,6 +66,14 @@ if [[ -e "$sourcepath/init.rc" ]]; then
     sourcetype="AB"
 fi
 
+erfanrun()
+{
+    # Only run if this romtype has those patch
+    if [ -f $1 ]; then
+    $1 $2
+    fi
+}
+
 tempdirname="tmp"
 tempdir="$LOCALDIR/$tempdirname"
 systemdir="$tempdir/system"
@@ -123,8 +131,8 @@ if [[ ! -d "$systemdir/system/lib64" ]]; then
 fi
 
 # Debloat
-$romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system"
-$romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system"
+erfanrun $romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system"
+erfanrun $romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system"
 
 # Resign to AOSP keys
 if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
@@ -137,24 +145,24 @@ fi
 
 # Start patching
 echo "Patching started..."
-$scriptsdir/fixsymlinks.sh "$systemdir/system"
-$scriptsdir/nukeABstuffs.sh "$systemdir/system"
-$prebuiltdir/common/make.sh "$systemdir/system"
-$prebuiltdir/$sourcever/make.sh "$systemdir/system"
-$prebuiltdir/$sourcever/makeroot.sh "$systemdir"
-$prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
-$romsdir/$sourcever/$romtype/make.sh "$systemdir/system"
-$romsdir/$sourcever/$romtype/makeroot.sh "$systemdir"
+erfanrun $scriptsdir/fixsymlinks.sh "$systemdir/system"
+erfanrun $scriptsdir/nukeABstuffs.sh "$systemdir/system"
+erfanrun $prebuiltdir/common/make.sh "$systemdir/system"
+erfanrun $prebuiltdir/$sourcever/make.sh "$systemdir/system"
+erfanrun $prebuiltdir/$sourcever/makeroot.sh "$systemdir"
+erfanrun $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system"
+erfanrun $romsdir/$sourcever/$romtype/make.sh "$systemdir/system"
+erfanrun $romsdir/$sourcever/$romtype/makeroot.sh "$systemdir"
 if [ ! "$romtype" == "$romtypename" ]; then
-    $romsdir/$sourcever/$romtype/$romtypename/make.sh "$systemdir/system"
-    $romsdir/$sourcever/$romtype/$romtypename/makeroot.sh "$systemdir"
+    erfanrun $romsdir/$sourcever/$romtype/$romtypename/make.sh "$systemdir/system"
+    erfanrun $romsdir/$sourcever/$romtype/$romtypename/makeroot.sh "$systemdir"
 fi
 if [ "$outputtype" == "Aonly" ] && [ ! "$romtype" == "$romtypename" ]; then
-    $romsdir/$sourcever/$romtype/$romtypename/makeA.sh "$systemdir/system"
+    erfanrun $romsdir/$sourcever/$romtype/$romtypename/makeA.sh "$systemdir/system"
 fi
 if [ "$outputtype" == "Aonly" ]; then
-    $prebuiltdir/$sourcever/makeA.sh "$systemdir/system"
-    $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
+    erfanrun $prebuiltdir/$sourcever/makeA.sh "$systemdir/system"
+    erfanrun $romsdir/$sourcever/$romtype/makeA.sh "$systemdir/system"
 fi
 
 # Fixing environ

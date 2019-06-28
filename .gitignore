@@ -4,3 +4,5 @@ tmp
 downloads
 cache
 tools/linux/bin/compact_dex_converters
+out
+
