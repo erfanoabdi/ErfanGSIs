@@ -20,9 +20,10 @@
 
 # direct methods
 .method constructor <init>(Lcom/android/server/lights/LightsService;)V
-    .locals 0
+    .registers 2
+    .param p1, "this$0"    # Lcom/android/server/lights/LightsService;
 
-    .line 230
+    .line 247
     iput-object p1, p0, Lcom/android/server/lights/LightsService$2;->this$0:Lcom/android/server/lights/LightsService;
 
     invoke-direct {p0}, Landroid/os/Handler;-><init>()V
@@ -33,16 +34,19 @@
 
 # virtual methods
 .method public handleMessage(Landroid/os/Message;)V
-    .locals 0
+    .registers 3
+    .param p1, "msg"    # Landroid/os/Message;
 
-    .line 233
-    iget-object p1, p1, Landroid/os/Message;->obj:Ljava/lang/Object;
+    .line 250
+    iget-object v0, p1, Landroid/os/Message;->obj:Ljava/lang/Object;
 
-    check-cast p1, Lcom/android/server/lights/LightsService$LightImpl;
+    check-cast v0, Lcom/android/server/lights/LightsService$LightImpl;
 
-    .line 234
-    invoke-static {p1}, Lcom/android/server/lights/LightsService$LightImpl;->access$300(Lcom/android/server/lights/LightsService$LightImpl;)V
+    .line 251
+    .local v0, "light":Lcom/android/server/lights/LightsService$LightImpl;
+    # invokes: Lcom/android/server/lights/LightsService$LightImpl;->stopFlashing()V
+    invoke-static {v0}, Lcom/android/server/lights/LightsService$LightImpl;->access$300(Lcom/android/server/lights/LightsService$LightImpl;)V
 
-    .line 235
+    .line 252
     return-void
 .end method

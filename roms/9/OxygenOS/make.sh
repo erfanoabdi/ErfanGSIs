@@ -24,6 +24,7 @@ echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.default
 echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
+echo "persist.display.rom_max_brightness=1023" >> $1/build.prop
 
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml

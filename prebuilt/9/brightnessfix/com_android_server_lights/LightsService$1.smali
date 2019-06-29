@@ -20,9 +20,10 @@
 
 # direct methods
 .method constructor <init>(Lcom/android/server/lights/LightsService;)V
-    .locals 0
+    .registers 2
+    .param p1, "this$0"    # Lcom/android/server/lights/LightsService;
 
-    .line 219
+    .line 236
     iput-object p1, p0, Lcom/android/server/lights/LightsService$1;->this$0:Lcom/android/server/lights/LightsService;
 
     invoke-direct {p0}, Lcom/android/server/lights/LightsManager;-><init>()V
@@ -33,27 +34,28 @@
 
 # virtual methods
 .method public getLight(I)Lcom/android/server/lights/Light;
-    .locals 1
+    .registers 3
+    .param p1, "id"    # I
 
-    .line 222
-    if-ltz p1, :cond_0
+    .line 239
+    if-ltz p1, :cond_d
 
     const/16 v0, 0x8
 
-    if-ge p1, v0, :cond_0
+    if-ge p1, v0, :cond_d
 
-    .line 223
+    .line 240
     iget-object v0, p0, Lcom/android/server/lights/LightsService$1;->this$0:Lcom/android/server/lights/LightsService;
 
     iget-object v0, v0, Lcom/android/server/lights/LightsService;->mLights:[Lcom/android/server/lights/LightsService$LightImpl;
 
-    aget-object p1, v0, p1
+    aget-object v0, v0, p1
 
-    return-object p1
+    return-object v0
 
-    .line 225
-    :cond_0
-    const/4 p1, 0x0
+    .line 242
+    :cond_d
+    const/4 v0, 0x0
 
-    return-object p1
+    return-object v0
 .end method
