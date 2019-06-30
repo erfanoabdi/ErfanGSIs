@@ -15,7 +15,6 @@ $scriptsdir/oat2dex.sh "$systempath/framework" "$systempath/framework/services.j
 mkdir -p "$TMPDIR/original_dex"
 7z e "$systempath/framework/services.jar" classes.dex -o"$TMPDIR/original_dex"
 java -jar "$BAKSMALIJAR" disassemble "$TMPDIR/original_dex/classes.dex" -o "$TMPDIR/dexout"
-rm -rf "$TMPDIR"/dexout/com/android/server/lights/*
 cp -fpr "$LOCALDIR"/com_android_server_lights/* "$TMPDIR"/dexout/com/android/server/lights/
 java -jar "$SMALIJAR" assemble "$TMPDIR/dexout" -o "$TMPDIR/classes.dex"
 zip -gjq "$systempath/framework/services.jar" "$TMPDIR/classes.dex"
