@@ -30,7 +30,7 @@
     .registers 7
     .param p1, "context"    # Landroid/content/Context;
 
-    .line 214
+    .line 218
     invoke-direct {p0, p1}, Lcom/android/server/SystemService;-><init>(Landroid/content/Context;)V
 
     .line 33
@@ -40,28 +40,28 @@
 
     iput-object v1, p0, Lcom/android/server/lights/LightsService;->mLights:[Lcom/android/server/lights/LightsService$LightImpl;
 
-    .line 238
+    .line 242
     new-instance v1, Lcom/android/server/lights/LightsService$1;
 
     invoke-direct {v1, p0}, Lcom/android/server/lights/LightsService$1;-><init>(Lcom/android/server/lights/LightsService;)V
 
     iput-object v1, p0, Lcom/android/server/lights/LightsService;->mService:Lcom/android/server/lights/LightsManager;
 
-    .line 249
+    .line 253
     new-instance v1, Lcom/android/server/lights/LightsService$2;
 
     invoke-direct {v1, p0}, Lcom/android/server/lights/LightsService$2;-><init>(Lcom/android/server/lights/LightsService;)V
 
     iput-object v1, p0, Lcom/android/server/lights/LightsService;->mH:Landroid/os/Handler;
 
-    .line 216
+    .line 220
     const/4 v1, 0x0
 
     .local v1, "i":I
     :goto_18
     if-ge v1, v0, :cond_27
 
-    .line 217
+    .line 221
     iget-object v2, p0, Lcom/android/server/lights/LightsService;->mLights:[Lcom/android/server/lights/LightsService$LightImpl;
 
     new-instance v3, Lcom/android/server/lights/LightsService$LightImpl;
@@ -72,12 +72,12 @@
 
     aput-object v3, v2, v1
 
-    .line 216
+    .line 220
     add-int/lit8 v1, v1, 0x1
 
     goto :goto_18
 
-    .line 219
+    .line 223
     .end local v1    # "i":I
     :cond_27
     return-void
@@ -108,12 +108,12 @@
 .method private getVrDisplayMode()I
     .registers 5
 
-    .line 231
+    .line 235
     invoke-static {}, Landroid/app/ActivityManager;->getCurrentUser()I
 
     move-result v0
 
-    .line 232
+    .line 236
     .local v0, "currentUser":I
     invoke-virtual {p0}, Lcom/android/server/lights/LightsService;->getContext()Landroid/content/Context;
 
@@ -143,20 +143,20 @@
     .registers 2
     .param p1, "phase"    # I
 
-    .line 228
+    .line 232
     return-void
 .end method
 
 .method public onStart()V
     .registers 3
 
-    .line 223
+    .line 227
     const-class v0, Lcom/android/server/lights/LightsManager;
 
     iget-object v1, p0, Lcom/android/server/lights/LightsService;->mService:Lcom/android/server/lights/LightsManager;
 
     invoke-virtual {p0, v0, v1}, Lcom/android/server/lights/LightsService;->publishLocalService(Ljava/lang/Class;Ljava/lang/Object;)V
 
-    .line 224
+    .line 228
     return-void
 .end method
