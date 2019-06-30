@@ -37,3 +37,16 @@ if ! getprop ro.hardware | grep -qiE -e qcom -e mata;then
     mount -o bind /mnt/phh/empty_dir /system/app/QtiTelephonyService || true
     mount -o bind /mnt/phh/empty_dir /system/app/datastatusnotification || true
 fi
+
+vendor_overlays=$(ls /vendor/overlay)
+
+for overlay in $vendor_overlays; do
+    if [[ ! $overlay == *"utout"* ]] && [[ ! $overlay == *"DarkTheme"* ]] && [[ ! $overlay == *"framework"* ]]; then
+        if [ -f "/vendor/overlay/$overlay" ]; then
+            mount -o bind /system/phh/empty "/vendor/overlay/$overlay" || true
+        fi
+        if [ -d "/vendor/overlay/$overlay" ]; then
+             mount -o bind /mnt/phh/empty_dir "/vendor/overlay/$overlay" || true
+        fi
+    fi
+done
