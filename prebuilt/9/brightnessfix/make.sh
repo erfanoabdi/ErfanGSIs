@@ -19,7 +19,6 @@ cp -fpr "$LOCALDIR"/com_android_server_lights/* "$TMPDIR"/dexout/com/android/ser
 java -jar "$SMALIJAR" assemble "$TMPDIR/dexout" -o "$TMPDIR/classes.dex"
 zip -gjq "$systempath/framework/services.jar" "$TMPDIR/classes.dex"
 java -jar $toolsdir/apktool/apktool.jar d $systempath/framework/framework-res.apk -o $TMPDIR/framework-res
-cd $TMPDIR/framework-res/res/values
-ROMMAXBRIGHTNESS=$(grep '<integer name="config_screenBrightnessSettingMaximum">' integers.xml | sed 's/<integer name="config_screenBrightnessSettingMaximum">//g' | sed 's/<\/integer>//' | sed 's/^[[:space:]]*//g')
+ROMMAXBRIGHTNESS=$(grep '<integer name="config_screenBrightnessSettingMaximum">' $TMPDIR/framework-res/res/values/integers.xml | sed 's/<integer name="config_screenBrightnessSettingMaximum">//g' | sed 's/<\/integer>//' | sed 's/^[[:space:]]*//g')
 echo "persist.display.rom_max_brightness=$ROMMAXBRIGHTNESS" >> $systempath/build.prop
 rm -rf "$TMPDIR"
