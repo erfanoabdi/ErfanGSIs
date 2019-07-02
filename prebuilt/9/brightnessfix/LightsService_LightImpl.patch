@@ -1,0 +1,390 @@
+    .registers 18
+    .param p1, "brightness"    # I
+    .param p2, "brightnessMode"    # I
+
+    move-object v7, p0
+
+    move/from16 v8, p1
+
+    monitor-enter p0
+
+    const/4 v0, 0x2
+
+    move/from16 v9, p2
+
+    if-ne v9, v0, :cond_33
+
+    :try_start_9
+    const-string v0, "LightsService"
+
+    new-instance v1, Ljava/lang/StringBuilder;
+
+    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string/jumbo v2, "setBrightness with LOW_PERSISTENCE unexpected #"
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    iget v2, v7, Lcom/android/server/lights/LightsService$LightImpl;->mId:I
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    const-string v2, ": brightness=0x"
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-static/range {p1 .. p1}, Ljava/lang/Integer;->toHexString(I)Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-static {v0, v1}, Landroid/util/Slog;->w(Ljava/lang/String;Ljava/lang/String;)I
+
+    monitor-exit p0
+
+    return-void
+
+    :catchall_30
+    move-exception v0
+
+    goto/16 :goto_116
+
+    :cond_33
+    const-string/jumbo v0, "persist.display.rom_max_brightness"
+
+    const/16 v1, 0xff
+
+    invoke-static {v0, v1}, Landroid/os/SystemProperties;->getInt(Ljava/lang/String;I)I
+
+    move-result v0
+
+    .local v0, "rom_max_brightness":I
+    iget v2, v7, Lcom/android/server/lights/LightsService$LightImpl;->mId:I
+
+    const-wide v3, 0x406fe00000000000L    # 255.0
+
+    if-nez v2, :cond_f3
+
+    const-string/jumbo v2, "ro.vendor.build.fingerprint"
+
+    const-string v5, "hello"
+
+    invoke-static {v2, v5}, Landroid/os/SystemProperties;->get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v2
+
+    move-object v10, v2
+
+    .local v10, "fp":Ljava/lang/String;
+    const-string v2, ".*astarqlte.*"
+
+    invoke-virtual {v10, v2}, Ljava/lang/String;->matches(Ljava/lang/String;)Z
+
+    move-result v2
+
+    const/4 v5, 0x0
+
+    if-eqz v2, :cond_7b
+
+    int-to-double v1, v8
+
+    int-to-double v11, v0
+
+    div-double/2addr v11, v3
+
+    div-double/2addr v1, v11
+
+    double-to-int v1, v1
+
+    .local v1, "newBrightness":I
+    const-string/jumbo v2, "persist.sys.samsung.full_brightness"
+
+    invoke-static {v2, v5}, Landroid/os/SystemProperties;->getBoolean(Ljava/lang/String;Z)Z
+
+    move-result v2
+
+    if-eqz v2, :cond_6f
+
+    int-to-double v5, v8
+
+    const-wide v11, 0x4076d00000000000L    # 365.0
+
+    mul-double/2addr v5, v11
+
+    div-double/2addr v5, v3
+
+    double-to-int v1, v5
+
+    .end local v1    # "newBrightness":I
+    .local v11, "newBrightness":I
+    :cond_6f
+    move v11, v1
+
+    const/4 v3, 0x2
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    move-object v1, v7
+
+    move v2, v11
+
+    move v6, v9
+
+    invoke-direct/range {v1 .. v6}, Lcom/android/server/lights/LightsService$LightImpl;->setLightLocked(IIIII)V
+
+    monitor-exit p0
+
+    return-void
+
+    .end local v11    # "newBrightness":I
+    :cond_7b
+    const-string/jumbo v2, "persist.sys.phh.samsung_backlight"
+
+    invoke-static {v2, v5}, Landroid/os/SystemProperties;->getInt(Ljava/lang/String;I)I
+
+    move-result v2
+
+    const/4 v6, 0x1
+
+    if-eq v2, v6, :cond_d1
+
+    const-string v2, ".*beyond.*lte.*"
+
+    invoke-virtual {v10, v2}, Ljava/lang/String;->matches(Ljava/lang/String;)Z
+
+    move-result v2
+
+    if-nez v2, :cond_d1
+
+    const-string v2, ".*(crown|star)[q2]*lte.*"
+
+    invoke-virtual {v10, v2}, Ljava/lang/String;->matches(Ljava/lang/String;)Z
+
+    move-result v2
+
+    if-nez v2, :cond_d1
+
+    const-string v2, ".*(SC-0[23]K|SCV3[89]).*"
+
+    invoke-virtual {v10, v2}, Ljava/lang/String;->matches(Ljava/lang/String;)Z
+
+    move-result v2
+
+    if-eqz v2, :cond_9e
+
+    goto :goto_d1
+
+    :cond_9e
+    const-string/jumbo v2, "persist.extend.brightness"
+
+    invoke-static {v2, v5}, Landroid/os/SystemProperties;->getBoolean(Ljava/lang/String;Z)Z
+
+    move-result v2
+
+    .local v2, "qcomExtendBrightness":Z
+    const-string/jumbo v5, "persist.display.max_brightness"
+
+    const/16 v6, 0x3ff
+
+    invoke-static {v5, v6}, Landroid/os/SystemProperties;->getInt(Ljava/lang/String;I)I
+
+    move-result v5
+
+    .local v5, "scale":I
+    const-string/jumbo v6, "persist.sys.qcom-brightness"
+
+    const/4 v11, -0x1
+
+    invoke-static {v6, v11}, Landroid/os/SystemProperties;->getInt(Ljava/lang/String;I)I
+
+    move-result v6
+
+    move v12, v6
+
+    .local v12, "qcomScale":I
+    if-eq v12, v11, :cond_bb
+
+    const/4 v2, 0x1
+
+    move v5, v12
+
+    .end local v2    # "qcomExtendBrightness":Z
+    .end local v5    # "scale":I
+    .local v11, "qcomExtendBrightness":Z
+    .local v13, "scale":I
+    :cond_bb
+    move v11, v2
+
+    move v13, v5
+
+    if-eqz v11, :cond_f3
+
+    mul-int v1, v8, v13
+
+    div-int/2addr v1, v0
+
+    .restart local v1    # "newBrightness":I
+    if-le v1, v13, :cond_c5
+
+    move v1, v13
+
+    .end local v1    # "newBrightness":I
+    .local v14, "newBrightness":I
+    :cond_c5
+    move v14, v1
+
+    const/4 v3, 0x0
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    move-object v1, v7
+
+    move v2, v14
+
+    move v6, v9
+
+    invoke-direct/range {v1 .. v6}, Lcom/android/server/lights/LightsService$LightImpl;->setLightLocked(IIIII)V
+
+    monitor-exit p0
+
+    return-void
+
+    .end local v11    # "qcomExtendBrightness":Z
+    .end local v12    # "qcomScale":I
+    .end local v13    # "scale":I
+    .end local v14    # "newBrightness":I
+    :cond_d1
+    :goto_d1
+    mul-int/lit8 v1, v8, 0x64
+
+    int-to-double v1, v1
+
+    int-to-double v11, v0
+
+    div-double/2addr v11, v3
+
+    div-double/2addr v1, v11
+
+    double-to-int v1, v1
+
+    .restart local v1    # "newBrightness":I
+    const-string/jumbo v2, "persist.sys.samsung.full_brightness"
+
+    invoke-static {v2, v5}, Landroid/os/SystemProperties;->getBoolean(Ljava/lang/String;Z)Z
+
+    move-result v2
+
+    if-eqz v2, :cond_e7
+
+    int-to-double v5, v8
+
+    const-wide/high16 v11, 0x40e4000000000000L    # 40960.0
+
+    mul-double/2addr v5, v11
+
+    div-double/2addr v5, v3
+
+    double-to-int v1, v5
+
+    .end local v1    # "newBrightness":I
+    .local v11, "newBrightness":I
+    :cond_e7
+    move v11, v1
+
+    const/4 v3, 0x2
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    move-object v1, v7
+
+    move v2, v11
+
+    move v6, v9
+
+    invoke-direct/range {v1 .. v6}, Lcom/android/server/lights/LightsService$LightImpl;->setLightLocked(IIIII)V
+
+    monitor-exit p0
+
+    return-void
+
+    .end local v10    # "fp":Ljava/lang/String;
+    .end local v11    # "newBrightness":I
+    :cond_f3
+    int-to-double v5, v8
+
+    int-to-double v10, v0
+
+    div-double/2addr v10, v3
+
+    div-double/2addr v5, v10
+
+    double-to-int v2, v5
+
+    .local v2, "color":I
+    if-le v2, v1, :cond_fc
+
+    const/16 v2, 0xff
+
+    :cond_fc
+    const/4 v3, 0x5
+
+    if-ge v2, v3, :cond_100
+
+    const/4 v2, 0x5
+
+    :cond_100
+    and-int/2addr v1, v2
+
+    .end local v2    # "color":I
+    .local v1, "color":I
+    const/high16 v2, -0x1000000
+
+    shl-int/lit8 v3, v1, 0x10
+
+    or-int/2addr v2, v3
+
+    shl-int/lit8 v3, v1, 0x8
+
+    or-int/2addr v2, v3
+
+    or-int v10, v2, v1
+
+    .end local v1    # "color":I
+    .local v10, "color":I
+    const/4 v3, 0x0
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    move-object v1, v7
+
+    move v2, v10
+
+    move v6, v9
+
+    invoke-direct/range {v1 .. v6}, Lcom/android/server/lights/LightsService$LightImpl;->setLightLocked(IIIII)V
+
+    .end local v0    # "rom_max_brightness":I
+    .end local v10    # "color":I
+    monitor-exit p0
+
+    return-void
+
+    :goto_116
+    monitor-exit p0
+    :try_end_117
+    .catchall {:try_start_9 .. :try_end_117} :catchall_30
+
+    throw v0
