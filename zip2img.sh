@@ -190,7 +190,7 @@ elif [[ $(7z l $romzip | grep "image.*.zip") ]]; then
     exit 1
 fi
 
-$simg2img system.img system.img-2 >/dev/null
+$simg2img system.img system.img-2 2>/dev/null
 if [[ ! -s system.img-2 ]]; then
     rm -rf system.img-2
 else
@@ -200,7 +200,7 @@ fi
 offset=$(LANG=C grep -aobP -m1 '\x53\xEF' system.img | head -1 | gawk '{print $1 - 1080}')
 
 if [ ! $offset == "0" ]; then
-    dd if=system.img of=system.img-2 ibs=$offset skip=1 2>&1
+    dd if=system.img of=system.img-2 ibs=$offset skip=1 2>/dev/null
     mv system.img-2 system.img
 fi
 
