@@ -11,9 +11,6 @@ on early-init
     chown system radio /sys/class/sec/switch/vbus_rawdata
 
 on init
-
-    ffu
-
 # [ SEC_SELINUX_PORTING_COMMON
     # for audit message
     chown system system /proc/avc_msg
