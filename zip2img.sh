@@ -43,6 +43,9 @@ fi
 if [[ $(7z l $romzip | grep system.new.dat) ]]; then
 	echo "Aonly OTA"
 	7z e $romzip system.new.dat* system.transfer.list
+    cat system.new.dat.{0..999} 2>/dev/null >> system.new.dat
+    cat system.new.dat.br.{0..999} 2>/dev/null >> system.new.dat
+    rm -rf system.new.dat.{0..999} system.new.dat.br.{0..999}
 	ls | grep "\.new\.dat" | while read i; do
 		line=$(echo "$i" | cut -d"." -f1)
 		if [[ $(echo "$i" | grep "\.dat\.xz") ]]; then
