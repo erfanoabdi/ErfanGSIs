@@ -78,7 +78,7 @@ for ARCH in $ARCHES; do
 			"$VDEXEXTRACTOR" -o "$TMPDIR/" -i "$TMPDIR/$(basename "$VDEX")" >/dev/null
             CLASSES=$(ls "$TMPDIR/$(basename "${TARGET%.*}")_classes"*)
             for CLASS in $CLASSES; do
-                NEWCLASS=$(echo "$CLASS" | rev | cut -d "_" -f 1 | rev | sed "s/cdex/dex/")
+                NEWCLASS=$(echo "$CLASS" | sed 's/.*_//;s/cdex/dex/')
 			    # Check if we have to deal with CompactDex
                 if [[ "$CLASS" == *.cdex ]]; then
 				    "$CDEXCONVERTER" "$CLASS" &>/dev/null
@@ -103,7 +103,7 @@ for ARCH in $ARCHES; do
 			"$VDEXEXTRACTOR" -o "$TMPDIR/" -i "$TMPDIR/$(basename "$JARVDEX")" >/dev/null
             CLASSES=$(ls "$TMPDIR/$(basename "${JARVDEX%.*}")_classes"*)
             for CLASS in $CLASSES; do
-                NEWCLASS=$(echo "$CLASS" | rev | cut -d "_" -f 1 | rev | sed "s/cdex/dex/")
+                NEWCLASS=$(echo "$CLASS" | sed 's/.*_//;s/cdex/dex/')
                 # Check if we have to deal with CompactDex
                 if [[ "$CLASS" == *.cdex ]]; then
                     "$CDEXCONVERTER" "$CLASS" &>/dev/null
