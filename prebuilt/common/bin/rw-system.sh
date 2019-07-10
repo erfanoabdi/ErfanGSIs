@@ -70,12 +70,18 @@ changeKeylayout() {
         -e xiaomi/polaris -e xiaomi/sirius -e xiaomi/dipper \
         -e xiaomi/wayne -e xiaomi/jasmine -e xiaomi/jasmine_sprout \
         -e xiaomi/platina -e iaomi/perseus -e xiaomi/ysl \
-        -e xiaomi/nitrogen -e xiaomi/daisy -e xiaomi/sakura; then
-        cp /system/phh/empty /mnt/phh/keylayout/uinput-goodix.kl
-        chmod 0644 /mnt/phh/keylayout/uinput-goodix.kl
-        cp /system/phh/empty /mnt/phh/keylayout/uinput-fpc.kl
-        chmod 0644 /mnt/phh/keylayout/uinput-fpc.kl
-        changed=true
+        -e xiaomi/nitrogen -e xiaomi/daisy -e xiaomi/sakura \
+        -e xiaomi/whyred -e xiaomi/tulip; then
+        if [ ! -f /mnt/phh/keylayout/uinput-goodix.kl ]; then
+          cp /system/phh/empty /mnt/phh/keylayout/uinput-goodix.kl
+          chmod 0644 /mnt/phh/keylayout/uinput-goodix.kl
+          changed=true
+        fi
+        if [ ! -f /mnt/phh/keylayout/uinput-fpc.kl ]; then
+          cp /system/phh/empty /mnt/phh/keylayout/uinput-fpc.kl
+          chmod 0644 /mnt/phh/keylayout/uinput-fpc.kl
+          changed=true
+        fi
     fi
 
     if getprop ro.vendor.build.fingerprint | grep -qi oneplus/oneplus6/oneplus6; then
@@ -84,7 +90,7 @@ changeKeylayout() {
         changed=true
     fi
 
-    if getprop ro.vendor.build.fingerprint | grep -iq -e iaomi/perseus; then
+    if getprop ro.vendor.build.fingerprint | grep -iq -e iaomi/perseus -e iaomi/cepheus; then
         cp /system/phh/mimix3-gpio-keys.kl /mnt/phh/keylayout/gpio-keys.kl
         chmod 0644 /mnt/phh/keylayout/gpio-keys.kl
         changed=true
@@ -159,12 +165,12 @@ fi
 if getprop ro.vendor.build.fingerprint | grep -q -i \
     -e xiaomi/clover -e xiaomi/wayne -e xiaomi/sakura \
     -e xiaomi/nitrogen -e xiaomi/whyred -e xiaomi/platina \
-    -e xiaomi/ysl; then
+    -e xiaomi/ysl -e nubia/nx60 -e nubia/nx61 -e xiaomi/tulip -e xiaomi/lavender; then
     setprop persist.sys.qcom-brightness "$(cat /sys/class/leds/lcd-backlight/max_brightness)"
 fi
 
 if getprop ro.vendor.product.device |grep -iq -e RMX1801 -e RMX1803 -e RMX1807;then	
-    setprop persist.sys.qcom-brightness $(cat /sys/class/leds/lcd-backlight/max_brightness)
+    setprop persist.sys.qcom-brightness "$(cat /sys/class/leds/lcd-backlight/max_brightness)"
 fi
 
 if getprop ro.vendor.build.fingerprint | grep -iq \
@@ -172,13 +178,15 @@ if getprop ro.vendor.build.fingerprint | grep -iq \
     -e Xiaomi/dipper/dipper -e Xiaomi/ursa/ursa -e Xiaomi/polaris/polaris \
     -e motorola/ali/ali -e iaomi/perseus/perseus -e iaomi/platina/platina \
     -e iaomi/equuleus/equuleus -e motorola/nora -e xiaomi/nitrogen \
-    -e motorola/hannah -e motorola/james -e motorola/pettyl; then
+    -e motorola/hannah -e motorola/james -e motorola/pettyl -e iaomi/cepheus \
+    -e iaomi/grus -e xiaomi/cereus -e iaomi/raphael;then
     mount -o bind /mnt/phh/empty_dir /vendor/lib64/soundfx
     mount -o bind /mnt/phh/empty_dir /vendor/lib/soundfx
+    setprop  ro.audio.ignore_effects true
 fi
 
 if [ "$(getprop ro.vendor.product.manufacturer)" = "motorola" ] || [ "$(getprop ro.product.vendor.manufacturer)" = "motorola" ]; then
-    if getprop ro.vendor.product.device | grep -q -e nora -e ali -e hannah -e evert -e jeter -e deen -e james -e pettyl; then
+    if getprop ro.vendor.product.device | grep -q -e nora -e ali -e hannah -e evert -e jeter -e deen -e james -e pettyl -e jater; then
         if [ "$vndk" -ge 28 ]; then
             f="/vendor/lib/libeffects.so"
             # shellcheck disable=SC2010
@@ -198,26 +206,12 @@ if [ "$(getprop ro.vendor.product.manufacturer)" = "motorola" ] || [ "$(getprop 
     fi
 fi
 
-for f in /vendor/lib/libeffects.so /vendor/lib64/libeffects.so; do
-    [ ! -f $f ] && continue
-    f="/vendor/lib/libeffects.so"
-    # shellcheck disable=SC2010
-    ctxt="$(ls -lZ "$f" | grep -oE 'u:object_r:[^:]*:s0')"
-    b="$(echo "$f" | tr / _)"
-
-    cp -a "$f" "/mnt/phh/$b"
-    sed -i \
-        's/%zu errors during loading of configuration: %s/%zu errors during loading of configuration: ss/g' \
-        "/mnt/phh/$b"
-    chcon "$ctxt" "/mnt/phh/$b"
-    mount -o bind "/mnt/phh/$b" "$f"
-done
-
 if getprop ro.vendor.build.fingerprint | grep -q -i -e xiaomi/wayne -e xiaomi/jasmine; then
     setprop persist.imx376_sunny.low.lux 310
     setprop persist.imx376_sunny.light.lux 280
     setprop persist.imx376_ofilm.low.lux 310
     setprop persist.imx376_ofilm.light.lux 280
+    echo "none" > /sys/class/leds/led:torch_2/trigger
 fi
 
 for f in /vendor/lib/mtk-ril.so /vendor/lib64/mtk-ril.so /vendor/lib/libmtk-ril.so /vendor/lib64/libmtk-ril.so; do
@@ -234,6 +228,7 @@ for f in /vendor/lib/mtk-ril.so /vendor/lib64/mtk-ril.so /vendor/lib/libmtk-ril.
     mount -o bind "/mnt/phh/$b" "$f"
 
     setprop persist.sys.phh.radio.force_cognitive true
+    setprop persist.sys.radio.ussd.fix true
 done
 
 mount -o bind /system/phh/empty /vendor/overlay/SysuiDarkTheme/SysuiDarkTheme.apk || true
@@ -241,9 +236,14 @@ mount -o bind /system/phh/empty /vendor/overlay/SysuiDarkTheme/SysuiDarkThemeOve
 
 if grep -qF 'PowerVR Rogue GE8100' /vendor/lib/egl/GLESv1_CM_mtk.so ||
     grep -qF 'PowerVR Rogue' /vendor/lib/egl/libGLESv1_CM_mtk.so ||
-    (getprop ro.product.board | grep -qiE -e msm8917 -e msm8937 -e msm8940); then
+    ( (getprop ro.product.board; getprop ro.board.platform) | grep -qiE -e msm8917 -e msm8937 -e msm8940); then
 
     setprop debug.hwui.renderer opengl
+fi
+
+#If we have both Samsung and AOSP power hal, take Samsung's
+if [ -f /vendor/bin/hw/vendor.samsung.hardware.miscpower@1.0-service ] && [ "$vndk" -lt 28 ]; then
+    mount -o bind /system/phh/empty /vendor/bin/hw/android.hardware.power@1.0-service
 fi
 
 if [ "$vndk" = 27 ] || [ "$vndk" = 26 ]; then
@@ -274,7 +274,7 @@ if getprop ro.vendor.build.fingerprint | grep -iq -E -e 'huawei|honor' || getpro
     mount -o bind /system/phh/libnfc-nci-huawei.conf /system/etc/libnfc-nci.conf
 fi
 
-if getprop ro.vendor.build.fingerprint | grep -qE -e ".*(crown|star)[q2]*lte.*" -e ".*(SC-0[23]K|SCV3[89]).*"; then
+if getprop ro.vendor.build.fingerprint | grep -qE -e ".*(crown|star)[q2]*lte.*" -e ".*(SC-0[23]K|SCV3[89]).*" && [ "$vndk" -lt 28 ]; then
     for f in /vendor/lib/libfloatingfeature.so /vendor/lib64/libfloatingfeature.so; do
         [ ! -f "$f" ] && continue
         # shellcheck disable=SC2010
@@ -287,7 +287,14 @@ if getprop ro.vendor.build.fingerprint | grep -qE -e ".*(crown|star)[q2]*lte.*" 
             "/mnt/phh/$b"
         chcon "$ctxt" "/mnt/phh/$b"
         mount -o bind "/mnt/phh/$b" "$f"
+
+	setprop ro.audio.monitorRotation true
     done
+fi
+
+# This matches both Razer Phone 1 & 2
+if getprop ro.vendor.build.fingerprint |grep -qE razer/cheryl;then
+	setprop ro.audio.monitorRotation true
 fi
 
 if getprop ro.vendor.build.fingerprint | grep -qiE '^samsung'; then
@@ -302,9 +309,29 @@ if getprop ro.vendor.build.fingerprint | grep -qiE '^samsung'; then
     fi
 fi
 
-if getprop ro.vendor.build.fingerprint | grep -qE '^xiaomi/daisy/daisy_sprout:8.1.0/OPM.*'; then
+if getprop ro.vendor.build.fingerprint | grep -qE '^xiaomi/(daisy|wayne)/(daisy|wayne).*'; then
     # Fix camera on DND, ugly workaround but meh
     setprop audio.camerasound.force true
 fi
 
 mount -o bind /mnt/phh/empty_dir /vendor/etc/audio || true
+
+for f in /vendor/lib{,64}/hw/com.qti.chi.override.so;do
+    [ ! -f $f ] && continue
+    # shellcheck disable=SC2010
+    ctxt="$(ls -lZ "$f" | grep -oE 'u:object_r:[^:]*:s0')"
+    b="$(echo "$f" | tr / _)"
+
+    cp -a "$f" "/mnt/phh/$b"
+    sed -i \
+        -e 's/ro.product.manufacturer/sys.phh.xx.manufacturer/g' \
+        "/mnt/phh/$b"
+    chcon "$ctxt" "/mnt/phh/$b"
+    mount -o bind "/mnt/phh/$b" "$f"
+
+    setprop sys.phh.xx.manufacturer "$(getprop ro.product.vendor.manufacturer)"
+done
+
+if [ -n "$(getprop ro.boot.product.hardware.sku)" ] && [ -z "$(getprop ro.hw.oemName)" ];then
+	setprop ro.hw.oemName "$(getprop ro.boot.product.hardware.sku)"
+fi
