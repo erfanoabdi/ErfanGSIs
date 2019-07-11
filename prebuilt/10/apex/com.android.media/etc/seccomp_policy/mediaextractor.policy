@@ -1,0 +1,46 @@
+# Organized by frequency of systemcall - in descending order for
+# best performance.
+ioctl: 1
+futex: 1
+prctl: 1
+write: 1
+getpriority: 1
+close: 1
+dup: 1
+mmap: 1
+munmap: 1
+openat: 1
+mprotect: 1
+madvise: 1
+getuid: 1
+fstat: 1
+fstatfs: 1
+read: 1
+setpriority: 1
+sigaltstack: 1
+clone: 1
+sched_setscheduler: 1
+lseek: 1
+newfstatat: 1
+faccessat: 1
+restart_syscall: 1
+exit: 1
+exit_group: 1
+rt_sigreturn: 1
+getrlimit: 1
+nanosleep: 1
+getrandom: 1
+
+# for FileSource
+readlinkat: 1
+
+# for dynamically loading extractors
+getdents64: 1
+readlinkat: 1
+pread64: 1
+mremap: 1
+
+# Required by Sanitizers
+sched_yield: 1
+
+@include /system/etc/seccomp_policy/crash_dump.arm64.policy

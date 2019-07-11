@@ -1,0 +1,6 @@
+{
+  "name": "com.android.runtime",
+  "version": 1,
+  "preInstallHook": "bin/art_preinstall_hook",
+  "postInstallHook": "bin/art_postinstall_hook"
+}

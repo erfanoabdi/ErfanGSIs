@@ -1,0 +1,90 @@
+# Copyright (C) 2018 The Android Open Source Project
+#
+# Bionic loader config file for the Runtime APEX.
+#
+# There are no versioned APEX paths here - this APEX module does not support
+# having several versions mounted.
+
+dir.runtime = /apex/com.android.runtime/bin/
+
+[runtime]
+additional.namespaces = platform,conscrypt,runtime
+
+# Keep in sync with the runtime namespace in /system/etc/ld.config.txt.
+namespace.default.isolated = true
+# Visible because some libraries are dlopen'ed, e.g. libopenjdk is dlopen'ed by
+# libart.
+namespace.default.visible = true
+namespace.default.search.paths = /apex/com.android.runtime/${LIB}
+namespace.default.asan.search.paths = /apex/com.android.runtime/${LIB}
+# odex files are in /system/framework. dalvikvm has to be able to dlopen the
+# files for CTS.
+namespace.default.permitted.paths = /system/framework
+namespace.default.links = platform
+# TODO(b/119867084): Restrict fallback to platform namespace to PALette library.
+namespace.default.link.platform.allow_all_shared_libs = true
+
+# Keep in sync with the default namespace in /system/etc/ld.config.txt.
+namespace.platform.isolated = true
+namespace.platform.search.paths = /system/${LIB}
+namespace.platform.asan.search.paths = /data/asan/system/${LIB}
+namespace.platform.links = default
+namespace.platform.link.default.shared_libs  = libdexfile_external.so
+# libicuuc.so and libicui18n.so are kept for app compat reason. http://b/130788466
+namespace.platform.link.default.shared_libs += libicui18n.so
+namespace.platform.link.default.shared_libs += libicuuc.so
+namespace.platform.link.default.shared_libs += libnativebridge.so
+namespace.platform.link.default.shared_libs += libnativehelper.so
+namespace.platform.link.default.shared_libs += libnativeloader.so
+namespace.platform.link.default.shared_libs += libandroidicu.so
+
+# TODO(b/122876336): Remove libpac.so once it's migrated to Webview
+namespace.platform.link.default.shared_libs += libpac.so
+
+# /system/lib/libc.so, etc are symlinks to
+# /apex/com.android.runtime/lib/bionic/libc.so, etc. Add the path to the
+# permitted paths because linker uses realpath(3) to check the accessibility
+# of the lib. We could add this to search.paths instead but that makes the
+# resolution of bionic libs be dependent on the order of /system/lib and
+# /apex/.../lib/bionic in search.paths. If the latter is after the former,
+# then the latter is never tried because libc.so is always found in
+# /system/lib but fails to pass the accessibility test because of its realpath.
+# It's better to not depend on the ordering if possible.
+namespace.platform.permitted.paths = /apex/com.android.runtime/${LIB}/bionic
+namespace.platform.asan.permitted.paths = /apex/com.android.runtime/${LIB}/bionic
+
+# Note that we don't need to link the default namespace with conscrypt:
+# the runtime Java code and binaries do not explicitly load native libraries
+# from it.
+
+###############################################################################
+# "conscrypt" APEX namespace
+#
+# This namespace is for libraries within the conscrypt APEX.
+###############################################################################
+
+# Keep in sync with conscrypt namespace in /system/etc/ld.config.txt.
+namespace.conscrypt.isolated = true
+namespace.conscrypt.visible = true
+
+namespace.conscrypt.search.paths = /apex/com.android.conscrypt/${LIB}
+namespace.conscrypt.asan.search.paths = /apex/com.android.conscrypt/${LIB}
+namespace.conscrypt.links = runtime,platform
+namespace.conscrypt.link.runtime.shared_libs   = libandroidio.so
+namespace.conscrypt.link.platform.shared_libs  = libc.so
+namespace.conscrypt.link.platform.shared_libs += libm.so
+namespace.conscrypt.link.platform.shared_libs += libdl.so
+namespace.conscrypt.link.platform.shared_libs += liblog.so
+
+###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace is an alias for the default namespace.
+###############################################################################
+namespace.runtime.isolated = true
+namespace.runtime.visible = true
+namespace.runtime.links = default
+namespace.runtime.link.default.allow_all_shared_libs = true
+namespace.runtime.links += platform
+# TODO(b/119867084): Restrict fallback to platform namespace to PALette library.
+namespace.runtime.link.platform.allow_all_shared_libs = true

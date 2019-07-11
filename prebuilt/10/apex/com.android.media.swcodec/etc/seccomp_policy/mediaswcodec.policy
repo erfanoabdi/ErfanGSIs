@@ -1,0 +1,81 @@
+# Copyright (C) 2019 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+futex: 1
+# ioctl calls are filtered via the selinux policy.
+ioctl: 1
+sched_yield: 1
+close: 1
+dup: 1
+ppoll: 1
+mprotect: arg2 in ~PROT_EXEC || arg2 in ~PROT_WRITE
+mmap: arg2 in ~PROT_EXEC || arg2 in ~PROT_WRITE
+getuid: 1
+getrlimit: 1
+fstat: 1
+newfstatat: 1
+fstatfs: 1
+memfd_create: 1
+ftruncate: 1
+
+# mremap: Ensure |flags| are (MREMAP_MAYMOVE | MREMAP_FIXED) TODO: Once minijail
+# parser support for '<' is in this needs to be modified to also prevent
+# |old_address| and |new_address| from touching the exception vector page, which
+# on ARM is statically loaded at 0xffff 0000. See
+# http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0211h/Babfeega.html
+# for more details.
+mremap: arg3 == 3
+munmap: 1
+prctl: 1
+writev: 1
+sigaltstack: 1
+clone: 1
+exit: 1
+lseek: 1
+rt_sigprocmask: 1
+openat: 1
+write: 1
+nanosleep: 1
+setpriority: 1
+set_tid_address: 1
+getdents64: 1
+readlinkat: 1
+read: 1
+pread64: 1
+gettimeofday: 1
+faccessat: 1
+exit_group: 1
+restart_syscall: 1
+rt_sigreturn: 1
+getrandom: 1
+madvise: 1
+
+# crash dump policy additions
+clock_gettime: 1
+getpid: 1
+gettid: 1
+pipe2: 1
+recvmsg: 1
+process_vm_readv: 1
+tgkill: 1
+rt_sigaction: 1
+rt_tgsigqueueinfo: 1
+#mprotect: arg2 in 0x1|0x2
+munmap: 1
+#mmap: arg2 in 0x1|0x2
+geteuid: 1
+getgid: 1
+getegid: 1
+getgroups: 1
+

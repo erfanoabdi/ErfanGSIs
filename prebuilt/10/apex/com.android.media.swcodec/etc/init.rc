@@ -1,0 +1,7 @@
+service media.swcodec /apex/com.android.media.swcodec/bin/mediaswcodec
+    class main
+    user mediacodec
+    group camera drmrpc mediadrm
+    override
+    ioprio rt 4
+    writepid /dev/cpuset/foreground/tasks
