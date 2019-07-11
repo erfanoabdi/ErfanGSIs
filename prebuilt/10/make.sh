@@ -16,10 +16,4 @@ echo "persist.bluetooth.bluetooth_audio_hal.disabled=true" >> $1/build.prop
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
 # Deal with non-flattened apex
-rm -rf $1/apex/com.android.conscrypt.apex
-rm -rf $1/apex/com.android.media.apex
-rm -rf $1/apex/com.android.media.swcodec.apex
-rm -rf $1/apex/com.android.resolv.apex
-rm -rf $1/apex/com.android.runtime.*.apex
-rm -rf $1/apex/com.android.tzdata.apex
-cp -fpr $thispath/apex/* $1/apex/
+$thispath/../../scripts/apex_extractor.sh $1/apex
