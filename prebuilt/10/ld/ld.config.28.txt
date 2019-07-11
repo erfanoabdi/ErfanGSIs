@@ -122,6 +122,9 @@ namespace.default.links = runtime,resolv
 # libart.
 namespace.default.visible = true
 namespace.default.link.runtime.shared_libs  = libdexfile_external.so
+# libicuuc.so and libicui18n.so are kept for app compat reason. http://b/130788466
+namespace.default.link.runtime.shared_libs += libicui18n.so
+namespace.default.link.runtime.shared_libs += libicuuc.so
 namespace.default.link.runtime.shared_libs += libnativebridge.so
 namespace.default.link.runtime.shared_libs += libnativehelper.so
 namespace.default.link.runtime.shared_libs += libnativeloader.so
@@ -163,10 +166,12 @@ namespace.media.search.paths = /apex/com.android.media/${LIB}
 namespace.media.asan.search.paths = /apex/com.android.media/${LIB}
 
 namespace.media.permitted.paths = /apex/com.android.media/${LIB}/extractors
+namespace.media.asan.permitted.paths = /apex/com.android.media/${LIB}/extractors
 
 namespace.media.links = default
 namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so
 namespace.media.link.default.shared_libs += libbinder_ndk.so
+namespace.media.link.default.shared_libs += libcgrouprc.so
 namespace.media.link.default.shared_libs += libmediametrics.so
 namespace.media.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
 
@@ -455,6 +460,9 @@ namespace.default.links = runtime,resolv
 namespace.default.visible = true
 
 namespace.default.link.runtime.shared_libs  = libdexfile_external.so
+# libicuuc.so and libicui18n.so are kept for app compat reason. http://b/130788466
+namespace.default.link.runtime.shared_libs += libicui18n.so
+namespace.default.link.runtime.shared_libs += libicuuc.so
 namespace.default.link.runtime.shared_libs += libnativebridge.so
 namespace.default.link.runtime.shared_libs += libnativehelper.so
 namespace.default.link.runtime.shared_libs += libnativeloader.so
@@ -493,6 +501,7 @@ namespace.media.search.paths = /apex/com.android.media/${LIB}
 namespace.media.asan.search.paths = /apex/com.android.media/${LIB}
 
 namespace.media.permitted.paths = /apex/com.android.media/${LIB}/extractors
+namespace.media.asan.permitted.paths = /apex/com.android.media/${LIB}/extractors
 
 namespace.media.links = default
 namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so
