@@ -50,8 +50,8 @@ if [ "$flag" == "false" ]; then
 fi
 flag=false
 case "$outputtype" in
-    *"AB"*) flag=true7z ;;
-    *"Aonly"*) flag=true7z ;;
+    *"AB"*) flag=true ;;
+    *"Aonly"*) flag=true ;;
 esac
 if [ "$flag" == "false" ]; then
     echo "$outputtype is not supported type, supported types:"
@@ -102,8 +102,8 @@ fi
 sourcever=`cat $systemdir/system/build.prop | grep ro.build.version.release | cut -d "=" -f 2`
 flag=false
 case "$sourcever" in
-    *"9"*) flag=true7z ;;
-    *"10"*) flag=true7z ;;
+    *"9"*) flag=true ;;
+    *"10"*) flag=true ;;
 esac
 if [ "$flag" == "false" ]; then
     echo "$sourcever is not supported"

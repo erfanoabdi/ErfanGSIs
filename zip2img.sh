@@ -42,14 +42,14 @@ fi
 
 if [[ $(7z l $romzip | grep system.new.dat) ]]; then
 	echo "Aonly OTA"
-	7z e $romzip system.new.dat* system.transfer.list
+	7z e $romzip system.new.dat* system.transfer.list 2>/dev/null >> $cachedir/zip.log
     cat system.new.dat.{0..999} 2>/dev/null >> system.new.dat
     cat system.new.dat.br.{0..999} 2>/dev/null >> system.new.dat
     rm -rf system.new.dat.{0..999} system.new.dat.br.{0..999}
 	ls | grep "\.new\.dat" | while read i; do
 		line=$(echo "$i" | cut -d"." -f1)
 		if [[ $(echo "$i" | grep "\.dat\.xz") ]]; then
-            7z e "$i"
+            7z e "$i"  2>/dev/null >> $cachedir/zip.log
             rm -rf "$i"
 		fi
 		if [[ $(echo "$i" | grep "\.dat\.br") ]]; then
@@ -68,7 +68,7 @@ elif [[ $(7z l $romzip | grep "system_new.img\|system.img$") ]]; then
 	if [[ -f system.img ]]; then
 		mv system.img system_old.img
 	fi
-	7z e $romzip system_new.img system.img
+	7z e $romzip system_new.img system.img 2>/dev/null >> $cachedir/zip.log
 	if [[ -f system_new.img ]]; then
 		mv system_new.img system.img
 	fi
@@ -79,14 +79,14 @@ elif [[ $(7z l $romzip | grep "system_new.img\|system.img$") ]]; then
 	romimg="system.img"
 elif [[ $(7z l $romzip | grep system.ext4.tar.a) ]]; then
 	echo "tar system"
-	7z e $romzip system.ext4.tar.a
+	7z e $romzip system.ext4.tar.a 2>/dev/null >> $cachedir/zip.log
 	romzip=""
 	mv system.ext4.tar.a system.ext4.tar
 	romtar="system.ext4.tar"
 elif [[ $(7z l $romzip | grep tar.md5) && ! $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_) ]]; then
 	tarmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }')
 	echo "extracting tarmd5..."
-	7z e $romzip $tarmd5
+	7z e $romzip $tarmd5 2>/dev/null >> $cachedir/zip.log
 	echo "extract img"
 	if [[ $(tar -tf $tarmd5 | grep system.img.ext4) ]]; then
 		tar -xf $tarmd5 system.img.ext4
@@ -107,7 +107,7 @@ elif [[ $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_) ]]; then
 	mainmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_)
 	cscmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep CSC_)
 	echo "extract_tar_md5"
-	7z e $romzip $mainmd5 $cscmd5
+	7z e $romzip $mainmd5 $cscmd5 2>/dev/null >> $cachedir/zip.log
     mainmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_ | rev | cut -d "/" -f 1 | rev)
     cscmd5=$(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep CSC_ | rev | cut -d "/" -f 1 | rev)
 	echo "extract_img"
@@ -136,7 +136,7 @@ elif [[ $(7z l $romzip | grep tar.md5 | gawk '{ print $6 }' | grep AP_) ]]; then
 	romimg="system.img"
 elif [[ $(7z l $romzip | grep chunk | grep -v ".*\.so$") ]]; then
 	echo "extract_chunk"
-	7z e $romzip *system*chunk* */*system*chunk*
+	7z e $romzip *system*chunk* */*system*chunk* 2>/dev/null >> $cachedir/zip.log
 	rm -f *system_b*
 	romzip=""
 	romchunk=$(ls | grep chunk | sort)
@@ -160,7 +160,7 @@ elif [[ $(7z l $romzip | grep rawprogram) ]]; then
     echo "extract_QFIL"
     systems=$(7z l $romzip | gawk '{ print $6 }' | grep system_)
     rawprograms=$(7z l $romzip | gawk '{ print $6 }' | grep rawprogram)
-    7z e $romzip $systems $rawprograms
+    7z e $romzip $systems $rawprograms 2>/dev/null >> $cachedir/zip.log
     if [ -f rawprogram_unsparse.xml ]; then
         $packsparseimg
     else
@@ -172,7 +172,7 @@ elif [[ $(7z l $romzip | grep rawprogram) ]]; then
     rm -rf $systems $rawprograms
 elif [[ $(7z l $romzip | grep payload.bin) ]]; then
     echo "extract_ABota"
-    7z e $romzip payload.bin
+    7z e $romzip payload.bin 2>/dev/null >> $cachedir/zip.log
     python $toolsdir/update_payload_extractor/extract.py payload.bin --partitions system --output_dir $cachedir
     if [[ -f "$cachedir/system" ]]; then
         mv "$cachedir/system" "$cachedir/system.img"
@@ -185,7 +185,7 @@ elif [[ $(7z l $romzip | grep payload.bin) ]]; then
 elif [[ $(7z l $romzip | grep "image.*.zip") ]]; then
     thezip=$(7z l $romzip | grep "image.*.zip" | gawk '{ print $6 }')
     echo "image zip firmware"
-    7z e $romzip $thezip
+    7z e $romzip $thezip 2>/dev/null >> $cachedir/zip.log
     thezipfile=`echo $thezip | rev | cut -d "/" -f 1 | rev`
     mv $thezipfile temp.zip
     $LOCALDIR/zip2img.sh temp.zip
@@ -208,5 +208,5 @@ if [ ! $offset == "0" ]; then
 fi
 
 mv "system.img" "$cachedir/system.img"
-
+rm $cachedir/zip.log
 echo "$cachedir/system.img"

@@ -14,7 +14,7 @@ APKTOOL="$toolsdir"/apktool/apktool.jar
 
 $scriptsdir/oat2dex.sh "$systempath/framework" "$systempath/framework/services.jar"
 mkdir -p "$TMPDIR/original_dex"
-7z e "$systempath/framework/services.jar" classes* -o"$TMPDIR/original_dex" 2>/dev/null
+7z e "$systempath/framework/services.jar" classes* -o"$TMPDIR/original_dex" 2>/dev/null >> "$TMPDIR"/zip.log
 CLASSES=$(ls "$TMPDIR/original_dex/classes"*)
 for CLASS in $CLASSES; do
     java -jar "$BAKSMALIJAR" disassemble "$CLASS" -o "$TMPDIR/dexout"
