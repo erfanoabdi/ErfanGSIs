@@ -28,7 +28,7 @@ fi
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     packsparseimg="$toolsdir/linux/bin/packsparseimg"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Not Supported OS for packsparseimg"
+    packsparseimg="$toolsdir/mac/bin/packsparseimg"
 else
     echo "Not Supported OS for packsparseimg"
 fi
