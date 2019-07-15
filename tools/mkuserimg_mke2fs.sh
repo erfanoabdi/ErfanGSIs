@@ -174,22 +174,9 @@ MAKE_EXT4FS_ENV="MKE2FS_CONFIG=$LOCALDIR/mke2fs.conf"
 if [[ $E2FSPROGS_FAKE_TIME ]]; then
   MAKE_EXT4FS_ENV+=" E2FSPROGS_FAKE_TIME=$E2FSPROGS_FAKE_TIME"
 fi
-
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    mke2fs="$LOCALDIR/linux/bin/mke2fs"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    mke2fs="$LOCALDIR/mac/bin/mke2fs"
-else
-    echo "Not Supported OS for mke2fs"
-fi
-
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    e2fsdroid="$LOCALDIR/linux/bin/e2fsdroid"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    e2fsdroid="$LOCALDIR/mac/bin/e2fsdroid"
-else
-    echo "Not Supported OS for e2fsdroid"
-fi
+HOST="$(uname)"
+mke2fs="$LOCALDIR/$HOST/bin/mke2fs"
+e2fsdroid="$LOCALDIR/$HOST/bin/e2fsdroid"
 
 MAKE_EXT4FS_CMD="$mke2fs $MKE2FS_OPTS -t $EXT_VARIANT -b $BLOCKSIZE $OUTPUT_FILE $SIZE"
 echo $MAKE_EXT4FS_ENV $MAKE_EXT4FS_CMD

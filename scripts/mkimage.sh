@@ -26,6 +26,8 @@ output=$4
 LOCALDIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 tempdir="$LOCALDIR/../tmp"
 toolsdir="$LOCALDIR/../tools"
+HOST="$(uname)"
+make_ext4fs="$toolsdir/$HOST/bin/make_ext4fs_64"
 
 echo "Prepare File Contexts"
 p="/plat_file_contexts"
@@ -76,18 +78,6 @@ sudo mkdir -p "$systemdir/bt_firmware"
 sudo mkdir -p "$systemdir/persist"
 sudo mkdir -p "$systemdir/firmware"
 sudo mkdir -p "$systemdir/dsp"
-
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    if [[ $(getconf LONG_BIT) = "64" ]]; then
-        make_ext4fs="$toolsdir/linux/bin/make_ext4fs_64"
-    else
-        make_ext4fs="$toolsdir/linux/bin/make_ext4fs_32"
-fi
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    make_ext4fs="$toolsdir/mac/bin/make_ext4fs"
-else
-    echo "Not Supported OS for make_ext4fs"
-fi
 
 if [ "$5" == "--old" ]; then
     if [ "$outputtype" == "Aonly" ]; then

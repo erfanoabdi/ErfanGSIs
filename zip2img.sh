@@ -17,22 +17,9 @@ romzip=$1
 
 cd $LOCALDIR
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    simg2img="$toolsdir/linux/bin/simg2img"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    simg2img="$toolsdir/mac/bin/simg2img"
-else
-    echo "Not Supported OS for simg2img"
-fi
-
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    packsparseimg="$toolsdir/linux/bin/packsparseimg"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    packsparseimg="$toolsdir/mac/bin/packsparseimg"
-else
-    echo "Not Supported OS for packsparseimg"
-fi
-
+HOST="$(uname)"
+simg2img="$toolsdir/$HOST/bin/simg2img"
+packsparseimg="$toolsdir/$HOST/bin/packsparseimg"
 
 if [[ ! $(7z l $romzip | grep ".*system.ext4.tar.*\|.*tar.md5\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin\|image.*.zip\|.*system_.*" | grep -v ".*chunk.*\.so$") ]]; then
 	echo -e "sorry not this zip"

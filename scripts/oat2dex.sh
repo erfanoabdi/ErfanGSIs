@@ -22,15 +22,9 @@ TARGET="$2"
 
 BAKSMALIJAR="$toolsdir"/smali/baksmali.jar
 SMALIJAR="$toolsdir"/smali/smali.jar
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    VDEXEXTRACTOR="$toolsdir/linux/bin/vdexExtractor"
-    CDEXCONVERTER="$toolsdir/linux/bin/compact_dex_converter"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    VDEXEXTRACTOR="$toolsdir/mac/bin/vdexExtractor"
-    CDEXCONVERTER="$toolsdir/mac/bin/compact_dex_converter"
-else
-    echo "Not Supported OS for oat2dex"
-fi
+HOST="$(uname)"
+VDEXEXTRACTOR="$toolsdir/$HOST/bin/vdexExtractor"
+CDEXCONVERTER="$toolsdir/$HOST/bin/compact_dex_converter"
 
 function get_file() {
     if [ -e "$1" ]; then
