@@ -7,3 +7,6 @@
 [submodule "tools/ROM_resigner"]
 	path = tools/ROM_resigner
 	url = https://github.com/erfanoabdi/ROM_resigner.git
+[submodule "tools/oppo_ozip_decrypt"]
+	path = tools/oppo_ozip_decrypt
+	url = https://github.com/bkerler/oppo_ozip_decrypt.git
