@@ -5,7 +5,7 @@ srctype=$2
 
 mkdir downloads
 
-wget $url -O downloads/temp.zip
+wget -U "Mozilla/5.0" $url -O downloads/temp.zip
 ./zip2img.sh downloads/temp.zip
 mkdir system
 mount cache/system.img system
