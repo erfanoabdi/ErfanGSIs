@@ -12,7 +12,7 @@ BAKSMALIJAR="$toolsdir"/smali/baksmali.jar
 SMALIJAR="$toolsdir"/smali/smali.jar
 APKTOOL="$toolsdir"/apktool/apktool.jar
 
-$scriptsdir/oat2dex.sh "$systempath/framework" "$systempath/framework/services.jar"
+$scriptsdir/oat2dex.sh "$systempath/framework" "$systempath/framework/services.jar" 2>/dev/null >> "$TMPDIR"/oat2dex.log
 mkdir -p "$TMPDIR/original_dex"
 7z e "$systempath/framework/services.jar" classes* -o"$TMPDIR/original_dex" 2>/dev/null >> "$TMPDIR"/zip.log
 CLASSES=$(ls "$TMPDIR/original_dex/classes"*)
@@ -38,7 +38,7 @@ for CLASS in $CLASSES; do
         NEWCLASS=$(echo "$CLASS" | rev | cut -d "/" -f 1 | rev)
         java -jar "$SMALIJAR" assemble "$TMPDIR/dexout" -o "$TMPDIR/$NEWCLASS"
         zip -gjq "$systempath/framework/services.jar" "$TMPDIR/$NEWCLASS"
-        java -jar "$APKTOOL" d $systempath/framework/framework-res.apk -o $TMPDIR/framework-res
+        java -jar "$APKTOOL" d $systempath/framework/framework-res.apk -o $TMPDIR/framework-res 2>/dev/null >> "$TMPDIR"/apktoolunpack.log
         ROMMAXBRIGHTNESS=$(grep '<integer name="config_screenBrightnessSettingMaximum">' $TMPDIR/framework-res/res/values/integers.xml | sed 's/<integer name="config_screenBrightnessSettingMaximum">//g' | sed 's/<\/integer>//' | sed 's/^[[:space:]]*//g')
         echo "persist.display.rom_max_brightness=$ROMMAXBRIGHTNESS" >> $systempath/build.prop
         rm -rf "$TMPDIR"

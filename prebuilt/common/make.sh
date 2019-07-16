@@ -81,6 +81,7 @@ fi
 if [ -f $romdir/DONTPATCHLIGHT ]; then
     echo "Patching lights for brightness fix is not supported in this rom. Skipping..."
 else
+    echo "Start Patching Light Services for Brightness Fix..."
     $thispath/brightnessfix/make.sh "$systempath"
 fi
 
