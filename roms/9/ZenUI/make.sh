@@ -8,3 +8,7 @@ echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 
 # Custom files
 cp -fpr $thispath/lib64/* $1/lib64/
+
+# For Fix Audio
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
+
