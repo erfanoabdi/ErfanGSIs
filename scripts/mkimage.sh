@@ -27,7 +27,7 @@ LOCALDIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 tempdir="$LOCALDIR/../tmp"
 toolsdir="$LOCALDIR/../tools"
 HOST="$(uname)"
-make_ext4fs="$toolsdir/$HOST/bin/make_ext4fs_64"
+make_ext4fs="$toolsdir/$HOST/bin/make_ext4fs"
 
 echo "Prepare File Contexts"
 p="/plat_file_contexts"
