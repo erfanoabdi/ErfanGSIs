@@ -25,6 +25,10 @@ cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.default
 echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
 
+# Enable OnePlus Call Recording
+chmod 0644 $1/etc/init/opstuffs.rc
+sed -i "s/op_voice_recording_supported_by_mcc/op_voice_recording_supt_by_xxx/g" $1/priv-app/TeleService/TeleService.apk
+
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml
 
