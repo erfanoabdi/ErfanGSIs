@@ -83,3 +83,11 @@ if [ -f $romdir/DONTPATCHLIGHT ]; then
 else
     $thispath/brightnessfix/make.sh "$systempath"
 fi
+
+# Notch Killer
+if [ -f $romdir/DONTKILLNOTCH ]; then
+    echo "Skipping killing notch..."
+else
+    $thispath/notchkiller/make.sh "$systempath"
+fi
+
