@@ -10,14 +10,11 @@ echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 cp -fpr $thispath/lib64/* $1/lib64/
 
 # Fix audio
-models=$(sed -n 's/audio_policy_configuration_*//p' "$1/lib/libaudiopolicymanagerdefault.so" | sed -n 's/.xml.*//p')
-for model in $models;
+model=$(sed -n 's/^ro.build.product=[[:space:]]*//p' "$1/build.prop")
+size=${#model}
+for n in $(seq $size);
 do
-    size=${#model}
-    for n in $(seq $size);
-    do
-        new=$new'\x00'
-    done
-    sed -i "s/audio_policy_configuration_$model.xml/audio_policy_configuration.xml$new/" "$1/lib/libaudiopolicymanagerdefault.so"
-    sed -i "s/audio_policy_configuration_$model.xml/audio_policy_configuration.xml$new/" "$1/lib64/libaudiopolicymanagerdefault.so"
+    new=$new'\x00'
 done
+sed -i "s/audio_policy_configuration_$model.xml/audio_policy_configuration.xml\x00$new/" "$1/lib/libaudiopolicymanagerdefault.so"
+sed -i "s/audio_policy_configuration_$model.xml/audio_policy_configuration.xml\x00$new/" "$1/lib64/libaudiopolicymanagerdefault.so"
