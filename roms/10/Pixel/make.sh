@@ -18,7 +18,3 @@ echo "persist.sys.overlay.photness=true" >> $1/etc/prop.default
 echo "qemu.hw.mainkeys=0" >> $1/etc/prop.default
 
 sed -i "/dataservice_app/d" $1/product/etc/selinux/product_seapp_contexts
-
-# Disable Codec2
-sed -i "s/android.hardware.media.c2/android.hardware.erfan.c2/g" $1/etc/vintf/manifest.xml
-rm -rf $1/etc/vintf/manifest/manifest_media_c2_software.xml

@@ -17,3 +17,7 @@ cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
 # Deal with non-flattened apex
 $thispath/../../scripts/apex_extractor.sh $1/apex
+
+# Disable Codec2
+sed -i "s/android.hardware.media.c2/android.hardware.erfan.c2/g" $1/etc/vintf/manifest.xml
+rm -rf $1/etc/vintf/manifest/manifest_media_c2_software.xml
