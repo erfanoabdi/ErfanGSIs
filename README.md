@@ -1,18 +1,5 @@
 ## Requirements
-- protobuf
-- LZMA
-- 7z
-- lz4
-### Linux
-```
-apt install liblzma-dev python-pip openjdk-8-jre-headless brotli lz4
-pip install backports.lzma protobuf
-```
-### Mac
-```
-brew install protobuf liblzma-dev brotli lz4
-pip install backports.lzma protobuf
-```
+    Linux or Mac
 
 ## Released GSIs
 Download links: https://mirrors.lolinet.com/firmware/gsi/  
@@ -27,6 +14,9 @@ Telegram channel: https://t.me/ErfanGSI
 git clone --recurse-submodules https://github.com/erfanoabdi/ErfanGSIs.git
 cd ErfanGSIs
 ```
+
+### For setting up requirements
+    bash setup.sh
 
 ### Generating GSI from stock firmware URL
 Example: for making OxygenOS of oneplus 7 pro firmware, you can use this command
