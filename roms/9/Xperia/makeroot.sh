@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 rootpath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`

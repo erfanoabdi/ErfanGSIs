@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 LOCALDIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 TMPDIR=$LOCALDIR/../tmp/apex_ext

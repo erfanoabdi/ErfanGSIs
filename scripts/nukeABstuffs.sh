@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 declare -a abfiles=(
 etc/init/bufferhubd.rc

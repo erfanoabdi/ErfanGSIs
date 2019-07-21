@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Supported Firmwares:
 # Aonly OTA

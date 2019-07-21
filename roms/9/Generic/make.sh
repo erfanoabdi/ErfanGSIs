@@ -1,3 +1,3 @@
-#/bin/bash
+#!/bin/bash
 
 # nothing to do here

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 flag=true
 while IFS= read -r line;

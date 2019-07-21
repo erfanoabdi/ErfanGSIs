@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # usage: apkedit.sh app.apk patch.sh platform
 

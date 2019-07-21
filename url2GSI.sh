@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 url=$1
 srctype=$2
