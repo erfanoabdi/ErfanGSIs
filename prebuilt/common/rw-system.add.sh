@@ -50,3 +50,19 @@ for overlay in $vendor_overlays; do
         fi
     fi
 done
+
+# Fix no Earpiece in audio_policy
+for f in \
+    /odm/etc/audio_policy_configuration.xml \
+    /vendor/etc/audio_policy_configuration.xml; do
+    [ ! -f "$f" ] && continue
+    if ! grep -q "<item>Earpiece</item>" "$f"; then
+        # shellcheck disable=SC2010
+        ctxt="$(ls -lZ "$f" | grep -oE 'u:object_r:[^:]*:s0')"
+        b="$(echo "$f" | tr / _)"
+        cp -a "$f" "/mnt/phh/$b"
+        sed -i "s|<attachedDevices>|<attachedDevices><item>Earpiece</item>|g" "/mnt/phh/$b"
+        chcon "$ctxt" "/mnt/phh/$b"
+        mount -o bind "/mnt/phh/$b" "$f"
+    fi
+done
