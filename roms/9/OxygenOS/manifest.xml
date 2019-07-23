@@ -38,3 +38,13 @@
         </interface>
         <fqname>@1.0::IOnePlusCameraProvider/default</fqname>
     </hal>
+    <hal format="hidl">
+        <name>vendor.oneplus.engnative.engineer</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IEngineer</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::IEngineer/default</fqname>
+    </hal>
