@@ -3,7 +3,10 @@
 systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
-# AOSP libs
+# Enable OnePlus Call Recording
+cp -fpr $thispath/init/* $1/etc/init/
+
+# Some overlays
 cp -fpr $thispath/overlay/* $1/product/overlay/
 
 # build.prop
