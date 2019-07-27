@@ -12,7 +12,7 @@ cp -fpr $thispath/usr_idc/* $1/usr/idc/
 cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/init/* $1/etc/init/
 cp -fpr $thispath/ld/* $1/etc/
-#cp -fpr $thispath/priv-app/* $1/priv-app/
+cp -fpr $thispath/priv-app/* $1/priv-app/
 #cp -fpr $thispath/app/* $1/app/
 #cp -fpr $thispath/overlay $1/product/
 
