@@ -32,7 +32,7 @@ chmod 0644 $1/etc/init/opstuffs.rc
 rm -rf $1/etc/permissions/qti_permissions.xml
 
 # fix bt audio for op gsi
-sed -i "/\/vendor\/etc\/audio/d" $1/bin/rw-system.sh
+sed -i "/\/vendor\/etc\/audio /d" $1/bin/rw-system.sh
 
 # drop dirac
 rm -rf $1/priv-app/DiracAudioControlService

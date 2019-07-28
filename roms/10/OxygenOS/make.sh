@@ -21,7 +21,7 @@ cp -fpr $thispath/selinux/* $1/etc/selinux/
 sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
 
 # fix bt audio for op gsi
-sed -i "/\/vendor\/etc\/audio/d" $1/bin/rw-system.sh
+sed -i "/\/vendor\/etc\/audio /d" $1/bin/rw-system.sh
 
 # drop dirac
 rm -rf $1/priv-app/DiracAudioControlService
