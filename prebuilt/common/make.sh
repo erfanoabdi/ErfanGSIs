@@ -84,11 +84,3 @@ else
     echo "Start Patching Light Services for Brightness Fix..."
     $thispath/brightnessfix/make.sh "$systempath"
 fi
-
-# Notch Killer
-if [ -f $romdir/DONTKILLNOTCH ]; then
-    echo "Skipping killing notch..."
-else
-    $thispath/notchkiller/make.sh "$systempath"
-fi
-
