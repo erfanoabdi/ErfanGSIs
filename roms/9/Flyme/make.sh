@@ -14,6 +14,9 @@ cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/overlay/* $1/product/overlay/
 cp -fpr $thispath/framework/* $1/framework/
 
+# Fix Flyme Data
+chmod 0644 $1/etc/init/flymedata.rc
+
 # hack bootprof
 sed -i "s|/sys/bootprof/bootprof|/system/erfan/bootprof|g" $1/lib/libsurfaceflinger.so
 sed -i "s|/sys/bootprof/bootprof|/system/erfan/bootprof|g" $1/lib64/libsurfaceflinger.so

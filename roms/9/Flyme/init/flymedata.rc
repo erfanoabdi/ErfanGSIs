@@ -1,0 +1,8 @@
+service FlymeData /system/bin/sh -c "settings put global multi_sim_data_call 1 && settings put global mobile_data1 1 && settings reset global com.android.dialer_simCardsState"
+    seclabel u:r:shell:s0
+    user root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start FlymeData
