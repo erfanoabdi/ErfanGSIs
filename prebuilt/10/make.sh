@@ -21,3 +21,8 @@ $thispath/../../scripts/apex_extractor.sh $1/apex
 # Disable Codec2
 sed -i "s/android.hardware.media.c2/android.hardware.erfan.c2/g" $1/etc/vintf/manifest.xml
 rm -rf $1/etc/vintf/manifest/manifest_media_c2_software.xml
+
+# Fix vendor CAF sepolicies
+$thispath/../../scripts/sepolicy_prop_remover.sh $1/etc/selinux/plat_property_contexts "device/qcom/sepolicy" > $1/../../plat_property_contexts
+mv $1/../../plat_property_contexts $1/etc/selinux/plat_property_contexts
+sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
