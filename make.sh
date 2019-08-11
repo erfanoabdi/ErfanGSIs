@@ -168,8 +168,19 @@ if [ "$outputtype" == "Aonly" ]; then
     fi
 fi
 
+date=`date +%Y%m%d`
+outputname="$romtypename-$outputtype-$sourcever-$date-ErfanGSI"
+outputimagename="$outputname".img
+outputtextname="$outputname".txt
+output="$outdir/$outputimagename"
+outputinfo="$outdir/$outputtextname"
+
+$scriptsdir/getinfo.sh "$systemdir/system" > "$outputinfo"
+
 if [[ $(grep "ro.build.display.id" $systemdir/system/build.prop) ]]; then
     displayid="ro.build.display.id"
+elif [[ $(grep "ro.system.build.id" $systemdir/system/build.prop) ]]; then
+    displayid="ro.system.build.id"
 elif [[ $(grep "ro.build.id" $systemdir/system/build.prop) ]]; then
     displayid="ro.build.id"
 fi
@@ -189,11 +200,7 @@ fi
 # Getting system size and add approximately 5% on it just for free space
 systemsize=`du -sk $systemdir | awk '{$1*=1024;$1=int($1*1.05);printf $1}'`
 
-date=`date +%Y%m%d`
-outputname="$romtypename-$outputtype-$sourcever-$date-ErfanGSI.img"
-output="$outdir/$outputname"
-
-echo "Creating Image: $outputname"
+echo "Creating Image: $outputimagename"
 # Use ext4fs to make image in P or older!
 if [ "$sourcever" -lt "10" ]; then
     useold="--old"
