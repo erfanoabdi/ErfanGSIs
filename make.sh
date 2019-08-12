@@ -172,6 +172,14 @@ date=`date +%Y%m%d`
 outputname="$romtypename-$outputtype-$sourcever-$date-ErfanGSI"
 outputimagename="$outputname".img
 outputtextname="$outputname".txt
+if [ "$4" == "" ]; then
+    echo "Create out dir"
+    outdirname="out"
+    outdir="$LOCALDIR/$outdirname"
+    mkdir -p "$outdir"
+else
+    outdir="$4"
+fi
 output="$outdir/$outputimagename"
 outputinfo="$outdir/$outputtextname"
 
@@ -187,15 +195,6 @@ fi
 displayid2=$(echo "$displayid" | sed 's/\./\\./g')
 bdisplay=$(grep "$displayid" $systemdir/system/build.prop | sed 's/\./\\./g; s:/:\\/:g; s/\,/\\,/g; s/\ /\\ /g')
 sed -i "s/$bdisplay/$displayid2=Built\.with\.ErfanGSI\.Tools/" $systemdir/system/build.prop
-
-if [ "$5" == "" ]; then
-    echo "Create out dir"
-    outdirname="out"
-    outdir="$LOCALDIR/$outdirname"
-    mkdir -p "$outdir"
-else
-    outdir=$5
-fi
 
 # Getting system size and add approximately 5% on it just for free space
 systemsize=`du -sk $systemdir | awk '{$1*=1024;$1=int($1*1.05);printf $1}'`
