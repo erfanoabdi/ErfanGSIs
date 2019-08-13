@@ -69,6 +69,10 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/xrom                   u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/custom                 u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/cpefs                  u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/modem                  u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/module_hashes          u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/pds                    u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/tombstones             u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     fcontexts="$tempdir/file_contexts"
 fi
 sudo rm -rf "$systemdir/persist"
