@@ -46,8 +46,13 @@ class GSIBuilderController extends TelegramBaseController {
 
     url2gsi($) {
 
-        if (!config.gsi_builders.includes($.message.from.id))
+        if (!config.gsi_builders.includes($.message.from.id)) {
+            $.sendMessage("You don't have access to GSI building", {
+                parse_mode: "markdown",
+                reply_to_message_id: $.message.messageId
+            });
             return
+        }
 
         if (!$.command.success || $.command.arguments.length === 0) {
             $.sendMessage("Usage: /url2gsi URL FirmwareType", {
