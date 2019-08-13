@@ -9,6 +9,9 @@
 # AB OTA
 # Image zip
 # ozip
+# Sony ftf
+# ZTE update.zip
+# KDDI .bin
 
 usage() {
     echo "Usage: $0 <Path to firmware> [Output Dir]"
@@ -27,6 +30,7 @@ HOST="$(uname)"
 toolsdir="$LOCALDIR/tools"
 simg2img="$toolsdir/$HOST/bin/simg2img"
 packsparseimg="$toolsdir/$HOST/bin/packsparseimg"
+unsin="$toolsdir/$HOST/bin/unsin"
 payload_extractor="$toolsdir/update_payload_extractor/extract.py"
 sdat2img="$toolsdir/sdat2img.py"
 ozipdecrypt="$toolsdir/oppo_ozip_decrypt/ozipdecrypt.py"
@@ -55,7 +59,7 @@ if [[ $MAGIC == "OPPOENCRYPT!" ]]; then
     exit
 fi
 
-if [[ ! $(7z l -ba $romzip | grep ".*system.ext4.tar.*\|.*.tar\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin\|image.*.zip\|.*rawprogram*\|system.sin" | grep -v ".*chunk.*\.so$") ]]; then
+if [[ ! $(7z l -ba $romzip | grep ".*system.ext4.tar.*\|.*.tar\|.*chunk\|system\/build.prop\|system.new.dat\|system_new.img\|system.img\|payload.bin\|image.*.zip\|update.zip\|.*rawprogram*\|system.sin\|system-p" | grep -v ".*chunk.*\.so$") ]]; then
     echo "BRUH: This type of firmwares not supported"
     cd "$LOCALDIR"
     rm -rf "$tmpdir" "$outdir"
@@ -106,17 +110,44 @@ if [[ $(7z l -ba $romzip | grep system.new.dat) ]]; then
             rm -rf $line.transfer.list $line.new.dat
         done
     done
+elif [[ $(7z l -ba $romzip | grep chunk | grep -v ".*\.so$") ]]; then
+    echo "chunk detected"
+    for partition in $PARTITIONS; do
+        foundpartitions=$(7z l -ba $romzip | rev | gawk '{ print $1 }' | rev | grep $partition.img)
+        7z e -y $romzip *$partition*chunk* */*$partition*chunk* $foundpartitions dummypartition 2>/dev/null >> $tmpdir/zip.log
+        rm -f *"$partition"_b*
+        rm -f *"$partition"_other*
+        romchunk=$(ls | grep chunk | grep $partition | sort)
+        if [[ $(echo "$romchunk" | grep "sparsechunk") ]]; then
+            $simg2img $(echo "$romchunk" | tr '\n' ' ') $partition.img.raw 2>/dev/null
+            rm -rf *$partition*chunk*
+            if [[ -f $partition.img ]]; then
+                rm -rf $partition.img.raw
+            else
+                mv $partition.img.raw $partition.img
+            fi
+        fi
+    done
 elif [[ $(7z l -ba $romzip | grep "system.sin") ]]; then
     echo "sin detected"
     cd $tmpdir
     for partition in $PARTITIONS; do
         7z e -y $romzip $partition.sin 2>/dev/null >> $tmpdir/zip.log
     done
-    mono $toolsdir/UnSIN.exe -d $tmpdir
+    $unsin -d $tmpdir
     rm -rf $tmpdir/*.sin
     ext4_list=`find $tmpdir/ -type f -printf '%P\n' | sort`
     for file in $ext4_list; do
         mv $tmpdir/$file $(echo "$outdir/$file" | sed -r 's|ext4|img|g')
+    done
+elif [[ $(7z l -ba $romzip | grep "system-p") ]]; then
+    echo "P suffix images detected"
+    for partition in $PARTITIONS; do
+        foundpartitions=$(7z l -ba $romzip | rev | gawk '{ print $1 }' | rev | grep $partition-p)
+        7z e -y $romzip $foundpartitions dummypartition 2>/dev/null >> $tmpdir/zip.log
+        if [ ! -z "$foundpartitions" ]; then
+            mv $(ls $partition-p*) "$partition.img"
+        fi
     done
 elif [[ $(7z l -ba $romzip | grep "system_new.img\|system.img") ]]; then
     echo "Image detected"
@@ -171,24 +202,6 @@ elif [[ $(7z l -ba $romzip | grep tar.md5 | rev | gawk '{ print $1 }' | rev | gr
         exit 1
     fi
     romzip=""
-elif [[ $(7z l -ba $romzip | grep chunk | grep -v ".*\.so$") ]]; then
-    echo "chunk detected"
-    for partition in $PARTITIONS; do
-        foundpartitions=$(7z l -ba $romzip | rev | gawk '{ print $1 }' | rev | grep $partition.img)
-        7z e -y $romzip *$partition*chunk* */*$partition*chunk* $foundpartitions dummypartition 2>/dev/null >> $tmpdir/zip.log
-        rm -f *"$partition"_b*
-        rm -f *"$partition"_other*
-        romchunk=$(ls | grep chunk | grep $partition | sort)
-        if [[ $(echo "$romchunk" | grep "sparsechunk") ]]; then
-            $simg2img $(echo "$romchunk" | tr '\n' ' ') $partition.img.raw 2>/dev/null
-            rm -rf *$partition*chunk*
-            if [[ -f $partition.img ]]; then
-                rm -rf $partition.img.raw
-            else
-                mv $partition.img.raw $partition.img
-            fi
-        fi
-    done
 elif [[ $(7z l -ba $romzip | grep rawprogram) ]]; then
     echo "QFIL detected"
     rawprograms=$(7z l -ba $romzip | rev | gawk '{ print $1 }' | rev | grep rawprogram)
@@ -220,9 +233,9 @@ elif [[ $(7z l -ba $romzip | grep payload.bin) ]]; then
     rm payload.bin
     rm -rf "$tmpdir"
     exit
-elif [[ $(7z l -ba $romzip | grep "image.*.zip") ]]; then
+elif [[ $(7z l -ba $romzip | grep "image.*.zip\|update.zip") ]]; then
     echo "Image zip firmware detected"
-    thezip=$(7z l -ba $romzip | grep "image.*.zip" | rev | gawk '{ print $1 }' | rev)
+    thezip=$(7z l -ba $romzip | grep "image.*.zip\|update.zip" | rev | gawk '{ print $1 }' | rev)
     7z e -y $romzip $thezip 2>/dev/null >> $tmpdir/zip.log
     thezipfile=$(echo $thezip | rev | cut -d "/" -f 1 | rev)
     mv $thezipfile temp.zip
