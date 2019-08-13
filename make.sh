@@ -204,7 +204,7 @@ echo "Creating Image: $outputimagename"
 if [ "$sourcever" -lt "10" ]; then
     useold="--old"
 fi
-$scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output $useold
+$scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output $useold > $tempdir/mkimage.log
 
 echo "Remove Temp dir"
 rm -rf "$tempdir"

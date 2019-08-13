@@ -76,7 +76,7 @@ DOWNLOAD()
     URL="$1"
     ZIP_NAME="$2"
     echo "Downloading firmware to: $ZIP_NAME"
-    aria2c --download-result=hide --show-console-readout=false --enable-color=false -s 16 -x 16 ${URL} -o "$ZIP_NAME" || wget -U "Mozilla/5.0" ${URL} -O "$ZIP_NAME"
+    wget -U "Mozilla/5.0" ${URL} -O "$ZIP_NAME"
 }
 
 MOUNT()
