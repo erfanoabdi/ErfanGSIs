@@ -1,3 +1,3 @@
 #!/bin/bash
 
-#TODO
+git pull --recurse-submodules
