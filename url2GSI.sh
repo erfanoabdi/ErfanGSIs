@@ -36,10 +36,6 @@ case $key in
     AB=false
     shift
     ;;
-    --mounted|-m)
-    MOUNTED=true
-    shift
-    ;;
     --cleanup|-c)
     CLEAN=true
     shift
@@ -95,6 +91,10 @@ echo "Updating tools..."
 
 # Create input & working directory if it does not exist
 mkdir -p "$PROJECT_DIR/input" "$PROJECT_DIR/working" "$PROJECT_DIR/output"
+
+if [[ -d "$URL" ]]; then
+    MOUNTED=true
+fi
 
 if [ $MOUNTED == false ]; then
     if [[ "$URL" == "http"* ]]; then
