@@ -48,6 +48,7 @@ UPLOAD()
         INFONAME=$INFOABNAME
         INFOPATH=$INFOABPATH
         if [[ -f "$IMAGEABPATH" ]]; then
+            echo "Compressing $IMAGEABPATH.7z"
             7z a "$IMAGEABPATH.7z" "$IMAGEABPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
             mv "$IMAGEABPATH.7z" /data/web/gsis/
         fi
@@ -61,6 +62,7 @@ UPLOAD()
         INFONAME=$INFOAONAME
         INFOPATH=$INFOAOPATH
         if [[ -f "$IMAGEAOPATH" ]]; then
+            echo "Compressing $IMAGEAOPATH.7z"
             7z a "$IMAGEAOPATH.7z" "$IMAGEAOPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
             mv "$IMAGEAOPATH.7z" /data/web/gsis/
         fi
