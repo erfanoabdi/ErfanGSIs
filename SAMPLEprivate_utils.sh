@@ -47,8 +47,10 @@ UPLOAD()
         INFOABNAME=$(echo "$INFOABPATH" | rev | cut -d "/" -f 1 | rev)
         INFONAME=$INFOABNAME
         INFOPATH=$INFOABPATH
-        7z a "$IMAGEABPATH.7z" "$IMAGEABPATH"
-        mv "$IMAGEABPATH.7z" /data/web/gsis/
+        if [[ -f "$IMAGEABPATH" ]]; then
+            7z a "$IMAGEABPATH.7z" "$IMAGEABPATH"
+            mv "$IMAGEABPATH.7z" /data/web/gsis/
+        fi
     fi
 
     if [ $AONLY == true ]; then
@@ -58,8 +60,10 @@ UPLOAD()
         INFOAONAME=$(echo "$INFOAOPATH" | rev | cut -d "/" -f 1 | rev)
         INFONAME=$INFOAONAME
         INFOPATH=$INFOAOPATH
-        7z a "$IMAGEAOPATH.7z" "$IMAGEAOPATH"
-        mv "$IMAGEAOPATH.7z" /data/web/gsis/
+        if [[ -f "$IMAGEAOPATH" ]]; then
+            7z a "$IMAGEAOPATH.7z" "$IMAGEAOPATH"
+            mv "$IMAGEAOPATH.7z" /data/web/gsis/
+        fi
     fi
 
     rm -rf "$IMAGEABPATH" "$IMAGEAOPATH"

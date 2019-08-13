@@ -100,7 +100,7 @@ if [ $MOUNTED == false ]; then
         DOWNLOAD "$URL" "$ZIP_NAME"
         URL="$ZIP_NAME"
     fi
-    "$PROJECT_DIR"/zip2img.sh "$URL" "$PROJECT_DIR/working"
+    "$PROJECT_DIR"/zip2img.sh "$URL" "$PROJECT_DIR/working" || exit 1
     if [ $CLEAN == true ]; then
         rm -rf "$PROJECT_DIR/input/*"
     fi
@@ -109,11 +109,11 @@ if [ $MOUNTED == false ]; then
 fi
 
 if [ $AB == true ]; then
-   "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" AB "$PROJECT_DIR/output" ${@}
+   "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" AB "$PROJECT_DIR/output" ${@} || exit 1
 fi
 
 if [ $AONLY == true ]; then
-    "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" Aonly "$PROJECT_DIR/output" ${@}
+    "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" Aonly "$PROJECT_DIR/output" ${@} || exit 1
 fi
 
 UMOUNT "$PROJECT_DIR/working/system"
