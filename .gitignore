@@ -3,3 +3,6 @@ private_utils.sh
 tmp
 downloads
 cache
+output
+input
+working
