@@ -130,7 +130,7 @@ $romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system" 2>/dev/
 if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
     if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
         echo "Resigning to AOSP keys"
-        python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security
+        python $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security > $tempdir/resign.log
         $prebuiltdir/resigned/make.sh "$systemdir/system" 2>/dev/null
     fi
 fi
