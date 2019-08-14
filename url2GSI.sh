@@ -96,6 +96,7 @@ if [[ -d "$URL" ]]; then
     MOUNTED=true
 fi
 
+ZIP_NAME="$PROJECT_DIR/input/dummy"
 if [ $MOUNTED == false ]; then
     if [[ "$URL" == "http"* ]]; then
         # URL detected
@@ -105,7 +106,7 @@ if [ $MOUNTED == false ]; then
     fi
     "$PROJECT_DIR"/zip2img.sh "$URL" "$PROJECT_DIR/working" || exit 1
     if [ $CLEAN == true ]; then
-        rm -rf "$PROJECT_DIR/input/*"
+        rm -rf "$ZIP_NAME"
     fi
     MOUNT "$PROJECT_DIR/working/system.img"
     URL="$PROJECT_DIR/working/system"
