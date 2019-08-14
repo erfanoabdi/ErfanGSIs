@@ -33,6 +33,9 @@ sed -i "/ro.setupwizard.mode/d" $1/etc/prop.default
 sed -i "/ro.setupwizard.mode/d" $1/build.prop
 sed -i "/ro.setupwizard.mode/d" $1/product/build.prop
 
+# Disable vndk lite
+echo "ro.vndk.lite=false" >> $1/etc/prop.default
+
 # disable RescureParty
 echo "persist.sys.disable_rescue=true" >> $1/etc/prop.default
 # disable privapp_permissions checking
