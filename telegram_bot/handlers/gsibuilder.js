@@ -55,7 +55,7 @@ class GSIBuilderController extends TelegramBaseController {
         }
 
         if (!$.command.success || $.command.arguments.length === 0) {
-            $.sendMessage("Usage: /url2gsi URL FirmwareType", {
+            $.sendMessage("Usage and help: /url2gsi -h", {
                 parse_mode: "markdown",
                 reply_to_message_id: $.message.messageId
             });

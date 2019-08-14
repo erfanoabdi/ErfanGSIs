@@ -11,13 +11,13 @@ CLEAN=false
 
 usage()
 {
-    echo "Usage: [--ab|-b] [--aonly|-a] [--mounted|-m] [--cleanup|-c] $0 <Firmware link> <Firmware type> [Other args]"
+    echo "Usage: [--help|-h|-?] [--ab|-b] [--aonly|-a] [--mounted|-m] [--cleanup|-c] $0 <Firmware link> <Firmware type> [Other args]"
     echo -e "\tFirmware link: Firmware download link or local path"
     echo -e "\tFirmware type: Firmware mode"
     echo -e "\t--ab: Build only AB"
     echo -e "\t--aonly: Build only A-Only"
-    echo -e "\t--mounted: Firmware already mounted"
     echo -e "\t--cleanup: Cleanup downloaded firmware"
+    echo -e "\t--help: To show this info"
 }
 
 POSITIONAL=()
@@ -39,6 +39,10 @@ case $key in
     --cleanup|-c)
     CLEAN=true
     shift
+    ;;
+    --help|-h|-?)
+    usage
+    exit
     ;;
     *)
     POSITIONAL+=("$1")
