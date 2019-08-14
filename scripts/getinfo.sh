@@ -23,6 +23,7 @@ codename=$(grep -oP "(?<=^ro.product.device=).*" -hs "$SYSTEMDIR"/build*.prop | 
 [[ -z "${codename}" ]] && codename=$(grep -oP "(?<=^ro.product.system.device=).*" -hs "$SYSTEMDIR"/build*.prop | head -1)
 [[ -z "${codename}" ]] && codename=$(echo $fingerprint | cut -d / -f3 | cut -d : -f1 )
 [[ -z "${codename}" ]] && codename=$(grep -oP "(?<=^ro.build.fota.version=).*" -hs "$SYSTEMDIR"/build*.prop | cut -d - -f1 | head -1)
+spl=$(grep -oP "(?<=^ro.build.version.security_patch=).*" -hs "$SYSTEMDIR"/build*.prop | head -1)
 description=$(grep -oP "(?<=^ro.build.description=).*" -hs "$SYSTEMDIR"/build*.prop)
 [[ -z "${description}" ]] && description=$(grep -oP "(?<=^ro.system.build.description=).*" -hs "$SYSTEMDIR"/build*.prop)
 [[ -z "${description}" ]] && description="$flavor $release $id $incremental $tags"
@@ -35,6 +36,7 @@ Build Type: $flavor
 Build Number: $id
 Incremental: $incremental
 Tags: $tags
+Security Patch: $spl
 Fingerprint: $fingerprint
 Description: $description
 "
