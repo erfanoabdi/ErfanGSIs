@@ -33,6 +33,10 @@ var q = new Queue(function (input, cb) {
         });
 
         url2gsi.on('exit', function (code) {
+            $.sendMessage("Job done", {
+                parse_mode: "markdown",
+                reply_to_message_id: $.message.messageId
+            });
             console.log('child process exited with code ' + code.toString());
             cb()
         });
