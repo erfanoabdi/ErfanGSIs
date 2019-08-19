@@ -39,6 +39,13 @@ rm -rf $1/priv-app/DiracAudioControlService
 rm -rf $1/app/DiracManager
 rm -rf $1/app/NxpNfcNci
 
+# fix dash state
+cp -fpr $thispath/erfan $1/
+sed -i "s|/sys/class/power_supply/battery/chg_protect_status|/system/erfan///////////////////////////zero_state|g" $1/framework/oat/arm64/services.vdex
+sed -i "s|/sys/class/power_supply/battery/fastchg_status_is_ok|/system/erfan/////////////////////////////zero_state|g" $1/framework/oat/arm64/services.vdex
+sed -i "s|/sys/class/power_supply/battery/short_c_hw_status|/system/erfan//////////////////////////zero_state|g" $1/framework/oat/arm64/services.vdex
+sed -i "s|/sys/class/power_supply/battery/short_ic_otp_status|/system/erfan////////////////////////////zero_state|g" $1/framework/oat/arm64/services.vdex
+
 # fix op6t notch
 sed -i "s/M-185,0 H183.34 c-9.77.44-19.57,0.08-29.28,1.24-20.33,1.14-41.18,5.17-58.62,16.24 C78.54,28.27,66,44.26,52,58.29 a72.73,72.73,0,0,1-38.29,19.58 c-16.53,2.51-34,1-49.09-6.62-9.85-4.62-17.88-12.24-25.21-20.18-10.46-11.27-20.9-22.75-33.53-31.66-11.49-8-24.9-12.78-38.53-15.42 C-149.92,0.81,-167.51.39,-185,0Z/00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/" $1/framework/framework-res.apk
 
