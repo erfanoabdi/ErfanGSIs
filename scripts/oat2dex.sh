@@ -18,7 +18,8 @@ echo "Create Temp dir"
 mkdir -p "$TMPDIR"
 
 FRAMEWORKDIR="$1"
-TARGET="$2"
+TARGETS="$2"
+DEODEXALL=false
 
 BAKSMALIJAR="$toolsdir"/smali/baksmali.jar
 SMALIJAR="$toolsdir"/smali/smali.jar
@@ -50,15 +51,24 @@ if [ -z "$ARCHES" ]; then
 fi
 
 if [ -z "$ARCHES" ]; then
-	FULLY_DEODEXED=1 && exit 0 # system is fully deodexed, return
-fi
-
-if [ ! -f "$TARGET" ]; then
+    echo "System is already fully deodexed"
+    rm -rf "$TMPDIR"
 	exit
 fi
 
+if [ -z "$TARGETS" ]; then
+	TARGETS=$(ls "$FRAMEWORKDIR"/*.jar)
+    DEODEXALL=true
+fi
+
+for TARGET in $TARGETS; do
+
+if [ ! -f "$TARGET" ]; then
+    continue
+fi
+
 if grep "classes.dex" "$TARGET" >/dev/null; then
-	exit 0 # target apk|jar is already odexed, return
+	continue
 fi
 
 for ARCH in $ARCHES; do
@@ -123,5 +133,9 @@ if [ -f "$TMPDIR/classes.dex" ]; then
     rm "$TMPDIR/classes"*
     printf '    (updated %s from odex files)\n' "${TARGET}"
 fi
+done
 
+if [ $DEODEXALL == true ]; then
+    rm -rf "$FRAMEWORKDIR/arm" "$FRAMEWORKDIR/arm64" "$FRAMEWORKDIR/oat" "$FRAMEWORKDIR"/*.vdex "$FRAMEWORKDIR"/*.prof
+fi
 rm -rf "$TMPDIR"
