@@ -29,6 +29,7 @@ cp -fpr $thispath/bin-hw/* $1/bin/hw/
 cp -fpr $thispath/lib64/* $1/lib64/
 #cp -fpr $thispath/manifest.xml $1/etc/vintf/
 cp -fpr $thispath/app/* $1/app/
+cp -fpr $thispath/framework/* $1/framework/
 
 python $thispath/../../../scripts/custom_manifest.py $thispath/../../../tmp/manifest.xml $thispath/manifest.xml $1/etc/vintf/manifest.xml
 cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml
@@ -36,5 +37,5 @@ cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml
 # Append file_context
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
-# debloat
-$thispath/debloat.sh "$systempath"
+# deodex system
+$thispath/../../../scripts/oat2dex.sh $1/framework
