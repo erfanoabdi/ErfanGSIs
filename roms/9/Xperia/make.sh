@@ -4,7 +4,7 @@ systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 #TODO build.prop
-cp -fpr $thispath/build.prop $1/
+#cp -fpr $thispath/build.prop $1/
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml
 sed -i "s/persist.sys.usb.config=none/persist.sys.usb.config=adb/g" $1/etc/prop.default
