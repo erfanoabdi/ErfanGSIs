@@ -1,0 +1,10 @@
+    <hal format="hidl">
+        <name>motorola.hardware.wifi.supplicant</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ISupplicantMot</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::ISupplicantMot/default</fqname>
+    </hal>
