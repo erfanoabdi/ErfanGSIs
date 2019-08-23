@@ -1,0 +1,20 @@
+    <hal format="hidl">
+        <name>vendor.oppo.engnative.engineer</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IEngineer</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::IEngineer/default</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.oppo.hardware.cryptoeng</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ICryptoeng</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::ICryptoeng/default</fqname>
+    </hal>

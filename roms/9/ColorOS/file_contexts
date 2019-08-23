@@ -1,2 +1,3 @@
 /system/bin/color.sh u:object_r:update_engine_exec:s0
 /system/bin/hw/vendor.oppo.hardware.cryptoeng@1.0-service 		u:object_r:hal_allocator_default_exec:s0
+/system/bin/hw/vendor.oppo.engnative.engineer@1.0-service 		u:object_r:hal_allocator_default_exec:s0

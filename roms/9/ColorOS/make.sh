@@ -31,3 +31,8 @@ sed -i "s|/proc/phoenix|/data/erf/phx|g" $1/lib/libphoenix_native.so
 sed -i "s|/proc/phoenix|/data/erf/phx|g" $1/lib64/libphoenix_native.so
 
 sed -i "s|/proc/opbootfrom|/data/erf/botfrm|g" $1/framework/oat/arm64/services.vdex
+
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
+
+python $thispath/../../../scripts/custom_manifest.py $thispath/../../../tmp/manifest.xml $thispath/manifest.xml $1/etc/vintf/manifest.xml
+cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml

@@ -40,4 +40,11 @@ rm -rf $1/priv-app/VideoGallery
 rm -rf $1/priv-app/Velvet
 rm -rf $1/priv-app/VideoGallery
 rm -rf $1/reserve
-
+rm -rf $1/app/com.amazon.appmanager
+rm -rf $1/app/com.facebook.appmanager
+rm -rf $1/app/KeKeMarket
+rm -rf $1/app/KeKePay
+rm -rf $1/app/KeKeUserCenter
+rm -rf $1/app/NXPNfcNci
+rm -rf $1/app/OcrScanner
+rm -rf $1/app/OcrService
