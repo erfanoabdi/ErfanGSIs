@@ -40,6 +40,8 @@ echo "ro.vndk.lite=false" >> $1/etc/prop.default
 echo "persist.sys.disable_rescue=true" >> $1/etc/prop.default
 # disable privapp_permissions checking
 echo "ro.control_privapp_permissions=disable" >> $1/etc/prop.default
+# Disable frp prop
+echo "ro.frp.pst=" >> $1/etc/prop.default
 # fix vndk26 vold
 sed -i "/reserved_disk/d" $1/etc/init/vold.rc
 
