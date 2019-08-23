@@ -17,3 +17,9 @@ cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
 # set fake fingerprint
 "ro.build.fingerprint=motorola/nash/nash:8.0.0/OPXS27.109-34-10/5:user/release-keys" >> $1/build.prop
+
+# libaudioclient
+cp -fpr $thispath/vndk-28-arm32/* $1/lib/vndk-28/
+
+# Hotspot overlay
+cp -fpr $thispath/overlay/* $1/product/overlay/
