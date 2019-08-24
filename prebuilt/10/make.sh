@@ -26,3 +26,6 @@ rm -rf $1/etc/vintf/manifest/manifest_media_c2_software.xml
 $thispath/../../scripts/sepolicy_prop_remover.sh $1/etc/selinux/plat_property_contexts "device/qcom/sepolicy" > $1/../../plat_property_contexts
 mv $1/../../plat_property_contexts $1/etc/selinux/plat_property_contexts
 sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
+
+# remove libdolphin.so
+rm -rf $1/lib64/libdolphin.so
