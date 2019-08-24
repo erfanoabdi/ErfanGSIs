@@ -1,0 +1,135 @@
+on fs
+   start  mqsasd
+
+on post-fs-data
+    mkdir /data/system 0775 system system
+    mkdir /data/system/mcd 0755 system system
+    mkdir /data/system/whetstone 0770 system system
+    mkdir /data/system/migt 0777 system system
+    restorecon_recursive /data/system/mcd
+    restorecon_recursive /data/system/whetstone
+    restorecon_recursive /data/system/migt
+    restorecon /sys/kernel/debug/system_stats
+    restorecon /sys/kernel/debug/msm_subsys/modem
+    chmod 0777 /data/system/migt
+    chmod 0777 /data/system/migt/migt
+
+#mdbd
+service mdbd /sbin/mdbd
+    class core
+    socket mdbd stream 660 system system
+    disabled
+    seclabel u:r:mdbd:s0
+
+service shelld /system/xbin/shelld
+    class main
+
+#service for su
+service su_daemon /system/xbin/su --daemon
+    class main
+
+# service for mcd init
+service mcd_init /system/bin/mcd init
+    user root
+    group system
+    class main
+    disabled
+    oneshot
+
+on property:init.svc.zygote=running
+    setprop mcd.extra.params "4"
+    start mcd_init
+
+#service for mcd main service
+service mcd_service /system/bin/mcd
+    class main
+    disabled
+
+on property:sys.boot_completed=1
+    start mcd_service
+    start miui-post-boot
+
+service mdb_svc  /system/xbin/mdb_svc
+    class late_start
+    disabled
+
+service otad /bin/otad
+    class main
+    socket otad stream 0660 updater updater
+    seclabel u:r:otad:s0
+
+# will delete this service, /system may be invalidate yet when post-fs-data triggered
+service checkpath /system/xbin/miuioneshots check-sdk-path
+    class main
+    user root
+    group system
+    disabled
+    oneshot
+
+on post-fs-data
+    start checkpath
+
+service checksdkpath /system/xbin/miuioneshots check-sdk-path
+    class main
+    user root
+    group system
+    disabled
+    oneshot
+
+on property:init.svc.zygote=running
+    start checksdkpath
+
+
+# for theme
+on post-fs-data
+    mkdir /data/system/theme 0777 theme theme
+    chown theme theme /data/system/theme
+    chmod 0777 /data/system/theme
+    restorecon /data/system/theme
+    chown theme theme /data/system/theme/lock_wallpaper
+    chmod 0777 /data/system/theme/lock_wallpaper
+    restorecon /data/system/theme/lock_wallpaper
+    mkdir /data/system/theme_magic 0777 theme theme
+    chown theme theme /data/system/theme_magic
+    chmod 0777 /data/system/theme_magic
+    restorecon /data/system/theme_magic
+    mkdir /data/system/theme_magic/customized_icons 0777 theme theme
+    chown theme theme /data/system/theme_magic/customized_icons
+    chmod 0777 /data/system/theme_magic/customized_icons
+    restorecon /data/system/theme_magic/customized_icons
+
+service fdpp /system/bin/fdpp daemon
+    class main
+    user root
+    group system
+
+# mqsasd
+service mqsasd /system/xbin/mqsasd daemon
+    user root
+    group system cache log
+    socket mqsasd stream 0660 system system
+
+on post-fs-data
+    mkdir /data/mqsas 0775 system system
+    mkdir /data/system/miuilog 0775 system system
+
+#adb input
+on property:persist.security.adbinput=*
+    restart adbd
+
+service miui-early-boot /system/bin/sh /init.miui.early_boot.sh
+    class main
+    user root
+    oneshot
+    seclabel u:r:miui_init_shell:s0
+
+service system_perf_init /system/xbin/system_perf_init
+    class main
+    user root
+    oneshot
+
+service miui-post-boot /system/bin/sh /init.miui.post_boot.sh
+    class late_start
+    user root
+    disabled
+    oneshot
