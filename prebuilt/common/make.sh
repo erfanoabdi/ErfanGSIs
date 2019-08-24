@@ -58,6 +58,10 @@ echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
 $thispath/../../scripts/propcleanner.sh $1/build.prop > $1/../../build.prop
 cp -fpr $1/../../build.prop $1/
 
+if [ -f $1/lib64/libbluetooth_qti.so ]; then
+    echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
+fi
+
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
 # cleanup props
