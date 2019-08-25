@@ -117,7 +117,7 @@ if [[ ! -d "$romsdir/$sourcever/$romtype" ]]; then
 fi
 
 # Detect arch
-if [[ ! -d "$systemdir/system/lib64" ]]; then
+if [[ ! -f "$systemdir/system/lib64/libandroid.so" ]]; then
     echo "32bit source detected, weird flex but ok!"
     # do something here?
 fi
