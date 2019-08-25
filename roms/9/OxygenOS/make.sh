@@ -13,6 +13,7 @@ cp -fpr $thispath/priv-app/* $1/priv-app/
 #cp -fpr $thispath/manifest.xml $1/etc/vintf/
 cp -fpr $thispath/overlay/* $1/product/overlay/
 cp -fpr $thispath/framework/* $1/framework/
+cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
 python $thispath/../../../scripts/custom_manifest.py $thispath/../../../tmp/manifest.xml $thispath/manifest.xml $1/etc/vintf/manifest.xml
 cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml
