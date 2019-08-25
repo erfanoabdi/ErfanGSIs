@@ -66,3 +66,21 @@ for f in \
         mount -o bind "/mnt/phh/$b" "$f"
     fi
 done
+
+# Drop aosp light from manifest if service not avaliable
+if [ ! -f /vendor/bin/hw/android.hardware.light* ]; then
+    for f in \
+        /vendor/etc/vintf/manifest.xml \
+        /vendor/manifest.xml; do # For O if i ever wanted to try
+        [ ! -f "$f" ] && continue
+        if grep -q "android.hardware.light" "$f"; then
+            # shellcheck disable=SC2010
+            ctxt="$(ls -lZ "$f" | grep -oE 'u:object_r:[^:]*:s0')"
+            b="$(echo "$f" | tr / _)"
+            cp -a "$f" "/mnt/phh/$b"
+            sed -i "s|android.hardware.light|android.hardware.NOPElight|g" "/mnt/phh/$b"
+            chcon "$ctxt" "/mnt/phh/$b"
+            mount -o bind "/mnt/phh/$b" "$f"
+        fi
+    done
+fi
