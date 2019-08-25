@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/system/bin/sh
+
+# Project OEM-GSI Porter by Erfan Abdi <erfangplus@gmail.com>
 
 # How this works
 # 0) Wait for boot complete and surfaceflinger crash (on .rc script)
@@ -7,7 +9,7 @@
 # 3) Find first "cbz" offset
 # 4) Patch it to "cbnz" and save to /data/local/tmp/
 # 5) Stop surfaceflinger
-# 6) Patch lib
+# 6) Patch lib (if system mounts as rw, lib patches directly but if not, patched lib bind mounts in every boot)
 # 7) Start surfaceflinger
 
 DUMPSURF="/data/local/tmp/dumpsurf.txt"
@@ -16,6 +18,7 @@ PATCH()
 {
     local HDROFFSET=$1
     local LIBSURFACEFLINGER=$2
+    local REPLACE=$3
     echo $HDROFFSET $LIBSURFACEFLINGER
     objdump -d "$LIBSURFACEFLINGER" | grep " $HDROFFSET:" -B 7 > $DUMPSURF
 
@@ -23,14 +26,24 @@ PATCH()
         echo "Live Patch not supported on this lib"
         exit
     fi
-    CBZ=$(cat $DUMPSURF | head -n 1 | awk '{ print "\\x"$2"\\x"$3"\\x"$4 }')
+    CBZ=$(cat $DUMPSURF | head -n 1 | awk '{ print "\\x"$2"\\x"$3"\\x"$4"\\xb4" }')
+    CBNZ=$(cat $DUMPSURF | head -n 1 | awk '{ print "\\x"$2"\\x"$3"\\x"$4"\\xb5" }')
     BL=$(cat $DUMPSURF | head -n 2 | tail -n 1 | awk '{ print "\\x"$2"\\x"$3"\\x"$4"\\x"$5 }')
-
-    sed -i "s|$CBZ\xb4$BL|$CBZ\xb5$BL|" "$LIBSURFACEFLINGER"
+    stop surfaceflinger
+    if [ $REPLACE == true ]; then
+        gsed -i "s|$CBZ$BL|$CBNZ$BL|" "$LIBSURFACEFLINGER"
+    else
+        cp "$LIBSURFACEFLINGER" /data/local/tmp/libs.so
+        gsed -i "s|$CBZ$BL|$CBNZ$BL|" /data/local/tmp/libs.so
+        chmod 0644 /data/local/tmp/libs.so
+        chcon u:object_r:system_file:s0 /data/local/tmp/libs.so
+        mount -o bind /data/local/tmp/libs.so "$LIBSURFACEFLINGER"
+    fi
+    start surfaceflinger
 }
 
 while true; do
-    HDRLINE=$(logcat -d | grep isHDRLayer)
+    HDRLINE=$(logcat -d | grep isHDRLayer | head -n 1)
     if [ -z "$HDRLINE" ]; then
         continue
     fi
@@ -38,16 +51,13 @@ while true; do
 done
 
 LIBSURFACEFLINGER=$(echo $HDRLINE | grep -o "/system/lib.*/libsurfaceflinger.so")
-HDROFFSET=$(echo $HDRLINE | sed "s|/system/lib.*/libsurfaceflinger.so.*||" | rev | awk '{ print $1 }' | rev | sed 's/^0*//')
-stop surfaceflinger
+HDROFFSET=$(echo $HDRLINE | sed "s|/system/lib.*/libsurfaceflinger.so.*||" | sed $'s/./&\\\n/g' | sed -ne $'x;H;${x;s/\\n//g;p;}' | awk '{ print $1 }' | sed $'s/./&\\\n/g' | sed -ne $'x;H;${x;s/\\n//g;p;}' | sed 's/^0*//')
 
-if mount -o remount,rw /system_root; then
-    PATCH "$HDROFFSET" "/system_root$LIBSURFACEFLINGER"
-    mount -o remount,ro /system_root || true
-fi
 if mount -o remount,rw /system; then
-    PATCH "$HDROFFSET" "/system$LIBSURFACEFLINGER"
+    PATCH "$HDROFFSET" "$LIBSURFACEFLINGER" true
     mount -o remount,ro /system || true
+else
+    PATCH "$HDROFFSET" "$LIBSURFACEFLINGER" false
 fi
 
-start surfaceflinger
+setprop isHDRLayer.patched 1
