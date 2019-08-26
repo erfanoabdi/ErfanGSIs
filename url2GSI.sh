@@ -94,6 +94,13 @@ UMOUNT()
     sudo umount "$1"
 }
 
+LEAVE()
+{
+    UMOUNT "$PROJECT_DIR/working/system"
+    rm -rf "$PROJECT_DIR/working"
+    exit 1
+}
+
 echo "Updating tools..."
 "$PROJECT_DIR"/update.sh
 
@@ -121,11 +128,11 @@ if [ $MOUNTED == false ]; then
 fi
 
 if [ $AB == true ]; then
-   "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" AB "$PROJECT_DIR/output" ${@} || exit 1
+   "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" AB "$PROJECT_DIR/output" ${@} || LEAVE
 fi
 
 if [ $AONLY == true ]; then
-    "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" Aonly "$PROJECT_DIR/output" ${@} || exit 1
+    "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" Aonly "$PROJECT_DIR/output" ${@} || LEAVE
 fi
 
 UMOUNT "$PROJECT_DIR/working/system"
