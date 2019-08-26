@@ -27,5 +27,8 @@ $thispath/../../scripts/sepolicy_prop_remover.sh $1/etc/selinux/plat_property_co
 mv $1/../../plat_property_contexts $1/etc/selinux/plat_property_contexts
 sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
 
+# Disable frp prop
+echo "ro.frp.pst=" >> $1/etc/prop.default
+
 # remove libdolphin.so
 rm -rf $1/lib64/libdolphin.so
