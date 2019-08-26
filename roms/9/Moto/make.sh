@@ -23,3 +23,6 @@ cp -fpr $thispath/vndk-28-arm32/* $1/lib/vndk-28/
 
 # Hotspot overlay
 cp -fpr $thispath/overlay/* $1/product/overlay/
+
+# Disable frp prop
+echo "ro.frp.pst=" >> $1/etc/prop.default
