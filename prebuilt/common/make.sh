@@ -16,6 +16,9 @@ cp -fpr $thispath/priv-app/* $1/priv-app/
 #cp -fpr $thispath/app/* $1/app/
 #cp -fpr $thispath/overlay $1/product/
 
+# remove libdolphin.so
+rm -rf $1/lib64/libdolphin.so
+
 # Append file_context
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
