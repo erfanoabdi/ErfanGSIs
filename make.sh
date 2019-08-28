@@ -100,6 +100,9 @@ fi
 
 # Detect Source API level
 sourcever=`cat $systemdir/system/build.prop | grep ro.build.version.release | cut -d "=" -f 2`
+if [ $(echo $sourcever | cut -d "." -f 2) == 0 ]; then
+    sourcever=$(echo $sourcever | cut -d "." -f 1)
+fi
 flag=false
 case "$sourcever" in
     *"9"*) flag=true ;;
