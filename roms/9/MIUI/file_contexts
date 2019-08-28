@@ -1,0 +1,9 @@
+/system/bin/hw/vendor.xiaomi.hardware.misys@1.0-service		u:object_r:hal_misys_default_exec:s0
+/system/bin/hw/vendor.xiaomi.hardware.touchfeature@1.0-service		u:object_r:hal_touchfeature_xiaomi_default_exec:s0
+/system/bin/hw/vendor.xiaomi.hardware.displayfeature@1.0-service		u:object_r:hal_displayfeature_xiaomi_default_exec:s0
+/system/bin/hw/vendor.xiaomi.hardware.citsensorservice@1.1-service		u:object_r:hal_citsensorservice_xiaomi_default_exec:s0
+/system/bin/fidoca		u:object_r:hal_mfidoca_default_exec:s0
+/system/bin/mlipayd@1.1		u:object_r:hal_mlipay_default_exec:s0
+/system/bin/mtd@1.2		u:object_r:hal_mtdservice_default_exec:s0
+/system/bin/tidad@1.1		u:object_r:hal_tidaservice_default_exec:s0
+/system/bin/vsimd		u:object_r:hal_vsimapp_default_exec:s0
