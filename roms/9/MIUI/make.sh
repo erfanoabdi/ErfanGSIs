@@ -7,8 +7,12 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 #cp -fpr $thispath/build.prop $1/
 #echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 # AOSP libs
+cp -fpr $thispath/bin/* $1/bin/
+cp -fpr $thispath/bin-hw/* $1/bin/hw/
 cp -fpr $thispath/lib/* $1/lib/
+cp -fpr $thispath/lib-hw/* $1/lib/hw/
 cp -fpr $thispath/lib64/* $1/lib64/
+cp -fpr $thispath/lib64-hw/* $1/lib64/hw/
 cp -fpr $thispath/init/* $1/etc/init/
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml

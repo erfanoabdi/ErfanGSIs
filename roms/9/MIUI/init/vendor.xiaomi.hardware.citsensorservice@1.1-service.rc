@@ -1,0 +1,8 @@
+# Copyright (c) 2017 Xiaomi Technologies, Inc.
+# All Rights Reserved.
+# Confidential and Proprietary - Xiaomi Technologies, Inc.
+#
+service citsensor-hal-1-1  /system/bin/hw/vendor.xiaomi.hardware.citsensorservice@1.1-service
+    class hal
+    user root
+    group system

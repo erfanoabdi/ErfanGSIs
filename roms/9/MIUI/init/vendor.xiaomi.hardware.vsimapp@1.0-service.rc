@@ -1,0 +1,4 @@
+service vendor.vsimservice /system/bin/vsimd
+    class hal
+    user system
+    group system

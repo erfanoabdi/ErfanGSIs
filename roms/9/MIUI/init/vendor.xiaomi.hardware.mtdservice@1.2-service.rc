@@ -1,0 +1,6 @@
+on post-fs-data
+    mkdir /data/vendor/images 0770 system system
+
+service vendor.mtdservice-1-2 /system/bin/mtd@1.2
+    class hal
+    group system drmrpc

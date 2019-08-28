@@ -1,0 +1,4 @@
+service vendor.misys /system/bin/hw/vendor.xiaomi.hardware.misys@1.0-service
+    class hal
+    user system
+    group system

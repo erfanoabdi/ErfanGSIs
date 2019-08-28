@@ -1,0 +1,16 @@
+# Copyright (c) 2017 Xiaomi, Inc.
+# All Rights Reserved.
+# Confidential and Proprietary - Xiaomi, Inc.
+#
+service displayfeature-hal-1-0 /system/bin/hw/vendor.xiaomi.hardware.displayfeature@1.0-service
+    class hal
+    user system
+    group system graphics
+    onrestart restart displayfeature
+
+on boot
+    chown system system /sys/devices/virtual/graphics/fb0/hist_event
+
+on post-fs-data
+    chown system system /sys/class/drm/card0-DSI-1/mipi_reg
+    chmod 664 /sys/class/drm/card0-DSI-1/mipi_reg

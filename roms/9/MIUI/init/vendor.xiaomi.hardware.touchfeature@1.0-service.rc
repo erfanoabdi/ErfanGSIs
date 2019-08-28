@@ -1,0 +1,16 @@
+# Copyright (c) 2017 Xiaomi, Inc.
+# All Rights Reserved.
+# Confidential and Proprietary - Xiaomi, Inc.
+#
+on boot
+    chown system system /dev/xiaomi-touch
+    chmod 0664 /dev/xiaomi-touch
+    chown system system /sys/class/touch/tp_dev/fod_status
+    chmod 0664 /sys/class/touch/tp_dev/fod_status
+
+service touchfeature-hal-1-0 /system/bin/hw/vendor.xiaomi.hardware.touchfeature@1.0-service
+    class hal
+    user system
+    group system system
+    onrestart restart touchfeature
+
