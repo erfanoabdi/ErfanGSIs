@@ -37,6 +37,7 @@ PATCH()
         gsed -i "s|$CBZ$BL|$CBNZ$BL|" /data/local/tmp/libs.so
         chmod 0644 /data/local/tmp/libs.so
         chcon u:object_r:system_file:s0 /data/local/tmp/libs.so
+        sha1sum "$LIBSURFACEFLINGER" > /data/local/tmp/libsurfaceflinger.sha
         mount -o bind /data/local/tmp/libs.so "$LIBSURFACEFLINGER"
     fi
     start surfaceflinger
