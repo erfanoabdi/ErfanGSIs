@@ -11,10 +11,7 @@ cp -fpr $thispath/SetupWizard $1/priv-app/
 
 # Custom files
 cp -fpr $thispath/init/* $1/etc/init/
-cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/bin/* $1/bin/
-cp -fpr $thispath/bin-hw/* $1/bin/hw/
-cp -fpr $thispath/permissions/* $1/etc/permissions/
 
 # drop QVRservice
 rm -rf $1/bin/qvrservice
@@ -33,6 +30,3 @@ sed -i "s|/proc/phoenix|/data/erf/phx|g" $1/lib64/libphoenix_native.so
 sed -i "s|/proc/opbootfrom|/data/erf/botfrm|g" $1/framework/oat/arm64/services.vdex
 
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
-
-python $thispath/../../../scripts/custom_manifest.py $thispath/../../../tmp/manifest.xml $thispath/manifest.xml $1/etc/vintf/manifest.xml
-cp -fpr $thispath/../../../tmp/manifest.xml $1/etc/vintf/manifest.xml

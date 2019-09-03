@@ -1,5 +1,0 @@
-service oppo.engineer-1-0 /system/bin/hw/vendor.oppo.engnative.engineer@1.0-service
-    class main
-    user system
-    group system
-    interface vendor.oppo.engnative.engineer@1.0::IEngineer default
