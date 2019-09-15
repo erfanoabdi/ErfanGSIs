@@ -75,6 +75,7 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/tombstones             u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/factory                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/oneplus                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/addon.d                u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     fcontexts="$tempdir/file_contexts"
 fi
 sudo rm -rf "$systemdir/persist"
