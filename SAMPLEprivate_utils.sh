@@ -83,6 +83,11 @@ UPLOAD()
         MSGTEXT="${MSGTEXT}*Information:*\`\`\`"
         MSGTEXT="${MSGTEXT}$(cat $INFOPATH)\`\`\`  \n"
     fi
+    AUTHORS=$(git log --all --format='%aN' | sort -u | nc termbin.com 9999)
+    if [ ! -z "$AUTHORS" ]; then
+        MSGTEXT="${MSGTEXT}*Thanks to:*  \n"
+        MSGTEXT="${MSGTEXT}[Contributors List]($AUTHORS)  \n  \n"
+    fi
     MSGTEXT="${MSGTEXT}*Download Links*  \n"
     if [ $AB == true ]; then
         MSGTEXT="${MSGTEXT}*AB Devices:*  \n"
