@@ -4,4 +4,4 @@ systempath=$1
 romdir=$2
 thispath=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# Nothing yet
+cp -fpr $thispath/bin/* $1/bin/
