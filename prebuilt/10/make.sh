@@ -6,8 +6,6 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 # Copy phh stuffs
 cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/ld/* $1/etc/
-cp -fpr $thispath/lib/* $1/lib/
-cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/init/* $1/etc/init/
 cp -fpr $thispath/permissions/* $1/etc/permissions/
 
