@@ -4,3 +4,4 @@
 /system/bin/phh-on-boot.sh u:object_r:update_engine_exec:s0
 /system/bin/hdrfix.sh			u:object_r:update_engine_exec:s0
 /system/bin/wificonf u:object_r:wificond_exec:s0
+/system/bin/permissiver.sh			u:object_r:update_engine_exec:s0
