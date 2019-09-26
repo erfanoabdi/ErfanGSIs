@@ -38,3 +38,16 @@ rm -rf $1/priv-app/Weather
 rm -rf $1/priv-app/WeatherProvider
 rm -rf $1/priv-app/PersonalAssistant
 rm -rf $1/priv-app/BackupAndRestore
+
+rm -rf $1/priv-app/SoundRecorder
+rm -rf $1/data-app/CleanMaster
+rm -rf $1/data-app/GameCenter
+rm -rf $1/data-app/Huanji
+rm -rf $1/data-app/MiDrive
+rm -rf $1/data-app/MiFinance 
+rm -rf $1/data-app/MiuiCompass
+rm -rf $1/data-app/MiuiScanner
+rm -rf $1/data-app/Notes
+rm -rf $1/data-app/SmartTravel
+rm -rf $1/data-app/Weather
+
