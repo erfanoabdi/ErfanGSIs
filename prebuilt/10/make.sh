@@ -6,6 +6,21 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 # Copy system files
 rsync -ra $thispath/system $systempath
 
+# Overlays
+if [ ! -d  $1/product ]; then
+    rm -rf $1/product
+    mkdir -p $1/product
+fi
+mkdir -p $1/product/overlay
+
+cp -fpr $thispath/nondevice_overlay/* $1/product/overlay/
+
+if [ -f $romdir/NODEVICEOVERLAY ]; then
+    echo "Using device specific overlays is not supported in this rom. Skipping..."
+else
+    cp -fpr $thispath/overlay/* $1/product/overlay/
+fi
+
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 echo "persist.bluetooth.bluetooth_audio_hal.disabled=true" >> $1/build.prop
 

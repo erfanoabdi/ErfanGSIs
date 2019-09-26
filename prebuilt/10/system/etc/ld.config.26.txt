@@ -39,27 +39,78 @@ additional.namespaces = runtime,conscrypt,media,resolv,sphal,vndk,rs
 ###############################################################################
 # "default" namespace
 #
-# Framework-side code runs in this namespace. However, libs from other
-# partitions are also allowed temporarily.
+# Framework-side code runs in this namespace. Libs from /vendor partition
+# can't be loaded in this namespace.
 ###############################################################################
-namespace.default.isolated = false
+namespace.default.isolated = true
 
 namespace.default.search.paths  = /system/${LIB}
-namespace.default.search.paths += /odm/${LIB}
-namespace.default.search.paths += /vendor/${LIB}
 namespace.default.search.paths += /system/product/${LIB}
+
+# We can't have entire /system/${LIB} as permitted paths because doing so
+# makes it possible to load libs in /system/${LIB}/vndk* directories by
+# their absolute paths (e.g. dlopen("/system/lib/vndk/libbase.so");).
+# VNDK libs are built with previous versions of Android and thus must not be
+# loaded into this namespace where libs built with the current version of
+# Android are loaded. Mixing the two types of libs in the same namespace can
+# cause unexpected problem.
+namespace.default.permitted.paths  = /system/${LIB}/drm
+namespace.default.permitted.paths += /system/${LIB}/extractors
+namespace.default.permitted.paths += /system/${LIB}/hw
+namespace.default.permitted.paths += /system/product/${LIB}
+# These are where odex files are located. libart has to be able to dlopen the files
+namespace.default.permitted.paths += /system/framework
+namespace.default.permitted.paths += /system/app
+namespace.default.permitted.paths += /system/priv-app
+namespace.default.permitted.paths += /vendor/framework
+namespace.default.permitted.paths += /vendor/app
+namespace.default.permitted.paths += /vendor/priv-app
+namespace.default.permitted.paths += /system/vendor/framework
+namespace.default.permitted.paths += /system/vendor/app
+namespace.default.permitted.paths += /system/vendor/priv-app
+namespace.default.permitted.paths += /odm/framework
+namespace.default.permitted.paths += /odm/app
+namespace.default.permitted.paths += /odm/priv-app
+namespace.default.permitted.paths += /oem/app
+namespace.default.permitted.paths += /system/product/framework
+namespace.default.permitted.paths += /system/product/app
+namespace.default.permitted.paths += /system/product/priv-app
+namespace.default.permitted.paths += /data
+namespace.default.permitted.paths += /mnt/expand
+namespace.default.permitted.paths += /apex/com.android.runtime/${LIB}/bionic
+namespace.default.permitted.paths += /system/${LIB}/bootstrap
 
 namespace.default.asan.search.paths  = /data/asan/system/${LIB}
 namespace.default.asan.search.paths +=           /system/${LIB}
-namespace.default.asan.search.paths += /data/asan/odm/${LIB}
-namespace.default.asan.search.paths +=           /odm/${LIB}
-namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
-namespace.default.asan.search.paths +=           /vendor/${LIB}
 namespace.default.asan.search.paths += /data/asan/system/product/${LIB}
 namespace.default.asan.search.paths +=           /system/product/${LIB}
 
-# Keep in sync with the platform namespace in the com.android.runtime APEX
-# ld.config.txt.
+namespace.default.asan.permitted.paths  = /data
+namespace.default.asan.permitted.paths += /system/${LIB}/drm
+namespace.default.asan.permitted.paths += /system/${LIB}/extractors
+namespace.default.asan.permitted.paths += /system/${LIB}/hw
+namespace.default.asan.permitted.paths += /system/framework
+namespace.default.asan.permitted.paths += /system/app
+namespace.default.asan.permitted.paths += /system/priv-app
+namespace.default.asan.permitted.paths += /vendor/framework
+namespace.default.asan.permitted.paths += /vendor/app
+namespace.default.asan.permitted.paths += /vendor/priv-app
+namespace.default.asan.permitted.paths += /system/vendor/framework
+namespace.default.asan.permitted.paths += /system/vendor/app
+namespace.default.asan.permitted.paths += /system/vendor/priv-app
+namespace.default.asan.permitted.paths += /odm/framework
+namespace.default.asan.permitted.paths += /odm/app
+namespace.default.asan.permitted.paths += /odm/priv-app
+namespace.default.asan.permitted.paths += /oem/app
+namespace.default.asan.permitted.paths += /system/product/${LIB}
+namespace.default.asan.permitted.paths += /system/product/framework
+namespace.default.asan.permitted.paths += /system/product/app
+namespace.default.asan.permitted.paths += /system/product/priv-app
+namespace.default.asan.permitted.paths += /mnt/expand
+namespace.default.asan.permitted.paths += /apex/com.android.runtime/${LIB}/bionic
+namespace.default.asan.permitted.paths += /system/${LIB}/bootstrap
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
 # If a shared library or an executable requests a shared library that
 # cannot be loaded into the default namespace, the dynamic linker tries
 # to load the shared library from the runtime namespace. And then, if the
@@ -90,13 +141,12 @@ namespace.default.link.resolv.shared_libs = libnetd_resolv.so
 ###############################################################################
 # "runtime" APEX namespace
 #
-# This namespace pulls in externally accessible libs from the Runtime APEX.
+# This namespace exposes externally accessible libraries from the Runtime APEX.
 ###############################################################################
 namespace.runtime.isolated = true
 namespace.runtime.visible = true
 
-# Keep in sync with the default namespace in the com.android.runtime APEX
-# ld.config.txt.
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.links = default
@@ -116,12 +166,14 @@ namespace.media.search.paths = /apex/com.android.media/${LIB}
 namespace.media.asan.search.paths = /apex/com.android.media/${LIB}
 
 namespace.media.permitted.paths = /apex/com.android.media/${LIB}/extractors
+namespace.media.asan.permitted.paths = /apex/com.android.media/${LIB}/extractors
 
 namespace.media.links = default
-namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
+namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
 namespace.media.link.default.shared_libs += libbinder_ndk.so
+namespace.media.link.default.shared_libs += libcgrouprc.so
 namespace.media.link.default.shared_libs += libmediametrics.so
-namespace.media.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+namespace.media.link.default.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
 
 ###############################################################################
 # "conscrypt" APEX namespace
@@ -203,10 +255,10 @@ namespace.sphal.links = rs,default,vndk
 # Renderscript gets separate namespace
 namespace.sphal.link.rs.shared_libs = libRS_internal.so
 
-namespace.sphal.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
-namespace.sphal.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+namespace.sphal.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
+namespace.sphal.link.default.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
 
-namespace.sphal.link.vndk.shared_libs = android.hardware.graphics.common@1.0.so:android.hardware.graphics.common@1.1.so:android.hardware.graphics.common@1.2.so:android.hardware.graphics.mapper@2.0.so:android.hardware.graphics.mapper@2.1.so:android.hardware.graphics.mapper@3.0.so:android.hardware.renderscript@1.0.so:android.hidl.memory.token@1.0.so:android.hidl.memory@1.0.so:android.hidl.memory@1.0-impl.so:android.hidl.safe_union@1.0.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbacktrace.so:libbase.so:libbcinfo.so:libbinderthreadstate.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libhidltransport.so:libhwbinder.so:libhwbinder_noltopgo.so:libion.so:libjsoncpp.so:liblzma.so:libprocessgroup.so:libunwindstack.so:libutils.so:libutilscallstack.so
+namespace.sphal.link.vndk.shared_libs = android.hardware.graphics.allocator@2.0.so:android.hardware.graphics.common@1.0.so:android.hardware.graphics.mapper@2.0.so:android.hardware.renderscript@1.0.so:android.hidl.base@1.0.so:android.hidl.memory@1.0.so:android.hidl.memory@1.0-impl.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbacktrace.so:libbase.so:libbcinfo.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libhidltransport.so:libhwbinder.so:libion.so:liblzma.so:libunwind.so:libutils.so:libz.so
 
 ###############################################################################
 # "rs" namespace
@@ -221,7 +273,7 @@ namespace.rs.visible = true
 
 namespace.rs.search.paths  = /odm/${LIB}/vndk-sp
 namespace.rs.search.paths += /vendor/${LIB}/vndk-sp
-namespace.rs.search.paths += /system/${LIB}/vndk-sp-29
+namespace.rs.search.paths += /system/${LIB}/vndk-sp-26
 namespace.rs.search.paths += /odm/${LIB}
 namespace.rs.search.paths += /vendor/${LIB}
 
@@ -234,8 +286,8 @@ namespace.rs.asan.search.paths  = /data/asan/odm/${LIB}/vndk-sp
 namespace.rs.asan.search.paths +=           /odm/${LIB}/vndk-sp
 namespace.rs.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
 namespace.rs.asan.search.paths +=           /vendor/${LIB}/vndk-sp
-namespace.rs.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-29
-namespace.rs.asan.search.paths +=           /system/${LIB}/vndk-sp-29
+namespace.rs.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-26
+namespace.rs.asan.search.paths +=           /system/${LIB}/vndk-sp-26
 namespace.rs.asan.search.paths += /data/asan/odm/${LIB}
 namespace.rs.asan.search.paths +=           /odm/${LIB}
 namespace.rs.asan.search.paths += /data/asan/vendor/${LIB}
@@ -249,13 +301,13 @@ namespace.rs.asan.permitted.paths += /data
 
 namespace.rs.links = default,vndk
 
-namespace.rs.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
-namespace.rs.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+namespace.rs.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
+namespace.rs.link.default.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
 # Private LLNDK libs (e.g. libft2.so) are exceptionally allowed to this
 # namespace because RS framework libs are using them.
 namespace.rs.link.default.shared_libs += 
 
-namespace.rs.link.vndk.shared_libs = android.hardware.graphics.common@1.0.so:android.hardware.graphics.common@1.1.so:android.hardware.graphics.common@1.2.so:android.hardware.graphics.mapper@2.0.so:android.hardware.graphics.mapper@2.1.so:android.hardware.graphics.mapper@3.0.so:android.hardware.renderscript@1.0.so:android.hidl.memory.token@1.0.so:android.hidl.memory@1.0.so:android.hidl.memory@1.0-impl.so:android.hidl.safe_union@1.0.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbacktrace.so:libbase.so:libbcinfo.so:libbinderthreadstate.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libhidltransport.so:libhwbinder.so:libhwbinder_noltopgo.so:libion.so:libjsoncpp.so:liblzma.so:libprocessgroup.so:libunwindstack.so:libutils.so:libutilscallstack.so
+namespace.rs.link.vndk.shared_libs = android.hardware.graphics.allocator@2.0.so:android.hardware.graphics.common@1.0.so:android.hardware.graphics.mapper@2.0.so:android.hardware.renderscript@1.0.so:android.hidl.base@1.0.so:android.hidl.memory@1.0.so:android.hidl.memory@1.0-impl.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbacktrace.so:libbase.so:libbcinfo.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libhidltransport.so:libhwbinder.so:libion.so:liblzma.so:libunwind.so:libutils.so:libz.so
 
 ###############################################################################
 # "vndk" namespace
@@ -267,22 +319,23 @@ namespace.vndk.visible = true
 
 namespace.vndk.search.paths  = /odm/${LIB}/vndk-sp
 namespace.vndk.search.paths += /vendor/${LIB}/vndk-sp
-namespace.vndk.search.paths += /system/${LIB}/vndk-sp-29
+namespace.vndk.search.paths += /system/${LIB}/vndk-sp-26
 
 namespace.vndk.permitted.paths  = /odm/${LIB}/hw
 namespace.vndk.permitted.paths += /odm/${LIB}/egl
 namespace.vndk.permitted.paths += /vendor/${LIB}/hw
 namespace.vndk.permitted.paths += /vendor/${LIB}/egl
+namespace.vndk.permitted.paths += /system/vendor/${LIB}/hw
 namespace.vndk.permitted.paths += /system/vendor/${LIB}/egl
 # This is exceptionally required since android.hidl.memory@1.0-impl.so is here
-namespace.vndk.permitted.paths += /system/${LIB}/vndk-sp-29/hw
+namespace.vndk.permitted.paths += /system/${LIB}/vndk-sp-26/hw
 
 namespace.vndk.asan.search.paths  = /data/asan/odm/${LIB}/vndk-sp
 namespace.vndk.asan.search.paths +=           /odm/${LIB}/vndk-sp
 namespace.vndk.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
 namespace.vndk.asan.search.paths +=           /vendor/${LIB}/vndk-sp
-namespace.vndk.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-29
-namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk-sp-29
+namespace.vndk.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-26
+namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk-sp-26
 
 namespace.vndk.asan.permitted.paths  = /data/asan/odm/${LIB}/hw
 namespace.vndk.asan.permitted.paths +=           /odm/${LIB}/hw
@@ -293,16 +346,22 @@ namespace.vndk.asan.permitted.paths +=           /vendor/${LIB}/hw
 namespace.vndk.asan.permitted.paths += /data/asan/vendor/${LIB}/egl
 namespace.vndk.asan.permitted.paths +=           /vendor/${LIB}/egl
 
-namespace.vndk.asan.permitted.paths += /data/asan/system/${LIB}/vndk-sp-29/hw
-namespace.vndk.asan.permitted.paths +=           /system/${LIB}/vndk-sp-29/hw
+namespace.vndk.asan.permitted.paths += /data/asan/system/${LIB}/vndk-sp-26/hw
+namespace.vndk.asan.permitted.paths +=           /system/${LIB}/vndk-sp-26/hw
+
+# The "vndk" namespace links to "default" namespace for LLNDK libs and links to
+# "sphal" namespace for vendor libs.  The ordering matters.  The "default"
+# namespace has higher priority than the "sphal" namespace.
+namespace.vndk.links = default,sphal
 
 # When these NDK libs are required inside this namespace, then it is redirected
 # to the default namespace. This is possible since their ABI is stable across
 # Android releases.
-namespace.vndk.links = default
+namespace.vndk.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
+namespace.vndk.link.default.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
 
-namespace.vndk.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
-namespace.vndk.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+# Allow VNDK-SP extensions to use vendor libraries
+namespace.vndk.link.sphal.allow_all_shared_libs = true
 
 
 ###############################################################################
@@ -312,55 +371,47 @@ namespace.vndk.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:l
 # (LL-NDK only) access.
 ###############################################################################
 [vendor]
-additional.namespaces = runtime
+additional.namespaces = runtime,system,vndk
 
-namespace.default.isolated = false
+###############################################################################
+# "default" namespace
+#
+# This is the default linker namespace for a vendor process (a process started
+# from /vendor/bin/*). The main executable and the libs under /vendor/lib[64]
+# are loaded directly into this namespace. However, other libs under the system
+# partition (VNDK and LLNDK libraries) are not loaded here but from the
+# separate namespace 'system'. The delegation to the system namespace is done
+# via the 'namespace.default.link.system.shared_libs' property below.
+#
+# '#VNDK27#' TAG is only for building ld.config.27.txt for backward
+# compatibility. (TODO:b/123390078) Move them to a separate file.
+###############################################################################
+namespace.default.isolated = true
+namespace.default.visible = true
 
 namespace.default.search.paths  = /odm/${LIB}
-namespace.default.search.paths += /odm/${LIB}/vndk
-namespace.default.search.paths += /odm/${LIB}/vndk-sp
 namespace.default.search.paths += /vendor/${LIB}
-namespace.default.search.paths += /vendor/${LIB}/vndk
-namespace.default.search.paths += /vendor/${LIB}/vndk-sp
 
-# Access to system libraries is allowed
-namespace.default.search.paths += /system/${LIB}/vndk-sp-29
-namespace.default.search.paths += /system/${LIB}
-namespace.default.search.paths += /system/product/${LIB}
-namespace.default.search.paths += /system/${LIB}/vndk-29
+namespace.default.permitted.paths  = /odm
+namespace.default.permitted.paths += /vendor
+namespace.default.permitted.paths += /system/vendor
 
 namespace.default.asan.search.paths  = /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
-namespace.default.asan.search.paths += /data/asan/odm/${LIB}/vndk
-namespace.default.asan.search.paths +=           /odm/${LIB}/vndk
-namespace.default.asan.search.paths += /data/asan/odm/${LIB}/vndk-sp
-namespace.default.asan.search.paths +=           /odm/${LIB}/vndk-sp
 namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
 namespace.default.asan.search.paths +=           /vendor/${LIB}
-namespace.default.asan.search.paths += /data/asan/vendor/${LIB}/vndk
-namespace.default.asan.search.paths +=           /vendor/${LIB}/vndk
-namespace.default.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
-namespace.default.asan.search.paths +=           /vendor/${LIB}/vndk-sp
-namespace.default.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-29
-namespace.default.asan.search.paths +=           /system/${LIB}/vndk-sp-29
-namespace.default.asan.search.paths += /data/asan/system/${LIB}
-namespace.default.asan.search.paths +=           /system/${LIB}
-namespace.default.asan.search.paths += /data/asan/product/${LIB}
-namespace.default.asan.search.paths +=           /system/product/${LIB}
-namespace.default.asan.search.paths += /data/asan/product_services/${LIB}
-namespace.default.asan.search.paths += /data/asan/system/${LIB}/vndk-29
-namespace.default.asan.search.paths +=           /system/${LIB}/vndk-29
 
-namespace.default.links = runtime
-namespace.default.link.runtime.shared_libs  = libdexfile_external.so
-# libicuuc.so and libicui18n.so are kept for app compat reason. http://b/130788466
-namespace.default.link.runtime.shared_libs += libicui18n.so
-namespace.default.link.runtime.shared_libs += libicuuc.so
-namespace.default.link.runtime.shared_libs += libnativebridge.so
-namespace.default.link.runtime.shared_libs += libnativehelper.so
-namespace.default.link.runtime.shared_libs += libnativeloader.so
-# Workaround for b/124772622
-namespace.default.link.runtime.shared_libs += libandroidicu.so
+namespace.default.asan.permitted.paths  = /data/asan/odm
+namespace.default.asan.permitted.paths +=           /odm
+namespace.default.asan.permitted.paths += /data/asan/vendor
+namespace.default.asan.permitted.paths +=           /vendor
+
+namespace.default.links = system,vndk,runtime
+namespace.default.link.system.shared_libs = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
+
+namespace.default.link.vndk.allow_all_shared_libs = true
+
+namespace.default.link.runtime.shared_libs  = libnativeloader.so
 
 ###############################################################################
 # "runtime" APEX namespace
@@ -372,10 +423,124 @@ namespace.runtime.isolated = true
 # Keep in sync with ld.config.txt in the com.android.runtime APEX.
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
-namespace.runtime.links = default
+namespace.runtime.links = system
 # TODO(b/119867084): Restrict to Bionic dlopen dependencies and PALette library
 # when it exists.
-namespace.runtime.link.default.allow_all_shared_libs = true
+namespace.runtime.link.system.allow_all_shared_libs = true
+
+###############################################################################
+# "vndk" namespace
+#
+# This namespace is where VNDK and VNDK-SP libraries are loaded for
+# a vendor process.
+###############################################################################
+namespace.vndk.isolated = false
+
+namespace.vndk.search.paths  = /odm/${LIB}/vndk
+namespace.vndk.search.paths += /odm/${LIB}/vndk-sp
+namespace.vndk.search.paths += /vendor/${LIB}/vndk
+namespace.vndk.search.paths += /vendor/${LIB}/vndk-sp
+namespace.vndk.search.paths += /system/${LIB}/vndk-sp-26
+namespace.vndk.search.paths += /system/${LIB}/vndk-26
+
+namespace.vndk.asan.search.paths  = /data/asan/odm/${LIB}/vndk
+namespace.vndk.asan.search.paths +=           /odm/${LIB}/vndk
+namespace.vndk.asan.search.paths += /data/asan/odm/${LIB}/vndk-sp
+namespace.vndk.asan.search.paths +=           /odm/${LIB}/vndk-sp
+namespace.vndk.asan.search.paths += /data/asan/vendor/${LIB}/vndk
+namespace.vndk.asan.search.paths +=           /vendor/${LIB}/vndk
+namespace.vndk.asan.search.paths += /data/asan/vendor/${LIB}/vndk-sp
+namespace.vndk.asan.search.paths +=           /vendor/${LIB}/vndk-sp
+namespace.vndk.asan.search.paths += /data/asan/system/${LIB}/vndk-sp-26
+namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk-sp-26
+namespace.vndk.asan.search.paths += /data/asan/system/${LIB}/vndk-26
+namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk-26
+
+# When these NDK libs are required inside this namespace, then it is redirected
+# to the system namespace. This is possible since their ABI is stable across
+# Android releases.  The links here should be identical to that of the
+# 'vndk_in_system' namespace, except for the link between 'vndk' and
+# 'vndk_in_system'.
+namespace.vndk.links = system,default,runtime
+
+namespace.vndk.link.system.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
+namespace.vndk.link.system.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+
+namespace.vndk.link.default.allow_all_shared_libs = true
+namespace.vndk.link.runtime.shared_libs = libnativeloader.so
+
+
+
+###############################################################################
+# "system" namespace
+#
+# This namespace is where system libs (VNDK and LLNDK libs) are loaded for
+# a vendor process.
+###############################################################################
+namespace.system.isolated = false
+
+namespace.system.search.paths  = /system/${LIB}
+namespace.system.search.paths += /system/product/${LIB}
+
+namespace.system.asan.search.paths  = /data/asan/system/${LIB}
+namespace.system.asan.search.paths +=           /system/${LIB}
+namespace.system.asan.search.paths += /data/asan/product/${LIB}
+namespace.system.asan.search.paths +=           /system/product/${LIB}
+namespace.system.asan.search.paths += /data/asan/product_services/${LIB}
+
+namespace.system.links = runtime
+namespace.system.link.runtime.shared_libs  = libdexfile_external.so
+# libicuuc.so and libicui18n.so are kept for app compat reason. http://b/130788466
+namespace.system.link.runtime.shared_libs += libicui18n.so
+namespace.system.link.runtime.shared_libs += libicuuc.so
+namespace.system.link.runtime.shared_libs += libnativebridge.so
+namespace.system.link.runtime.shared_libs += libnativehelper.so
+namespace.system.link.runtime.shared_libs += libnativeloader.so
+# Workaround for b/124772622
+namespace.system.link.runtime.shared_libs += libandroidicu.so
+
+###############################################################################
+# "vndk_in_system" namespace
+#
+# This namespace is where no-vendor-variant VNDK libraries are loaded for a
+# vendor process.  Note that we do not simply export these libraries from
+# "system" namespace, because in some case both the core variant and the
+# vendor variant of a VNDK library may be loaded.  In such case, we do not
+# want to eliminate double-loading because doing so means the global states
+# of the library would be shared.
+#
+# Only the no-vendor-variant VNDK libraries are whitelisted in this namespace.
+# This is to ensure that we do not load libraries needed by no-vendor-variant
+# VNDK libraries into vndk_in_system namespace.
+###############################################################################
+namespace.vndk_in_system.isolated = true
+namespace.vndk_in_system.visible = true
+
+# The search paths here should be kept the same as that of the 'system'
+# namespace.
+namespace.vndk_in_system.search.paths  = /system/${LIB}
+namespace.vndk_in_system.search.paths += /system/product/${LIB}
+
+namespace.vndk_in_system.asan.search.paths  = /data/asan/system/${LIB}
+namespace.vndk_in_system.asan.search.paths +=           /system/${LIB}
+namespace.vndk_in_system.asan.search.paths += /data/asan/product/${LIB}
+namespace.vndk_in_system.asan.search.paths +=           /system/product/${LIB}
+namespace.vndk_in_system.asan.search.paths += /data/asan/product_services/${LIB}
+
+
+
+# The links here should be identical to that of the 'vndk' namespace, with the
+# following exception:
+#   1. 'vndk_in_system' needs to be freely linked back to 'vndk'.
+#   2. 'vndk_in_system' does not need to link to 'default', as any library that
+#      requires anything vendor would not be a vndk_in_system library.
+namespace.vndk_in_system.links = vndk,system
+
+namespace.vndk_in_system.link.system.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
+namespace.vndk_in_system.link.system.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+
+namespace.vndk_in_system.link.vndk.allow_all_shared_libs = true
+
 
 ###############################################################################
 # Namespace config for native tests that need access to both system and vendor
@@ -443,12 +608,13 @@ namespace.media.search.paths = /apex/com.android.media/${LIB}
 namespace.media.asan.search.paths = /apex/com.android.media/${LIB}
 
 namespace.media.permitted.paths = /apex/com.android.media/${LIB}/extractors
+namespace.media.asan.permitted.paths = /apex/com.android.media/${LIB}/extractors
 
 namespace.media.links = default
-namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-aarch64-android.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libsync.so:libvndksupport.so:libvulkan.so:libz.so
+namespace.media.link.default.shared_libs  = libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libc.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libsync.so:libvndksupport.so
 namespace.media.link.default.shared_libs += libbinder_ndk.so
 namespace.media.link.default.shared_libs += libmediametrics.so
-namespace.media.link.default.shared_libs += libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libclang_rt.ubsan_standalone-aarch64-android.so:libclang_rt.tsan-aarch64-android.so:libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
+namespace.media.link.default.shared_libs += libclang_rt.asan-arm-android.so:libclang_rt.hwasan-arm-android.so:libclang_rt.ubsan_standalone-arm-android.so:libclang_rt.tsan-arm-android.so
 
 ###############################################################################
 # "conscrypt" APEX namespace
@@ -466,6 +632,7 @@ namespace.conscrypt.link.runtime.shared_libs  = libandroidio.so
 namespace.conscrypt.link.default.shared_libs  = libc.so
 namespace.conscrypt.link.default.shared_libs += libm.so
 namespace.conscrypt.link.default.shared_libs += libdl.so
+namespace.conscrypt.link.default.shared_libs += liblog.so
 
 ###############################################################################
 # "resolv" APEX namespace
@@ -479,10 +646,11 @@ namespace.resolv.search.paths = /apex/com.android.resolv/${LIB}
 namespace.resolv.asan.search.paths = /apex/com.android.resolv/${LIB}
 namespace.resolv.links = default
 namespace.resolv.link.default.shared_libs  = libc.so
-namespace.resolv.link.default.shared_libs += libcgrouprc.so
 namespace.resolv.link.default.shared_libs += libm.so
 namespace.resolv.link.default.shared_libs += libdl.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
+namespace.resolv.link.default.shared_libs += liblog.so
+
 
 ###############################################################################
 # Namespace config for binaries under /postinstall.
