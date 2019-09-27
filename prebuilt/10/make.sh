@@ -38,3 +38,12 @@ rm -rf $1/etc/vintf/manifest/manifest_media_c2_software.xml
 $thispath/../../scripts/sepolicy_prop_remover.sh $1/etc/selinux/plat_property_contexts "device/qcom/sepolicy" > $1/../../plat_property_contexts
 mv $1/../../plat_property_contexts $1/etc/selinux/plat_property_contexts
 sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
+
+## Init style wifi fix
+# Some systems are using custom wifi services, don't apply this patch on those roms
+if [ -f $romdir/DONTPATCHWIFI ]; then
+    echo "Patching wifi-service for init style wifi is not supported in this rom. Skipping..."
+else
+    echo "Start Patching wifi-service for init style wifi..."
+    $thispath/initstylewifi/make.sh "$systempath"
+fi
