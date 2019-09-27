@@ -4,7 +4,7 @@ systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 # Copy system files
-rsync -ra $thispath/system $systempath
+rsync -ra $thispath/system/ $systempath
 
 # Overlays
 if [ ! -d  $1/product ]; then

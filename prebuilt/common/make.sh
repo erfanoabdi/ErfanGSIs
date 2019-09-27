@@ -6,7 +6,7 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 ## System edits
 # Copy system files
-rsync -ra $thispath/system $systempath
+rsync -ra $thispath/system/ $systempath
 # Remove libdolphin.so
 rm -rf $1/lib64/libdolphin.so
 # Drop caf permissions
