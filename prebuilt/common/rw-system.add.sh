@@ -102,3 +102,7 @@ else
         fi
     fi
 fi
+
+frp_node="$(getprop ro.frp.pst)"
+chown -h system.system $frp_node
+chmod 0660 $frp_node
