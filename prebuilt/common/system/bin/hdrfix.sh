@@ -43,9 +43,17 @@ PATCH()
     start surfaceflinger
 }
 
+loop_times=60
+i=0
 while true; do
     HDRLINE=$(logcat -d | grep isHDRLayer | head -n 1)
     if [ -z "$HDRLINE" ]; then
+        i=$(($i+1))
+        if [ $i -gt $loop_times ]; then
+            setprop isHDRLayer.patched 1
+            exit
+        fi
+        sleep 1
         continue
     fi
     break
