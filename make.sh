@@ -86,10 +86,16 @@ if [ "$sourcetype" == "Aonly" ]; then
     echo "Making copy of source rom to temp"
     ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir/system" ; sudo tar xf - )
     cd "$LOCALDIR"
+    sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
+    sed -i "/ro.build.ab_update/d" "$systemdir/system/build.prop"
+    echo "ro.build.system_root_image=false" >> "$systemdir/system/build.prop"
 else
     echo "Making copy of source rom to temp"
     ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir" ; sudo tar xf - )
     cd "$LOCALDIR"
+    sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
+    sed -i "/ro.build.ab_update/d" "$systemdir/system/build.prop"
+    echo "ro.build.system_root_image=true" >> "$systemdir/system/build.prop"
 fi
 
 # Detect is the src treble ro.treble.enabled=true
