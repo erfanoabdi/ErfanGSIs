@@ -89,20 +89,6 @@ if [ ! -f /vendor/bin/hw/android.hardware.light* ]; then
     done
 fi
 
-# Patch surfaceflinger on boot if already patched before
-if mount -o remount,rw /system; then
-    # Just checking remount ability
-    mount -o remount,ro /system || true
-else
-    if [ -f /data/local/tmp/libs.so ]; then
-        LIBSURFACEFLINGER="$(cat /data/local/tmp/libsurfaceflinger.sha | awk '{ print $2 }')"
-        if [ "$(cat /data/local/tmp/libsurfaceflinger.sha)" == "$(sha1sum $LIBSURFACEFLINGER)" ]; then
-            mount -o bind /data/local/tmp/libs.so $LIBSURFACEFLINGER
-            setprop isHDRLayer.patched 1
-        fi
-    fi
-fi
-
 frp_node="$(getprop ro.frp.pst)"
 chown -h system.system $frp_node
 chmod 0660 $frp_node
