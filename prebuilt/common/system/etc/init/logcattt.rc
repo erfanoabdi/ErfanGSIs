@@ -3,6 +3,9 @@ on post-fs-data
     rm /data/local/tmp/logs/log
     start persistentLogging
 
+on property:sys.boot_completed=1
+    stop persistentLogging
+
 service persistentLogging /system/bin/logcat -f /data/local/tmp/logs/log
     user system
     group root system log
