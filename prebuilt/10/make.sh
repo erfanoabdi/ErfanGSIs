@@ -41,9 +41,9 @@ sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
 
 ## Init style wifi fix
 # Some systems are using custom wifi services, don't apply this patch on those roms
-if [ -f $romdir/DONTPATCHWIFI ]; then
-    echo "Patching wifi-service for init style wifi is not supported in this rom. Skipping..."
-else
-    echo "Start Patching wifi-service for init style wifi..."
-    $thispath/initstylewifi/make.sh "$systempath"
-fi
+#if [ -f $romdir/DONTPATCHWIFI ]; then
+#    echo "Patching wifi-service for init style wifi is not supported in this rom. Skipping..."
+#else
+#    echo "Start Patching wifi-service for init style wifi..."
+#    $thispath/initstylewifi/make.sh "$systempath"
+#fi
