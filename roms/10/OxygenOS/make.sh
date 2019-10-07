@@ -9,15 +9,10 @@ cp -fpr $thispath/init/* $1/etc/init/
 # Some overlays
 cp -fpr $thispath/overlay/* $1/product/overlay/
 
-# build.prop
-# echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
-
 # fix bt audio for op gsi
 sed -i "/\/vendor\/etc\/audio /d" $1/bin/rw-system.sh
 
 # drop dirac
-rm -rf $1/priv-app/DiracAudioControlService
-rm -rf $1/app/DiracManager
 rm -rf $1/app/NxpNfcNci
 
 # fix op6t notch
