@@ -1,0 +1,13 @@
+<manifest version="1.0" type="framework">
+    <hal format="hidl">
+        <name>vendor.oneplus.hardware.display</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IOneplusDisplay</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::IOneplusDisplay/default</fqname>
+    </hal>
+</manifest>
+

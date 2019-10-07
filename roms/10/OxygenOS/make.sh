@@ -3,11 +3,11 @@
 systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
-# Enable OnePlus Call Recording
-cp -fpr $thispath/init/* $1/etc/init/
+# Copy system files
+rsync -ra $thispath/system/ $systempath
 
-# Some overlays
-cp -fpr $thispath/overlay/* $1/product/overlay/
+# Append file_context
+cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
 # fix bt audio for op gsi
 sed -i "/\/vendor\/etc\/audio /d" $1/bin/rw-system.sh
