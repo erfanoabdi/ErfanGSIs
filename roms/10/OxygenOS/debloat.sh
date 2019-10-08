@@ -27,6 +27,7 @@ rm -rf $1/priv-app/OnePlusCamera
 rm -rf $1/priv-app/OnePlusGallery
 rm -rf $1/priv-app/Velvet
 rm -rf $1/priv-app/OPFaceUnlock
+rm -rf $1/priv-app/Houston
 rm -rf $1/reserve/OPNote
 rm -rf $1/reserve/SoundRecorder
 rm -rf $1/reserve/OPForum
