@@ -25,3 +25,6 @@ sed -i "s/M-184.95,0 C-168,0.12,-160.84,7.45,-158.7,24.11 c4,31.21,25.33,54.92,6
 # Wifi fix
 cp -fpr $thispath/bin/* $1/bin/
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
+
+#misc fixes
+cp -fpr $thispath/init/* $1/etc/init/
