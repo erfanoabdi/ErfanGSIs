@@ -6,6 +6,9 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 # build.prop
 #echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 
+# drop finddevice, needs to be done before copying system files
+rm -rf $1/priv-app/FindDevice
+
 # Copy system files
 rsync -ra $thispath/system/ $systempath
 
