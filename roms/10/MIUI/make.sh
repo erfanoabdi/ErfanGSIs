@@ -6,6 +6,9 @@ thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 # build.prop
 #echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
 
+# Copy system files
+rsync -ra $thispath/system/ $systempath
+
 # drop dirac
 rm -rf $1/priv-app/DiracAudioControlService
 # drop FingerprintExtensionService
