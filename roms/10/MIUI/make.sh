@@ -12,6 +12,12 @@ rm -rf $1/priv-app/FindDevice
 # Copy system files
 rsync -ra $thispath/system/ $systempath
 
+#fix systemui crash because of FOD
+echo "ro.hardware.fp.fod=true" >> $1/build.prop
+echo "persist.vendor.sys.fp.fod.location.X_Y=445,1260" >> $1/build.prop
+echo "persist.vendor.sys.fp.fod.size.width_height=190,190" >> $1/build.prop
+echo "DEVICE_PROVISIONED=1" >> $1/build.prop
+
 # drop dirac
 rm -rf $1/priv-app/DiracAudioControlService
 # drop FingerprintExtensionService
