@@ -49,7 +49,7 @@ UPLOAD()
         INFONAME=$INFOABNAME
         INFOPATH=$INFOABPATH
         if [[ -f "$IMAGEABPATH" ]]; then
-            echo "Compressing $IMAGEABPATH.7z"
+            echo "Compressing $IMAGEABPATH-${TIME}.7z"
             7z a "$IMAGEABPATH-${TIME}.7z" "$IMAGEABPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
             mv "$IMAGEABPATH-${TIME}.7z" /data/web/gsis/
         fi
@@ -63,7 +63,7 @@ UPLOAD()
         INFONAME=$INFOAONAME
         INFOPATH=$INFOAOPATH
         if [[ -f "$IMAGEAOPATH" ]]; then
-            echo "Compressing $IMAGEAOPATH.7z"
+            echo "Compressing $IMAGEAOPATH-${TIME}.7z"
             7z a "$IMAGEAOPATH-${TIME}.7z" "$IMAGEAOPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
             mv "$IMAGEAOPATH-${TIME}.7z" /data/web/gsis/
         fi
@@ -92,11 +92,11 @@ UPLOAD()
     MSGTEXT="${MSGTEXT}*Download Links*  \n"
     if [ $AB == true ]; then
         MSGTEXT="${MSGTEXT}*AB Devices:*  \n"
-        MSGTEXT="${MSGTEXT}[$IMAGEABNAME.7z](https://myserver.com/gsis/$IMAGEABNAME.7z)  \n  \n"
+        MSGTEXT="${MSGTEXT}[$IMAGEABNAME-${TIME}.7z](https://myserver.com/gsis/$IMAGEABNAME-${TIME}.7z)  \n  \n"
     fi
     if [ $AONLY == true ]; then
         MSGTEXT="${MSGTEXT}*A-Only Devices:*  \n"
-        MSGTEXT="${MSGTEXT}[$IMAGEAONAME.7z](https://myserver.com/gsis/$IMAGEAONAME.7z)  \n  \n"
+        MSGTEXT="${MSGTEXT}[$IMAGEAONAME-${TIME}.7z](https://myserver.com/gsis/$IMAGEAONAME-${TIME}.7z)  \n  \n"
     fi
 
     printf "${MSGTEXT}" > "$OUTPUTDIR/tg.md"
