@@ -29,6 +29,7 @@ UPLOAD()
     URL="$5"
 
     DATE=`date +%Y%m%d`
+    TIME=`date +%H%M`
 
     IMAGEABNAME="${SRCTYPENAME}-AB-*-${DATE}-*.img"
     INFOABNAME="${SRCTYPENAME}-AB-*-${DATE}-*.txt"
@@ -49,8 +50,8 @@ UPLOAD()
         INFOPATH=$INFOABPATH
         if [[ -f "$IMAGEABPATH" ]]; then
             echo "Compressing $IMAGEABPATH.7z"
-            7z a "$IMAGEABPATH.7z" "$IMAGEABPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
-            mv "$IMAGEABPATH.7z" /data/web/gsis/
+            7z a "$IMAGEABPATH-${TIME}.7z" "$IMAGEABPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
+            mv "$IMAGEABPATH-${TIME}.7z" /data/web/gsis/
         fi
     fi
 
@@ -63,8 +64,8 @@ UPLOAD()
         INFOPATH=$INFOAOPATH
         if [[ -f "$IMAGEAOPATH" ]]; then
             echo "Compressing $IMAGEAOPATH.7z"
-            7z a "$IMAGEAOPATH.7z" "$IMAGEAOPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
-            mv "$IMAGEAOPATH.7z" /data/web/gsis/
+            7z a "$IMAGEAOPATH-${TIME}.7z" "$IMAGEAOPATH" 2>/dev/null >> "$OUTPUTDIR/zip.log"
+            mv "$IMAGEAOPATH-${TIME}.7z" /data/web/gsis/
         fi
     fi
 
