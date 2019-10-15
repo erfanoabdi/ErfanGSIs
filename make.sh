@@ -7,7 +7,7 @@ usage()
 echo "Usage: $0 <Path to GSI system> <Firmware type> <Output type> [Output Dir]"
     echo -e "\tPath to GSI system: Mount GSI and set mount point"
     echo -e "\tFirmware type: Firmware mode"
-    echo -e "\tOutput type: AB or A-Only"
+    echo -e "\tOutput type: AB or Aonly"
     echo -e "\tOutput Dir: set output dir"
 }
 
