@@ -22,15 +22,8 @@ mount -o bind /system/lib64/libpdx_default_transport.so /vendor/lib64/libpdx_def
 mount -o bind /system/lib/libpdx_default_transport.so /vendor/lib/vndk/libpdx_default_transport.so || true
 mount -o bind /system/lib64/libpdx_default_transport.so /vendor/lib64/vndk/libpdx_default_transport.so || true
 
-# drop qcom location for mi mix 3
-if getprop ro.vendor.build.fingerprint | grep -iq \
-    -e iaomi/perseus/perseus;then
-    mount -o bind /mnt/phh/empty_dir /system/priv-app/com.qualcomm.location || true
-fi
-
 # drop qcom stuffs for non qcom devices
 if ! getprop ro.hardware | grep -qiE -e qcom -e mata;then
-    mount -o bind /mnt/phh/empty_dir /system/priv-app/com.qualcomm.location || true
     mount -o bind /mnt/phh/empty_dir /system/app/imssettings || true
     mount -o bind /mnt/phh/empty_dir /system/priv-app/ims || true
     mount -o bind /mnt/phh/empty_dir /system/app/ims || true

@@ -1,7 +1,11 @@
 #!/bin/bash
 
 systempath=$1
+romdir=$2
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
+
+# Deal with non-flattened apex
+$thispath/../../scripts/apex_extractor.sh $1/apex
 
 # Copy system files
 rsync -ra $thispath/system/ $systempath
@@ -27,9 +31,6 @@ echo "persist.bluetooth.bluetooth_audio_hal.disabled=true" >> $1/build.prop
 # Append file_context
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
-# Deal with non-flattened apex
-$thispath/../../scripts/apex_extractor.sh $1/apex
-
 # Disable Codec2
 sed -i "s/android.hardware.media.c2/android.hardware.erfan.c2/g" $1/etc/vintf/manifest.xml
 rm -rf $1/etc/vintf/manifest/manifest_media_c2_software.xml
@@ -41,9 +42,9 @@ sed -i "/typetransition location_app/d" $1/etc/selinux/plat_sepolicy.cil
 
 ## Init style wifi fix
 # Some systems are using custom wifi services, don't apply this patch on those roms
-#if [ -f $romdir/DONTPATCHWIFI ]; then
-#    echo "Patching wifi-service for init style wifi is not supported in this rom. Skipping..."
-#else
-#    echo "Start Patching wifi-service for init style wifi..."
-#    $thispath/initstylewifi/make.sh "$systempath"
-#fi
+if [ -f $romdir/DONTPATCHWIFI ]; then
+    echo "Patching wifi-service for init style wifi is not supported in this rom. Skipping..."
+else
+    echo "Start Patching wifi-service for init style wifi..."
+    $thispath/initstylewifi/make.sh "$systempath"
+fi

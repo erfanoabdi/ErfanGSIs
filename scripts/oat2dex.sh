@@ -14,7 +14,6 @@
 LOCALDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 toolsdir=$LOCALDIR/../tools
 TMPDIR=$LOCALDIR/../tmp/oat2dex
-echo "Create Temp dir"
 mkdir -p "$TMPDIR"
 
 FRAMEWORKDIR="$1"

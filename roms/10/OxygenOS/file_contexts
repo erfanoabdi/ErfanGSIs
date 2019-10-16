@@ -1,0 +1,2 @@
+/system/bin/hw/vendor.oneplus.hardware.display@1.0-service   u:object_r:hal_allocator_default_exec:s0
+/system/bin/hw/vendor.oneplus.hardware.param@1.0-service     u:object_r:hal_allocator_default_exec:s0

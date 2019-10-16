@@ -1,0 +1,4 @@
+service oneplus_param_service /system/bin/hw/vendor.oneplus.hardware.param@1.0-service
+    class hal
+    user system
+    group system

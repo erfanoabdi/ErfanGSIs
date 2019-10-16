@@ -1,8 +1,0 @@
-service OPCallRecording /system/bin/sh -c "settings put global op_voice_recording_supported_by_mcc 1 && pm enable com.android.phone/com.android.phone.oneplus.OPSimSubSettingsActivity"
-    seclabel u:r:shell:s0
-    user root
-    oneshot
-    disabled
-
-on property:sys.boot_completed=1
-    start OPCallRecording

@@ -1,0 +1,13 @@
+<manifest version="1.0" type="framework">
+    <hal format="hidl">
+        <name>vendor.oneplus.hardware.param</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IOneplusParam</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.0::IOneplusParam/default</fqname>
+    </hal>
+</manifest>
+

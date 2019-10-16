@@ -5,7 +5,6 @@ LOCALDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 scriptsdir=$LOCALDIR/../../../scripts
 toolsdir=$LOCALDIR/../../../tools
 TMPDIR=$LOCALDIR/../../../tmp/brightnessfix
-echo "Create Temp dir"
 mkdir -p "$TMPDIR"
 
 BAKSMALIJAR="$toolsdir"/smali/baksmali.jar

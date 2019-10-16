@@ -3,21 +3,22 @@
 systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
-# Enable OnePlus Call Recording
-cp -fpr $thispath/init/* $1/etc/init/
+# Copy system files
+rsync -ra $thispath/system/ $systempath
 
-# Some overlays
-cp -fpr $thispath/overlay/* $1/product/overlay/
+# Append file_context
+cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
 
-# build.prop
-# echo "ro.bluetooth.library_name=libbluetooth_qti.so" >> $1/build.prop
+#Soundsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+echo "ro.config.mms_notification=free.ogg" >> $1/etc/prop.default
+echo "ro.config.notification_sound=meet.ogg" >> $1/etc/prop.default
+echo "ro.config.alarm_alert=spring.ogg" >> $1/etc/prop.default
+echo "ro.config.ringtone=oneplus_tune.ogg" >> $1/etc/prop.default
 
 # fix bt audio for op gsi
 sed -i "/\/vendor\/etc\/audio /d" $1/bin/rw-system.sh
 
 # drop dirac
-rm -rf $1/priv-app/DiracAudioControlService
-rm -rf $1/app/DiracManager
 rm -rf $1/app/NxpNfcNci
 
 # fix op6t notch

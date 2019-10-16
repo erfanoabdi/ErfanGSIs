@@ -1,0 +1,45 @@
+##################################################################################
+### VENDOR_EDIT, OEM All rights reserved.
+###
+### File: - init.oem.rc
+### Author: jiangyonggao
+### all oem triger & init are here
+### ------------------------------- Revision History: ----------------------------
+### <author>                        <data>       <version>   <desc>
+### ------------------------------------------------------------------------------
+### jiangyg@PM                     2013-10-21                Create this file
+##################################################################################
+
+
+on post-fs-data
+  
+    mkdir /data/vendor_de/silead 0770 system system
+    mkdir /mnt/vendor/persist/silead 0777 system system
+    mkdir /data/coredump  0777 system system
+    mkdir /data/theme 0775 system system
+    mkdir /data/mdm 0775 system system
+    mkdir /data/theme_storage 0775 system system
+    mkdir /data/reserve-lib 0775 system system
+    mkdir /data/oem_log  0770 system system
+    mkdir /data/oiface 0700 system system
+    mkdir /data/misc/wmtrace 0700 system system
+    mkdir /data/misc/profiles 0771 system system
+    mkdir /data/misc/profiles/cur 0771 system system
+    mkdir /data/misc/profiles/ref 0771 system system
+    mkdir /data/misc/profman 0770 system shell
+    mkdir /data/misc/gcov 0770 root root
+    mkdir /data/preloads 0775 system system
+    mkdir /data/heytap-id 0775 system system
+    mkdir /data/training/ 0770 system system
+    mkdir /data/training/connor/ 0770 system system
+    mkdir /data/training/connor/inf 0770 system system
+    mkdir /data/training/sarah/ 0770 system system
+    mkdir /data/training/sarah/inf 0770 system system
+
+
+    # Create /data/vendor/tzstorage directory for SFS listener
+    mkdir /data/vendor/tzstorage 0770 system system
+
+   
+
+    

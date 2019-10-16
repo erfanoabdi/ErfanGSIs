@@ -76,7 +76,7 @@ DOWNLOAD()
     URL="$1"
     ZIP_NAME="$2"
     echo "Downloading firmware to: $ZIP_NAME"
-    wget -U "Mozilla/5.0" ${URL} -O "$ZIP_NAME"
+    aria2c -x16 -j$(nproc) -U "Mozilla/5.0" -d "$PROJECT_DIR/input" -o "$ACTUAL_ZIP_NAME" ${URL} || wget -U "Mozilla/5.0" ${URL} -O "$ZIP_NAME"
 }
 
 MOUNT()
@@ -115,7 +115,9 @@ ZIP_NAME="$PROJECT_DIR/input/dummy"
 if [ $MOUNTED == false ]; then
     if [[ "$URL" == "http"* ]]; then
         # URL detected
-        ZIP_NAME=$(echo "$PROJECT_DIR/input/$RANDOM"_FIRMWARE.tgz)
+        RANDOMM=$(echo $RANDOM)
+        ACTUAL_ZIP_NAME="$RANDOMM"_FIRMWARE.tgz
+        ZIP_NAME="$PROJECT_DIR"/input/"$RANDOMM"_FIRMWARE.tgz
         DOWNLOAD "$URL" "$ZIP_NAME"
         URL="$ZIP_NAME"
     fi
