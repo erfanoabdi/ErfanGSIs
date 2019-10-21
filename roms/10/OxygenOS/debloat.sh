@@ -46,3 +46,6 @@ rm -rf $1/reserve/JD
 rm -rf $1/reserve/Meituan
 rm -rf $1/reserve/NeteaseCloudmusic
 rm -rf $1/reserve/NeteaseMail
+
+# RIL FIX
+rm -rf $1/product/framework/op-telephony-common.jar
