@@ -34,6 +34,7 @@ unsin="$toolsdir/$HOST/bin/unsin"
 payload_extractor="$toolsdir/update_payload_extractor/extract.py"
 sdat2img="$toolsdir/sdat2img.py"
 ozipdecrypt="$toolsdir/oppo_ozip_decrypt/ozipdecrypt.py"
+brotli_exec="$toolsdir/$HOST/bin/brotli"
 
 romzip="$(realpath $1)"
 PARTITIONS="system"
@@ -102,7 +103,7 @@ if [[ $(7z l -ba $romzip | grep system.new.dat) ]]; then
             fi
             if [[ $(echo "$i" | grep "\.dat\.br") ]]; then
                 echo "Converting brotli $partition dat to normal"
-                brotli -d "$i"
+                $brotli_exec -d "$i"
                 rm -f "$i"
             fi
             echo "Extracting $partition"
