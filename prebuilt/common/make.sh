@@ -42,12 +42,15 @@ sed -i "/ro.setupwizard.mode/d" $1/etc/prop.default
 sed -i "/ro.setupwizard.mode/d" $1/build.prop
 sed -i "/ro.setupwizard.mode/d" $1/product/build.prop
 echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
+echo "ro.setupwizard.mode=DISABLED" >> $1/product/build.prop
 # Disable vndk lite
 echo "ro.vndk.lite=false" >> $1/etc/prop.default
+echo "ro.vndk.lite=false" >> $1/product/build.prop
 # disable RescureParty
 echo "persist.sys.disable_rescue=true" >> $1/etc/prop.default
 # disable privapp_permissions checking
 echo "ro.control_privapp_permissions=disable" >> $1/etc/prop.default
+echo "ro.control_privapp_permissions=disable" >> $1/product/build.prop
 # fix vndk26 vold
 sed -i "/reserved_disk/d" $1/etc/init/vold.rc
 # Adb prop
