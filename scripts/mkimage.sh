@@ -84,10 +84,12 @@ sudo rm -rf "$systemdir/persist"
 sudo rm -rf "$systemdir/bt_firmware"
 sudo rm -rf "$systemdir/firmware"
 sudo rm -rf "$systemdir/dsp"
+sudo rm -rf "$systemdir/cache"
 sudo mkdir -p "$systemdir/bt_firmware"
 sudo mkdir -p "$systemdir/persist"
 sudo mkdir -p "$systemdir/firmware"
 sudo mkdir -p "$systemdir/dsp"
+sudo mkdir -p "$systemdir/cache"
 
 if [ "$5" == "--old" ]; then
     if [ "$outputtype" == "Aonly" ]; then
