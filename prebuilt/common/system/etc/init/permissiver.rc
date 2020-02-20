@@ -1,2 +1,2 @@
-on init
+on early-init
     exec - root -- /system/bin/permissiver.sh
