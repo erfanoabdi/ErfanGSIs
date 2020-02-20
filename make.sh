@@ -62,7 +62,7 @@ fi
 
 # Detect Source type, AB or not
 sourcetype="Aonly"
-if [[ -e "$sourcepath/init.rc" ]]; then
+if [[ -e "$sourcepath/system" ]]; then
     sourcetype="AB"
 fi
 
