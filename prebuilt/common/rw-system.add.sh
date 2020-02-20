@@ -65,6 +65,7 @@ for f in \
 done
 
 # Drop aosp light from manifest if service not avaliable
+if [ "$vndk" -lt 29 ]; then
 if [ ! -f /vendor/bin/hw/android.hardware.light* ]; then
     for f in \
         /vendor/etc/vintf/manifest.xml \
@@ -80,6 +81,7 @@ if [ ! -f /vendor/bin/hw/android.hardware.light* ]; then
             mount -o bind "/mnt/phh/$b" "$f"
         fi
     done
+fi
 fi
 
 frp_node="$(getprop ro.frp.pst)"
