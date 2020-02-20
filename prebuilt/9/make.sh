@@ -21,3 +21,12 @@ if [ -f $romdir/NODEVICEOVERLAY ]; then
 else
     cp -fpr $thispath/overlay/* $1/product/overlay/
 fi
+
+## Brightness fix
+# Some systems are using custom light services, don't apply this patch on those roms
+if [ -f $romdir/DONTPATCHLIGHT ]; then
+    echo "Patching lights for brightness fix is not supported in this rom. Skipping..."
+else
+    echo "Start Patching Light Services for Brightness Fix..."
+    $thispath/brightnessfix/make.sh "$systempath"
+fi
