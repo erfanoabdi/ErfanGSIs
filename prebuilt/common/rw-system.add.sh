@@ -87,3 +87,8 @@ fi
 frp_node="$(getprop ro.frp.pst)"
 chown -h system.system $frp_node
 chmod 0660 $frp_node
+
+# Drop samsung overlays
+if getprop ro.vendor.build.fingerprint | grep -qiE '^samsung'; then
+    mount -o bind /system/phh/empty /vendor/overlay
+fi
