@@ -6,3 +6,4 @@ cache
 output
 input
 working
+__pycache__/
