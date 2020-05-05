@@ -17,6 +17,8 @@ rsync -ra $thispath/system/ $systempath
 cp -fpr $thispath/lib/* $1/lib/
 cp -fpr $thispath/lib64/* $1/lib64/
 cp -fpr $thispath/init/* $1/etc/init/
+cp -fpr $thispath/overlay/* $1/product/overlay/
+
 # drop caf permissions
 rm -rf $1/etc/permissions/qti_permissions.xml
 # drop dirac
