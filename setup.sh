@@ -1,10 +1,7 @@
 #!/bin/bash
 
-read -p "Are you using Fedora? (y/N)" FEDORACHECK
-if [[ "$FEDORACHECK" == 'y' ]]; then
+#delete manual check
     sudo dnf install unace unrar zip unzip p7zip sharutils uudeview arj cabextract file-roller dtc xz python-pip brotli lz4 gawk \*mpack* aria2 xz-lzma*
-    exit 0
-fi
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     distro=$(awk -F= '$1 == "ID" {print $2}' /etc/os-release)
