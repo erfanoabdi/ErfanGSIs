@@ -1,8 +1,11 @@
 #!/bin/bash
 
-#delete manual check
+grep -E "^NAME=" /etc/os-release | grep Fedora &>/dev/null
+if [ $? = 0 ]; then
     sudo dnf install unace unrar zip unzip p7zip sharutils uudeview arj cabextract file-roller dtc xz python-pip brotli lz4 gawk \*mpack* aria2 xz-lzma*
-
+    pip install backports.lzma protobuf pycrypto
+    exit
+fi
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     distro=$(awk -F= '$1 == "ID" {print $2}' /etc/os-release)
     if [[ "$distro" == "arch" ]]; then
