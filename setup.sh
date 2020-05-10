@@ -6,6 +6,23 @@ if [ $? = 0 ]; then
     pip install backports.lzma protobuf pycrypto
     exit
 fi
+grep -E "^NAME=" /etc/os-release | grep CentOS &>/dev/null
+if [ $? = 0 ]; then
+    sudo dnf install --nogpgcheck https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    sudo dnf install --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm 
+    sudo dnf install --nogpgcheck https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+    sudo dnf config-manager --enable PowerTools
+    sudo dnf groupupdate core
+    sudo dnf install rpmfusion-free-release-tainted
+    sudo dnf install rpmfusion-nonfree-release-tainted
+    sudo dnf install unrar zip unzip p7zip sharutils arj innoextract file-roller dtc xz python2 python2-pip brotli lz4 gawk aria2 lzma \*mpack* gcc libffi-devel python2-devel openssl-devel xz-devel --skip-broken 
+    sudo rm -f /usr/bin/pip
+    sudo rm -f /usr/bin/python
+    sudo ln -s /usr/bin/pip2.7 /usr/bin/pip
+    sudo ln -s /usr/bin/python2 /usr/bin/python
+    pip install backports.lzma protobuf pycrypto --user
+    exit
+fi
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     distro=$(awk -F= '$1 == "ID" {print $2}' /etc/os-release)
     if [[ "$distro" == "arch" ]]; then
