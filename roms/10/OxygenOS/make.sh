@@ -15,6 +15,9 @@ echo "ro.config.notification_sound=meet.ogg" >> $1/etc/prop.default
 echo "ro.config.alarm_alert=spring.ogg" >> $1/etc/prop.default
 echo "ro.config.ringtone=oneplus_tune.ogg" >> $1/etc/prop.default
 
+# Fix rounded corner and long press options in OnePlus Launcher
+echo "ro.boot.project_name=17801" >> $1/build.prop
+
 # fix bt audio for op gsi
 sed -i "/\/vendor\/etc\/audio /d" $1/bin/rw-system.sh
 
