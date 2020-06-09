@@ -19,8 +19,8 @@ python --version 2 >&1|grep -E '^Python 2' >/dev/null
 if [ $? = 1 ]; then
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         mkdir -p ~/.tempbin/erfangsi
-        ln -s /usr/bin/python2 .tempbin/python
-        ln -s /usr/bin/pip2 .tempbin/pip
+        ln -s /usr/bin/python2 .tempbin/erfangsi/python
+        ln -s /usr/bin/pip2 .tempbin/erfangsi/pip
         export PATH=.tempbin/erfangsi:$PATH
     fi
 fi
