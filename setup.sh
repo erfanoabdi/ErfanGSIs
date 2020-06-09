@@ -14,3 +14,13 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install protobuf xz brotli lz4 aria2
     python2 -m pip install backports.lzma protobuf pycrypto
 fi
+
+python --version 2 >&1|grep -E '^Python 2' >/dev/null
+if [ $? = 1 ]; then
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        mkdir -p ~/.tempbin/erfangsi
+        ln -s /usr/bin/python2 .tempbin/python
+        ln -s /usr/bin/pip2 .tempbin/pip
+        export PATH=.tempbin/erfangsi:$PATH
+    fi
+fi
