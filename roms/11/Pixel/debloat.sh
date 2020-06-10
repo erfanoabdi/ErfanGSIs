@@ -27,6 +27,7 @@ rm -rf $1/product/app/GoogleCamera
 rm -rf $1/product/app/NexusWallpapersStubPrebuilt2017
 rm -rf $1/product/app/WallpapersBReel2017
 rm -rf $1/product/priv-app/EuiccSupportPixel
+rm -rf $1/product/priv-app/EuiccGoogle
 rm -rf $1/product/priv-app/WfcActivation
 
 # Fix Files-DocumentsUI
