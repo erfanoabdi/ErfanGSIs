@@ -18,7 +18,6 @@ libRS_internal.so
 libbacktrace.so
 libbase.so
 libbcinfo.so
-libbinderthreadstate.so
 libblas.so
 libc++.so
 libcompiler_rt.so

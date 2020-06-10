@@ -16,6 +16,7 @@ libm.so
 libmediandk.so
 libnativewindow.so
 libneuralnetworks.so
+libselinux.so
 libsync.so
 libvndksupport.so
 libvulkan.so
