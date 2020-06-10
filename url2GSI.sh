@@ -83,7 +83,7 @@ MOUNT()
 {
     mkdir -p "$PROJECT_DIR/working/system"
     if [ $(uname) == Linux ]; then
-        sudo mount "$1" "$PROJECT_DIR/working/system"
+        sudo mount -o ro "$1" "$PROJECT_DIR/working/system"
     elif [ $(uname) == Darwin ]; then
         fuse-ext2 "$1" "$PROJECT_DIR/working/system"
     fi
