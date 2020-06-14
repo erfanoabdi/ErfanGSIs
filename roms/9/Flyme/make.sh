@@ -14,9 +14,6 @@ cp -fpr $thispath/bin/* $1/bin/
 cp -fpr $thispath/overlay/* $1/product/overlay/
 cp -fpr $thispath/framework/* $1/framework/
 
-## Fix Flyme Data
-# Permission
-chmod 0644 $1/etc/init/flymedata.rc
 # Append to phh script
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
