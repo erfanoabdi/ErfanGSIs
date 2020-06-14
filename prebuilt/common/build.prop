@@ -1,5 +1,7 @@
 ro.adb.secure=0
-#Some devices have sdcardfs kernel panicing on 8.0
-#Disable for everyone for the moment
+# Some devices have sdcardfs kernel panicing on 8.0
+# Disable for everyone for the moment
 ro.sys.sdcardfs=0
 persist.sys.overlay.nightmode=true
+# Force triple frame buffers
+ro.surface_flinger.max_frame_buffer_acquired_buffers=3
