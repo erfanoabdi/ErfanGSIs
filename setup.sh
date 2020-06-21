@@ -11,6 +11,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     fi
     pip install backports.lzma protobuf pycrypto
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    brew install protobuf xz brotli lz4 aria2
+    brew install protobuf xz brotli lz4 aria2 p7zip coreutils
     pip install backports.lzma protobuf pycrypto
 fi
