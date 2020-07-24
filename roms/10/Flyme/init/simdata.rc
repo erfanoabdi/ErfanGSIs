@@ -1,0 +1,2 @@
+on sys.boot_completed=1
+    exec - root -- /system/bin/hansimdata.sh
