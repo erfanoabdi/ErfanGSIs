@@ -17,7 +17,8 @@ cd ErfanGSIs
 
 ### For setting up requirements
     bash setup.sh
-
+> Attention: If you are using Ubuntu 20.04 or higher, please replace "pip" to "pip3" because Ubuntu20.04 doesn't use pip, pip is for Python2 and pip3 is for Python3.
+    
 ### Generating GSI from stock firmware URL
 Example: for making OxygenOS of oneplus 7 pro firmware, you can use this command
 ```
