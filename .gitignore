@@ -7,3 +7,4 @@ output
 input
 working
 __pycache__/
+tools/Firmware_extractor

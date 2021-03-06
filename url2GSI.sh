@@ -3,6 +3,8 @@
 # Project OEM-GSI Porter by Erfan Abdi <erfangplus@gmail.com>
 
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+TOOLS_DIR="$PROJECT_DIR/tools"
+PARTITIONS="system vendor cust odm oem factory product xrom systemex system_ext"
 
 AB=true
 AONLY=true
@@ -81,22 +83,31 @@ DOWNLOAD()
 
 MOUNT()
 {
-    mkdir -p "$PROJECT_DIR/working/system"
-    if [ $(uname) == Linux ]; then
-        sudo mount -o ro "$1" "$PROJECT_DIR/working/system"
-    elif [ $(uname) == Darwin ]; then
-        fuse-ext2 "$1" "$PROJECT_DIR/working/system"
-    fi
+    for p in $PARTITIONS; do
+        if [[ -e "$1/$p.img" ]]; then
+            mkdir -p "$1/$p"
+            printf "$p " >> "$1/mounted.txt"
+            if [ $(uname) == Linux ]; then
+                sudo mount -o ro "$1/$p.img" "$1/$p"
+            elif [ $(uname) == Darwin ]; then
+                fuse-ext2 "$1/$p.img" "$1/$p"
+            fi
+        fi
+    done
 }
 
 UMOUNT()
 {
-    sudo umount "$1"
+    for p in $PARTITIONS; do
+        if [[ -e "$1/$p.img" ]]; then
+            sudo umount "$1/$p"
+        fi
+    done
 }
 
 LEAVE()
 {
-    UMOUNT "$PROJECT_DIR/working/system"
+    UMOUNT "$PROJECT_DIR/working"
     rm -rf "$PROJECT_DIR/working"
     exit 1
 }
@@ -121,12 +132,13 @@ if [ $MOUNTED == false ]; then
         DOWNLOAD "$URL" "$ZIP_NAME"
         URL="$ZIP_NAME"
     fi
-    "$PROJECT_DIR"/zip2img.sh "$URL" "$PROJECT_DIR/working" || exit 1
+    $TOOLS_DIR/Firmware_extractor/extractor.sh "$URL" "$PROJECT_DIR/working" || exit 1
     if [ $CLEAN == true ]; then
         rm -rf "$ZIP_NAME"
     fi
-    MOUNT "$PROJECT_DIR/working/system.img"
-    URL="$PROJECT_DIR/working/system"
+    MOUNT "$PROJECT_DIR/working"
+    URL="$PROJECT_DIR/working"
+    
 fi
 
 if [ $AB == true ]; then
@@ -136,9 +148,6 @@ fi
 if [ $AONLY == true ]; then
     "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" Aonly "$PROJECT_DIR/output" ${@} || LEAVE
 fi
-
-UMOUNT "$PROJECT_DIR/working/system"
-rm -rf "$PROJECT_DIR/working"
 
 echo "Porting ${SRCTYPENAME} GSI done on: $PROJECT_DIR/output"
 
@@ -158,3 +167,5 @@ echo "SRCTYPENAME = ${SRCTYPENAME}"
 echo "OTHER = ${@}"
 echo "ZIP_NAME = ${ZIP_NAME}"
 fi
+
+LEAVE

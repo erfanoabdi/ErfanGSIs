@@ -4,8 +4,8 @@
 
 usage()
 {
-echo "Usage: $0 <Path to GSI system> <Firmware type> <Output type> [Output Dir]"
-    echo -e "\tPath to GSI system: Mount GSI and set mount point"
+echo "Usage: $0 <Path to Firmware partitions> <Firmware type> <Output type> [Output Dir]"
+    echo -e "\tPath to Firmware partitions: Mounted system or all partitions mount point"
     echo -e "\tFirmware type: Firmware mode"
     echo -e "\tOutput type: AB or Aonly"
     echo -e "\tOutput Dir: set output dir"
@@ -60,6 +60,12 @@ if [ "$flag" == "false" ]; then
     exit 1
 fi
 
+# Setup source system partition
+systempath=$sourcepath
+if [[ -e "$sourcepath/mounted.txt" ]]; then
+    systempath=$sourcepath/system
+fi
+
 # Detect Source type, AB or not
 sourcetype="Aonly"
 if [[ -e "$sourcepath/system" ]]; then
@@ -79,19 +85,32 @@ rm -rf $tempdir
 mkdir -p "$systemdir"
 
 if [ "$sourcetype" == "Aonly" ]; then
-    echo "Warning: Aonly source detected, using P AOSP rootdir"
+    echo "Warning: Aonly source detected, using P AOSP ramdisk"
     cd "$systemdir"
     tar xf "$prebuiltdir/ABrootDir.tar"
     cd "$LOCALDIR"
     echo "Making copy of source rom to temp"
-    ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir/system" ; sudo tar xf - )
+    ( cd "$systempath" ; sudo tar cf - . ) | ( cd "$systemdir/system" ; sudo tar xf - )
     cd "$LOCALDIR"
     sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
     sed -i "/ro.build.ab_update/d" "$systemdir/system/build.prop"
     echo "ro.build.system_root_image=false" >> "$systemdir/system/build.prop"
 else
     echo "Making copy of source rom to temp"
-    ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir" ; sudo tar xf - )
+    ( cd "$systempath" ; sudo tar cf - . ) | ( cd "$systemdir" ; sudo tar xf - )
+    if [[ -e "$sourcepath/mounted.txt" ]]; then
+        for p in `cat "$sourcepath/mounted.txt"`; do
+            [[ $p = system ]] && continue
+            [[ $p = vendor ]] && continue
+            if [[ -L "$systemdir/system/$p" ]]; then
+                rm -rf "$systemdir/system/$p"
+                mkdir "$systemdir/system/$p"
+                rm -rf "$systemdir/$p"
+                ln -s "/system/$p" "$systemdir/$p"
+                ( cd "$sourcepath/$p" ; sudo tar cf - . ) | ( cd "$systemdir/system/$p" ; sudo tar xf - )
+            fi
+        done
+    fi
     cd "$LOCALDIR"
     sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
     sed -i "/ro.build.ab_update/d" "$systemdir/system/build.prop"
