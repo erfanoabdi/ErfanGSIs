@@ -13,6 +13,7 @@ rm -rf $1/product/app/Drive
 rm -rf $1/product/app/DiagnosticsToolPrebuilt
 rm -rf $1/product/app/Chrome
 rm -rf $1/product/app/CalendarGooglePrebuilt
+rm -rf $1/product/app/NgaResources
 rm -rf $1/product/priv-app/BetaFeedback
 rm -rf $1/product/priv-app/DevicePersonalizationPrebuiltPixel2020
 rm -rf $1/product/priv-app/HelpRtcPrebuilt
