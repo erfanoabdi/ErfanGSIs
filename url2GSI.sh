@@ -4,7 +4,7 @@
 
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TOOLS_DIR="$PROJECT_DIR/tools"
-PARTITIONS="system vendor cust odm oem factory product xrom systemex system_ext"
+PARTITIONS="system vendor cust odm oem factory product xrom systemex system_ext reserve india"
 
 AB=true
 AONLY=true
