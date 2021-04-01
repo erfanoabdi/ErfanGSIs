@@ -86,7 +86,7 @@
     "lodash.sortby": "4.7.0",
     "mime-db": "1.38.0",
     "mime-types": "2.1.22",
-    "mongodb": "2.2.36",
+    "mongodb": "3.1.13",
     "mongodb-core": "2.1.20",
     "mongojs": "2.6.0",
     "nimn-date-parser": "1.0.0",
