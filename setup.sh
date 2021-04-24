@@ -11,6 +11,10 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     fi
     pip install backports.lzma protobuf pycrypto
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    brew install protobuf xz brotli lz4 aria2
+    brew install protobuf xz brotli lz4 aria2 grep
+    brew install --cask osxfuse
     pip install backports.lzma protobuf pycrypto
+    echo "reboot your pc"
+    echo "and then manually install ext2fuse by entering"
+    echo "brew install ext2fuse"
 fi
