@@ -23,7 +23,7 @@
     "bluebird": "3.5.3",
     "boolbase": "1.0.0",
     "browser-process-hrtime": "0.1.3",
-    "bson": "1.0.9",
+    "bson": "1.1.4",
     "buffer-shims": "1.0.0",
     "caseless": "0.12.0",
     "cheerio": "1.0.0-rc.2",
