@@ -1,0 +1,17 @@
+on post-fs
+	exec - root -- /system/bin/vndk-detect
+	exec - root -- /system/bin/rw-system.sh
+	mount none /system/etc/usb_audio_policy_configuration.xml /vendor/etc/usb_audio_policy_configuration.xml bind
+        setprop ro.vndk.version ${persist.sys.vndk}
+
+service phh_on_boot /system/bin/phh-on-boot.sh
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start phh_on_boot
+    chown wifi system /data/misc/wifi
+    chown system wifi /data/misc/wifi/hostapd.conf
+
+on property:persist.sys.phh.mainkeys=*
+    setprop qemu.hw.mainkeys ${persist.sys.phh.mainkeys}

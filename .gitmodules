@@ -1,12 +1,6 @@
-[submodule "tools/update_payload_extractor"]
-	path = tools/update_payload_extractor
-	url = https://github.com/gmrt/update_payload_extractor.git
 [submodule "prebuilt/vendor_vndk"]
 	path = prebuilt/vendor_vndk
 	url = https://github.com/erfanoabdi/vendor_vndk.git
 [submodule "tools/ROM_resigner"]
 	path = tools/ROM_resigner
 	url = https://github.com/erfanoabdi/ROM_resigner.git
-[submodule "tools/oppo_ozip_decrypt"]
-	path = tools/oppo_ozip_decrypt
-	url = https://github.com/bkerler/oppo_ozip_decrypt.git
