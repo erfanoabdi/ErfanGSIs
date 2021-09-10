@@ -115,6 +115,8 @@ LEAVE()
 BYE(){
 
 	echo "Script ran successfully..."
+    UMOUNT "$PROJECT_DIR/working"
+    rm -rf "$PROJECT_DIR/working"
 	exit 0
 }
 
