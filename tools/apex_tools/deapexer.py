@@ -35,6 +35,8 @@ import zipfile
 
 BLOCK_SIZE = 4096
 
+cwd = os.path.dirname(os.path.realpath(__file__))
+
 class ApexImageEntry(object):
 
   def __init__(self, name, base_dir, permissions, size, ino, extents, is_directory=False,
@@ -322,9 +324,7 @@ def decompress(compressed_apex_fp, decompressed_apex_fp):
 def main(argv):
   parser = argparse.ArgumentParser()
 
-  debugfs_default = None
-  if 'ANDROID_HOST_OUT' in os.environ:
-    debugfs_default = '%s/bin/debugfs_static' % os.environ['ANDROID_HOST_OUT']
+  debugfs_default = os.path.join(cwd, "..", os.uname()[0], "bin", 'debugfs_static')
   parser.add_argument('--debugfs_path', help='The path to debugfs binary', default=debugfs_default)
 
   subparsers = parser.add_subparsers(required=True, dest='cmd')
@@ -364,7 +364,7 @@ def main(argv):
 
   debugfs_required_for_cmd = ['list', 'extract']
   if args.cmd in debugfs_required_for_cmd and not args.debugfs_path:
-    print('ANDROID_HOST_OUT environment variable is not defined, --debugfs_path must be set',
+    print('debugfs not found, --debugfs_path must be set',
           file=sys.stderr)
     sys.exit(1)
 
