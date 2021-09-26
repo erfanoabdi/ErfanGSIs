@@ -101,11 +101,6 @@ def ParseArguments(argv):
   # The current argparse doesn't handle intermixed arguments well. Checks
   # manually whether the file_contexts exists as the last argument.
   # TODO(xunchang) use parse_intermixed_args() when we switch to python 3.7.
-  if len(remainder) == 1 and remainder[0] == argv[-1]:
-    args.file_contexts = remainder[0]
-  elif remainder:
-    parser.print_usage()
-    sys.exit(1)
   return args
 def ConstructE2fsCommands(args):
   """Builds the mke2fs & e2fsdroid command based on the input arguments.
