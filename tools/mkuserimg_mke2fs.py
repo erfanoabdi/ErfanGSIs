@@ -31,8 +31,6 @@ def RunCommand(cmd, env):
   env_copy = os.environ.copy()
   env_copy.update(env)
   cmd[0] = FindProgram(cmd[0])
-  logging.info("Env: %s", env)
-  logging.info("Running: " + " ".join(cmd))
   p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                        env=env_copy)
   output, _ = p.communicate()
@@ -178,9 +176,6 @@ def ConstructE2fsCommands(args):
                     args.output_file])
   return mke2fs_cmd, e2fsdroid_cmd
 def main(argv):
-  logging_format = '%(asctime)s %(filename)s %(levelname)s: %(message)s'
-  logging.basicConfig(level=logging.INFO, format=logging_format,
-                      datefmt='%H:%M:%S')
   args = ParseArguments(argv)
   if not os.path.isdir(args.src_dir):
     logging.error("Can not find directory %s", args.src_dir)
@@ -206,7 +201,7 @@ def main(argv):
     output, ret = RunCommand(mke2fs_cmd, mke2fs_env)
     print(output)
     if ret != 0:
-      logging.error("Failed to run mke2fs: " + output)
+      logging.error(output)
       sys.exit(4)
   # run e2fsdroid
   e2fsdroid_env = {}
@@ -217,7 +212,7 @@ def main(argv):
   # unchanged for now.
   print(output)
   if ret != 0:
-    logging.error("Failed to run e2fsdroid_cmd: " + output)
+    logging.error(output)
     os.remove(args.output_file)
     sys.exit(4)
 if __name__ == '__main__':
