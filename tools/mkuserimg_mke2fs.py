@@ -188,8 +188,6 @@ def main(argv):
   if not args.mount_point:
     logging.error("Mount point is required")
     sys.exit(2)
-  if args.mount_point[0] != '/':
-    args.mount_point = '/' + args.mount_point
   if not args.fs_size:
     logging.error("Size of the filesystem is required")
     sys.exit(2)
