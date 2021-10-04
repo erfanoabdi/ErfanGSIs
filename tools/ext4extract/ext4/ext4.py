@@ -97,7 +97,7 @@ class Ext4(object):
         if self._superblock.s_magic != 0xef53:
             raise RuntimeError("Bad superblock magic")
         incompat = self._superblock.s_feature_incompat
-        for f_id in [0x1, 0x4, 0x10, 0x80, 0x1000, 0x4000, 0x10000]:
+        for f_id in [0x1, 0x4, 0x10, 0x1000, 0x4000, 0x10000]:
             if incompat & f_id:
                 raise RuntimeError("Unsupported feature ({:#x})".format(f_id))
         self._block_size = 2 ** (10 + self._superblock.s_log_block_size)
