@@ -64,6 +64,9 @@ echo "ro.lmk.use_minfree_levels=true" >> $1/product/etc/build.prop
 rm -rf $1/etc/init/bpfloader.rc
 echo "bpf.progs_loaded=1" >> $1/product/etc/build.prop
 
+# Don't write binary XML files
+echo "persist.sys.binary_xml=false" >> $1/build.prop
+
 # Bypass SF validateSysprops
 echo "ro.surface_flinger.vsync_event_phase_offset_ns=-1" >> $1/product/etc/build.prop
 echo "ro.surface_flinger.vsync_sf_event_phase_offset_ns=-1" >> $1/product/etc/build.prop
