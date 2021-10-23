@@ -93,9 +93,9 @@ sudo mkdir -p "$systemdir/cache"
 
 if [ "$5" == "--old" ]; then
     if [ "$outputtype" == "Aonly" ]; then
-        sudo $make_ext4fs -T 0 -S $fcontexts -l $syssize -L system -a system -s "$output" "$systemdir/system"
+        sudo $make_ext4fs -T "1230768000" -I "256" -j "0" -S $fcontexts -l $syssize -L system -a system -s "$output" "$systemdir/system"
     else
-        sudo $make_ext4fs -T 0 -S $fcontexts -l $syssize -L / -a / -s "$output" "$systemdir/"
+        sudo $make_ext4fs -T "1230768000" -I "256" -j "0" -S $fcontexts -l $syssize -L / -a / -s "$output" "$systemdir/"
     fi
 else
     if [ "$outputtype" == "Aonly" ]; then
