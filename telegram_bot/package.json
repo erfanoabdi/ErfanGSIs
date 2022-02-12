@@ -9,7 +9,7 @@
     "acorn": "6.4.1",
     "acorn-globals": "4.3.0",
     "acorn-walk": "6.1.1",
-    "ajv": "6.10.0",
+    "ajv": "6.12.3",
     "archiver": "3.0.0",
     "array-equal": "1.0.0",
     "asn1": "0.2.4",
