@@ -112,6 +112,14 @@ LEAVE()
     exit 1
 }
 
+BYE(){
+
+	echo "Script ran successfully..."
+    UMOUNT "$PROJECT_DIR/working"
+    rm -rf "$PROJECT_DIR/working"
+	exit 0
+}
+
 echo "Updating tools..."
 "$PROJECT_DIR"/update.sh
 
@@ -168,4 +176,4 @@ echo "OTHER = ${@}"
 echo "ZIP_NAME = ${ZIP_NAME}"
 fi
 
-LEAVE
+BYE
