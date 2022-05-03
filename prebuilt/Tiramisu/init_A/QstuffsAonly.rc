@@ -1,0 +1,129 @@
+# Copyright (C) 2019 Erfan Abdi (erfangplus@gmail.com)
+
+import /system/etc/init/zygote/init.${ro.zygote}.rc
+
+on early-init
+    # memory.pressure_level used by lmkd
+    chown root system /dev/memcg/memory.pressure_level
+    chmod 0040 /dev/memcg/memory.pressure_level
+
+    # Mount cgroup mount point for cpu accounting
+    mount cgroup none /acct nodev noexec nosuid cpuacct
+    chmod 0555 /acct
+
+    mkdir /dev/memcg 0700 root system
+    mount cgroup none /dev/memcg nodev noexec nosuid memory
+
+    # Setup APEX mount point and its security context
+    mkdir /apex 0755 root root
+    mount tmpfs tmpfs /apex nodev noexec nosuid
+    chmod 0755 /apex
+    chown root root /apex
+    restorecon /apex
+
+    export ANDROID_RUNTIME_ROOT /apex/com.android.runtime
+    export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
+
+    # Run apexd-bootstrap so that APEXes that provide critical libraries
+    # become available. Note that this is executed as exec_start to ensure that
+    # the libraries are available to the processes started after this statement.
+    exec_start apexd-bootstrap
+
+on init
+    mkdir /dev/stune
+    mount cgroup none /dev/stune nodev noexec nosuid schedtune
+    mkdir /dev/cpuctl
+    mount cgroup none /dev/cpuctl nodev noexec nosuid cpu
+    mkdir /dev/cpuset
+    mount cpuset none /dev/cpuset nodev noexec nosuid
+    mkdir /dev/cg2_bpf
+    mount cgroup2 cg2_bpf /dev/cg2_bpf nodev noexec nosuid
+
+    copy /system/etc/prop.default /dev/urandom
+
+    symlink /proc/self/fd/0 /dev/stdin
+    symlink /proc/self/fd/1 /dev/stdout
+    symlink /proc/self/fd/2 /dev/stderr
+
+    mkdir /mnt/runtime/full 0755 root root
+    mkdir /mnt/runtime/full/self 0755 root root
+
+    chown system log /sys/fs/pstore
+    chmod 0550 /sys/fs/pstore
+
+    # make the PSI monitor accessible to others
+    chown system system /proc/pressure/memory
+    chmod 0664 /proc/pressure/memory
+
+    # This is used by Bionic to select optimized routines.
+    write /dev/cpu_variant:${ro.bionic.arch} ${ro.bionic.cpu_variant}
+    chmod 0444 /dev/cpu_variant:${ro.bionic.arch}
+    write /dev/cpu_variant:${ro.bionic.2nd_arch} ${ro.bionic.2nd_cpu_variant}
+    chmod 0444 /dev/cpu_variant:${ro.bionic.2nd_arch}
+
+    # Start logd before any other services run to ensure we capture all of their logs.
+    start logd
+
+    # Start essential services.
+    start servicemanager
+    start hwservicemanager
+    start vndservicemanager
+
+on post-fs
+    # The bind+remount combination allows this to work in containers.
+    mount rootfs rootfs / remount bind ro nodev
+
+on boot
+    # System server manages zram writeback
+    chown root system /sys/block/zram0/idle
+    chmod 0664 /sys/block/zram0/idle
+    chown root system /sys/block/zram0/writeback
+    chmod 0664 /sys/block/zram0/writeback
+
+    # F2FS tuning. Set cp_interval larger than dirty_expire_centisecs
+    # to avoid power consumption when system becomes mostly idle. Be careful
+    # to make it too large, since it may bring userdata loss, if they
+    # are not aware of using fsync()/sync() to prepare sudden power-cut.
+    write /sys/fs/f2fs/${dev.mnt.blk.data}/cp_interval 200
+
+    setprop ro.product.brand ${ro.product.vendor.brand}
+    setprop ro.product.device ${ro.product.vendor.device}
+    setprop ro.product.manufacturer ${ro.product.vendor.manufacturer}
+    setprop ro.product.model ${ro.product.vendor.model}
+    setprop ro.product.name ${ro.product.vendor.name}
+    setprop ro.build.fingerprint ${ro.vendor.build.fingerprint}
+
+on post-fs-data
+    mkdir /metadata/password_slots 0771 root system
+    mkdir /metadata/apex 0700 root system
+    mkdir /metadata/apex/sessions 0700 root system
+
+    exec - system system -- /system/bin/vdc checkpoint prepareCheckpoint
+
+    # Load fsverity keys. This needs to happen before apexd, as post-install of
+    # APEXes may rely on keys.
+    exec -- /system/bin/fsverity_init
+
+    # /data/apex is now available. Start apexd to scan and activate APEXes.
+    mkdir /data/apex 0750 root system
+    mkdir /data/apex/active 0750 root system
+    mkdir /data/apex/backup 0700 root system
+    mkdir /data/apex/sessions 0700 root system
+    mkdir /data/pkg_staging 0750 system system
+    start apexd
+
+    mkdir /data/preloads 0775 system system
+    mkdir /data/staging 0750 system system
+    mkdir /data/system/dropbox 0700 system system
+
+    # Check any timezone data in /data is newer than the copy in the runtime module, delete if not.
+    exec - system system -- /system/bin/tzdatacheck /apex/com.android.runtime/etc/tz /data/misc/zoneinfo
+
+    # Wait for apexd to finish activating APEXes before starting more processes.
+    wait_for_prop apexd.status ready
+    parse_apex_configs
+
+on property:security.perf_harden=0
+    write /proc/sys/kernel/perf_event_max_sample_rate ${debug.perf_event_max_sample_rate:-100000}
+    write /proc/sys/kernel/perf_cpu_time_max_percent ${debug.perf_cpu_time_max_percent:-25}
+    write /proc/sys/kernel/perf_event_mlock_kb ${debug.perf_event_mlock_kb:-516}

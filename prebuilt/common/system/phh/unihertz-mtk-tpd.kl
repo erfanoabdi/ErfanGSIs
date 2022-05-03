@@ -1,0 +1,6 @@
+# Keylayout for Unihertz devices with capacitive keys
+# Capacitive navigation
+key 172   HOME        VIRTUAL
+key 580   APP_SWITCH  VIRTUAL
+key 158   BACK        VIRTUAL
+

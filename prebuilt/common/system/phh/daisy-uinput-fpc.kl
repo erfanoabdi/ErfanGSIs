@@ -1,0 +1,11 @@
+##################################
+#
+#add for fpc fingerprints
+#
+##################################
+
+key 195 SYSTEM_NAVIGATION_UP
+key 196 SYSTEM_NAVIGATION_DOWN
+key 197 SYSTEM_NAVIGATION_LEFT
+key 198 SYSTEM_NAVIGATION_RIGHT
+key 353 DPAD_CENTER

@@ -23,7 +23,6 @@ for APEX in $APEXES; do
     $APEXEXTRACT extract "$APEXDIR/$APEXNAME.apex" "$APEXDIR/$APEXNAME" 2>/dev/null
     rm "$APEXDIR/$APEXNAME/apex_payload.img"
     rm -rf "$APEXDIR/$APEXNAME/lost+found"
-    rm "$APEXDIR/$APEXNAME.apex"
 done
 
 rm -rf "$TMPDIR"
