@@ -5,29 +5,13 @@ romdir=$2
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 # Deal with non-flattened apex
-#$thispath/../../scripts/apex_extractor.sh $1/apex
-#$thispath/../../scripts/apex_extractor.sh $1/system_ext/apex
+# Deal with non-flattened apex
+$thispath/../../scripts/apex_extractor.sh $1/apex
+rm -rf $1/apex/*/
 echo "ro.apex.updatable=true" >> $1/product/etc/build.prop
 
 # Copy system files
 rsync -ra $thispath/system/ $systempath
-
-# Overlays
-if [ ! -d  $1/product ]; then
-    rm -rf $1/product
-    mkdir -p $1/product
-fi
-mkdir -p $1/product/overlay
-
-cp -fpr $thispath/nondevice_overlay/* $1/product/overlay/
-
-if [ -f $romdir/NODEVICEOVERLAY ]; then
-    echo "Using device specific overlays is not supported in this rom. Skipping..."
-else
-    cp -fpr $thispath/overlay/* $1/product/overlay/
-fi
-
-cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
 
 # Append file_context
 cat $thispath/file_contexts >> $1/etc/selinux/plat_file_contexts
@@ -66,6 +50,10 @@ echo "bpf.progs_loaded=1" >> $1/product/etc/build.prop
 
 # Don't write binary XML files
 echo "persist.sys.binary_xml=false" >> $1/build.prop
+
+# Fix Pixel stuff
+echo "persist.sys.fflag.override.settings_provider_model=false" >> $1/build.prop
+echo "persist.sys.fflag.override.settings_network_and_internet_v2=true" >> $1/build.prop
 
 # Bypass SF validateSysprops
 echo "ro.surface_flinger.vsync_event_phase_offset_ns=-1" >> $1/product/etc/build.prop

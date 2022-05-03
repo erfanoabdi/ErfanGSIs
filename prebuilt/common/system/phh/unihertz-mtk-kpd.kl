@@ -1,0 +1,13 @@
+# Keylayout for Unihertz devices with a dedicated PTT button
+# Volume buttons
+key 115   VOLUME_UP
+key 114   VOLUME_DOWN
+
+# Power button
+key 116   POWER
+
+# PTT - Remap to camera by default
+# CAMERA is delivered to apps, so remapping via
+# third-party apps is possible
+key 249   CAMERA
+key 250   CAMERA
