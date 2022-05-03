@@ -44,10 +44,10 @@ sed -i "/ro.setupwizard.mode/d" $1/build.prop
 sed -i "/ro.setupwizard.mode/d" $1/product/build.prop
 sed -i "/ro.setupwizard.mode/d" $1/product/etc/build.prop
 if [[ -f $1/product/etc/build.prop ]]; then
-    echo "ro.setupwizard.mode=DISABLED" >> $1/product/etc/build.prop
+    echo "ro.setupwizard.mode=OPTIONAL" >> $1/product/etc/build.prop
 else
-    echo "ro.setupwizard.mode=DISABLED" >> $1/etc/prop.default
-    echo "ro.setupwizard.mode=DISABLED" >> $1/product/build.prop
+    echo "ro.setupwizard.mode=OPTIONAL" >> $1/etc/prop.default
+    echo "ro.setupwizard.mode=OPTIONAL" >> $1/product/build.prop
 fi
 # Disable vndk lite
 if [[ -f $1/product/etc/build.prop ]]; then
@@ -92,6 +92,15 @@ if grep -q post_process_props $1/product/etc/build.prop; then
     cp -fpr $1/../../build.prop $1/product/etc/
 fi
 
+# Fix FP touch issues for some meme devices
+if [ -f $romdir/DONTPATCHFP ]; then
+      echo "-> Patching Fingerprint touch is not supported in this ROM. Skipping..."
+else
+      rm -rf $1/usr/keylayout/uinput-fpc.kl
+      rm -rf $1/usr/keylayout/uinput-goodix.kl
+      touch $1/usr/keylayout/uinput-fpc.kl
+      touch $1/usr/keylayout/uinput-goodix.kl
+fi 
 
 ## Append to phh script
 cat $thispath/rw-system.add.sh >> $1/bin/rw-system.sh
