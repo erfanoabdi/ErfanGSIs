@@ -76,7 +76,7 @@
     "isarray": "1.0.0",
     "isstream": "0.1.2",
     "jsbn": "0.1.1",
-    "jsdom": "14.0.0",
+    "jsdom": "16.5.0",
     "json-schema": "0.2.3",
     "json-schema-traverse": "0.4.1",
     "json-stringify-safe": "5.0.1",
