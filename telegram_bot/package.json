@@ -106,7 +106,7 @@
     "process-nextick-args": "1.0.7",
     "psl": "1.1.31",
     "punycode": "2.1.1",
-    "qs": "6.5.2",
+    "qs": "6.5.3",
     "readable-stream": "3.2.0",
     "request": "2.88.0",
     "request-promise": "4.2.4",
