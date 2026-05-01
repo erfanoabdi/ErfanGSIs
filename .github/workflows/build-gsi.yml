@@ -1,140 +1,149 @@
 name: Build GSI
 
 on:
-  push:
-    branches: [ master, feature/android-13-15-support ]
-  pull_request:
-    branches: [ master ]
   workflow_dispatch:
     inputs:
       firmware_url:
-        description: 'Firmware URL to convert'
+        description: 'Firmware URL (leave empty to skip build)'
         required: false
         default: ''
       rom_type:
-        description: 'ROM type (Generic, Pixel, MIUI, etc)'
-        required: false
+        description: 'ROM type'
+        required: true
         default: 'Generic'
+        type: choice
+        options:
+          - Generic
+          - Pixel
+          - MIUI
+          - OxygenOS
       output_type:
-        description: 'Output type (AB or Aonly)'
-        required: false
+        description: 'Output type'
+        required: true
         default: 'AB'
+        type: choice
+        options:
+          - AB
+          - Aonly
       cleanup:
-        description: 'Cleanup downloaded firmware'
+        description: 'Cleanup downloaded firmware?'
         required: false
         default: 'false'
+        type: boolean
+
+  push:
+    branches:
+      - master
+      - feature/android-13-15-support
+    paths:
+      - 'setup.sh'
+      - 'make.sh'
+      - 'url2GSI.sh'
+      - 'scripts/**'
+      - 'prebuilt/**'
+      - 'roms/**'
+
+  pull_request:
+    branches:
+      - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
-    
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        bash setup.sh
-    
-    - name: Verify installation
-      run: |
-        python3 -c "import Crypto; print('pycryptodome OK')"
-        python3 -c "import google.protobuf; print('protobuf OK')"
-        which aria2c
-        which 7z
-        echo "Dependencies verified!"
-    
-    - name: Display help
-      run: |
-        ./url2GSI.sh --help || true
-        ./make.sh --help || true
-    
-    - name: Build GSI (if firmware URL provided)
-      if: ${{ github.event.inputs.firmware_url != '' }}
-      run: |
-        FIRMWARE_URL="${{ github.event.inputs.firmware_url }}"
-        ROM_TYPE="${{ github.event.inputs.rom_type }}"
-        OUTPUT_TYPE="${{ github.event.inputs.output_type }}"
-        CLEANUP="${{ github.event.inputs.cleanup }}"
-        
-        OPTIONS=""
-        if [ "$OUTPUT_TYPE" == "AB" ]; then
-          OPTIONS="--ab"
-        elif [ "$OUTPUT_TYPE" == "Aonly" ]; then
-          OPTIONS="--aonly"
-        fi
-        
-        if [ "$CLEANUP" == "true" ]; then
-          OPTIONS="$OPTIONS --cleanup"
-        fi
-        
-        echo "Building GSI from: $FIRMWARE_URL"
-        echo "ROM Type: $ROM_TYPE"
-        echo "Output Type: $OUTPUT_TYPE"
-        
-        ./url2GSI.sh $OPTIONS "$FIRMWARE_URL" "$ROM_TYPE"
-    
-    - name: Upload GSI artifact
-      if: ${{ github.event.inputs.firmware_url != '' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: gsi-output
-        path: output/
-        retention-days: 30
-    
-    - name: List output files
-      if: ${{ always() }}
-      run: |
-        echo "=== Output Directory ==="
-        ls -lah output/ || echo "No output directory found"
-        echo "=== Workspace Files ==="
-        du -sh * || true
-
   test-setup:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
-    
-    - name: Test setup on fresh system
-      run: |
-        echo "Testing setup.sh..."
-        bash setup.sh 2>&1 | tail -20
-        echo "Setup completed!"
-    
-    - name: Verify Python modules
-      run: |
-        python3 -c "from Crypto.Cipher import AES; print('Crypto.Cipher.AES OK')"
-        python3 -c "import lzma; print('lzma OK')"
-        python3 -c "import google.protobuf; print('protobuf OK')"
-        echo "Python modules verified!"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Test setup.sh
+        run: |
+          echo "Testing setup.sh..."
+          bash setup.sh 2>&1 | tail -30
+          echo "Setup completed!"
+
+      - name: Verify Python modules
+        run: |
+          python3 -c "from Crypto.Cipher import AES; print('✓ pycryptodome OK')"
+          python3 -c "import lzma; print('✓ lzma OK')"
+          python3 -c "import google.protobuf; print('✓ protobuf OK')"
+
+      - name: Verify tools
+        run: |
+          which aria2c && echo "✓ aria2c OK"
+          which 7z && echo "✓ 7z OK"
+          which mkfs.ext4 && echo "✓ mkfs.ext4 OK"
 
   lint:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Check shell scripts syntax
-      run: |
-        echo "Checking shell script syntax..."
-        for f in *.sh; do
-          echo "Checking $f..."
-          bash -n "$f" && echo "✓ $f syntax OK" || echo "✗ $f has syntax errors"
-        done
-        
-        for f in scripts/*.sh; do
-          echo "Checking $f..."
-          bash -n "$f" && echo "✓ $f syntax OK" || echo "✗ $f has syntax errors"
-        done
-        
-        for f in prebuilt/*/make*.sh; do
-          [ -f "$f" ] && bash -n "$f" && echo "✓ $f syntax OK" || true
-        done
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check shell scripts syntax
+        run: |
+          echo "Checking shell script syntax..."
+          for f in *.sh; do
+            if [ -f "$f" ]; then
+              bash -n "$f" && echo "✓ $f" || echo "✗ $f"
+            fi
+          done
+
+          for f in scripts/*.sh; do
+            if [ -f "$f" ]; then
+              bash -n "$f" && echo "✓ $f" || echo "✗ $f"
+            fi
+          done
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test-setup
+    if: ${{ github.event.inputs.firmware_url != '' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: bash setup.sh
+
+      - name: Build GSI
+        run: |
+          FIRMWARE_URL="${{ github.event.inputs.firmware_url }}"
+          ROM_TYPE="${{ github.event.inputs.rom_type }}"
+          OUTPUT_TYPE="${{ github.event.inputs.output_type }}"
+          CLEANUP="${{ github.event.inputs.cleanup }}"
+
+          OPTIONS=""
+          if [ "$OUTPUT_TYPE" = "AB" ]; then
+            OPTIONS="--ab"
+          elif [ "$OUTPUT_TYPE" = "Aonly" ]; then
+            OPTIONS="--aonly"
+          fi
+
+          if [ "$CLEANUP" = "true" ]; then
+            OPTIONS="$OPTIONS --cleanup"
+          fi
+
+          echo "Building GSI..."
+          echo "URL: $FIRMWARE_URL"
+          echo "ROM Type: $ROM_TYPE"
+          echo "Output Type: $OUTPUT_TYPE"
+          echo "Options: $OPTIONS"
+
+          ./url2GSI.sh $OPTIONS "$FIRMWARE_URL" "$ROM_TYPE"
+
+      - name: Upload GSI
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsi-${{ github.event.inputs.rom_type }}-${{ github.event.inputs.output_type }}
+          path: output/
+          retention-days: 30
+
+      - name: List outputs
+        if: always()
+        run: |
+          ls -lah output/ || echo "No output"
+          du -sh output/ || true
