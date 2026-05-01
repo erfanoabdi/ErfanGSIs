@@ -171,13 +171,16 @@ $romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system" 2>/dev/
 if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
     if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
         echo "Resigning to AOSP keys"
-        ispython2=`python -c 'import sys; print("%i" % (sys.hexversion<0x03000000))'`
-        if [ $ispython2 -eq 0 ]; then
-            python2=python2
+        # Detect Python command (prefer python3, fallback to python)
+        if command -v python3 &> /dev/null; then
+            pythoncmd=python3
+        elif command -v python &> /dev/null && python -c 'import sys; exit(0 if sys.version_info[0] == 3 else 1)' 2>/dev/null; then
+            pythoncmd=python
         else
-            python2=python
+            echo "Warning: Python 3 not found, resigning may fail"
+            pythoncmd=python3
         fi
-        $python2 $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security > $tempdir/resign.log
+        $pythoncmd $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security > $tempdir/resign.log
         $prebuiltdir/resigned/make.sh "$systemdir/system" 2>/dev/null
     fi
 fi
