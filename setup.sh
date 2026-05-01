@@ -5,10 +5,10 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     id_like=$(awk -F= '$1 == "ID_LIKE" {print $2}' /etc/os-release)
     if [[ "$distro" == "arch" || "$id_like" == "arch" ]]; then
        echo "Arch Linux Detected"
-       sudo pacman -S --needed unace unrar zip unzip p7zip sharutils uudeview arj cabextract file-roller dtc xz python-pip brotli lz4 gawk libmpack aria2
+        sudo pacman -S --needed --noconfirm unace unrar zip unzip p7zip sharutils uudeview arj cabextract file-roller dtc xz python-pip brotli lz4 gawk libmpack aria2
        #aur=rar
     else
-        sudo apt install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2
+        sudo apt install -y unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2
     fi
     pip3 install protobuf pycryptodome || python3 -m pip install protobuf pycryptodome
 elif [[ "$OSTYPE" == "darwin"* ]]; then
