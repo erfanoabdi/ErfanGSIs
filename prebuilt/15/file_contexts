@@ -1,0 +1,8 @@
+/system/bin/vndk-detect			u:object_r:update_engine_exec:s0
+/system/etc/usb_audio_policy_configuration.xml	u:object_r:vendor_configs_file:s0
+/system/bin/rw-system.sh u:object_r:update_engine_exec:s0
+/system/bin/phh-on-boot.sh u:object_r:update_engine_exec:s0
+/system/bin/hdrfix.sh			u:object_r:update_engine_exec:s0
+/system/bin/wificonf u:object_r:wificond_exec:s0
+/system/bin/permissiver.sh			u:object_r:update_engine_exec:s0
+/system/bin/hdrfix_post-data.sh			u:object_r:update_engine_exec:s0

@@ -1,0 +1,44 @@
+#!/system/bin/sh
+
+grep -oE 'init_[0-9_]+' /vendor/etc/selinux/nonplat_sepolicy.cil | \
+	uniq | \
+	sort -n | \
+	head -n 1 | \
+	sed -E 's/.*init_([0-9]+).*/\1/g' | \
+while read version;do
+	setprop persist.sys.vndk $version
+	setprop ro.vndk.version $version
+done
+
+if [ -d /sys/module/five ];then
+	if mount -o bind /system/phh/empty /sbin/adbd;then
+		setprop sys.phh.five true
+	fi
+elif [ -f /sbin/adbd ];then
+	mount -o bind /system/bin/adbd /sbin/adbd
+fi
+if ( getprop ro.hardware | grep -qE '(kirin970|hi3660|hi6250|hi3670)' );then
+	FOUND_HUAWEI=1
+fi
+
+if getprop ro.vendor.build.fingerprint |grep -qiE '(huawei|honor|hi3660)';then
+	FOUND_HUAWEI=1
+fi
+
+if [ -n "$FOUND_HUAWEI" ];then
+	setprop persist.sys.overlay.huawei true
+	setprop persist.sys.bt_acl_bypass true
+ 	setprop persist.sys.camera.huawei true
+	setprop persist.sys.radio.ussd.fix true
+	setprop persist.sys.radio.huawei true
+	setprop debug.hwui.profile true
+fi
+
+if getprop ro.hardware |grep -qiE -e qcom -e judyln -e judypn;then
+	FOUND_QCOM=1
+    if getprop ro.vendor.build.fingerprint |grep -qiE '^samsung';then 
+        setprop persist.sys.overlay.devinputjack false
+    else
+        setprop persist.sys.overlay.devinputjack true
+    fi
+fi
