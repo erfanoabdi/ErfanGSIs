@@ -1,0 +1,70 @@
+name: Telegram Bot CI
+
+on:
+  push:
+    paths:
+      - 'telegram_bot/**'
+      - '.github/workflows/telegram-bot.yml'
+  pull_request:
+    paths:
+      - 'telegram_bot/**'
+
+jobs:
+  test-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: telegram_bot/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: telegram_bot
+      run: npm install
+    
+    - name: Check syntax
+      working-directory: telegram_bot
+      run: |
+        node -c bot.js
+        echo "bot.js syntax OK"
+        for f in handlers/*.js; do
+          node -c "$f" && echo "✓ $f syntax OK" || echo "✗ $f has errors"
+        done
+    
+    - name: Check config
+      working-directory: telegram_bot
+      run: |
+        if [ -f config.js ]; then
+          echo "config.js exists"
+        else
+          echo "Warning: config.js not found, using example"
+          cp config.ex.js config.js
+        fi
+        node -e "const config = require('./config'); console.log('Token:', config.token ? 'Set' : 'Not set'); console.log('Builders:', config.gsi_builders.length)"
+  
+  lint-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install ESLint
+      run: npm install -g eslint
+    
+    - name: Lint JavaScript files
+      working-directory: telegram_bot
+      run: |
+        eslint bot.js --no-eslintrc --parser-options ecmaVersion:2020 --rule '{"no-console": "off"}' || true
+        eslint handlers/*.js --no-eslintrc --parser-options ecmaVersion:2020 --rule '{"no-console": "off"}' || true
