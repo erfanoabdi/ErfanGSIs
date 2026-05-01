@@ -186,7 +186,11 @@ fi
 echo "Patching started..."
 $scriptsdir/fixsymlinks.sh "$systemdir/system" 2>/dev/null
 $scriptsdir/nukeABstuffs.sh "$systemdir/system" 2>/dev/null
-$prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system" 2>/dev/null
+if [ -f "$prebuiltdir/vendor_vndk/make$sourcever.sh" ]; then
+    $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system" 2>/dev/null
+elif [ -f "$prebuiltdir/vendor_vndk_scripts/make$sourcever.sh" ]; then
+    $prebuiltdir/vendor_vndk_scripts/make$sourcever.sh "$systemdir/system" 2>/dev/null
+fi
 $prebuiltdir/$sourcever/make.sh "$systemdir/system" "$romsdir/$sourcever/$romtype" 2>/dev/null
 $prebuiltdir/$sourcever/makeroot.sh "$systemdir" "$romsdir/$sourcever/$romtype" 2>/dev/null
 $prebuiltdir/common/make.sh "$systemdir/system" "$romsdir/$sourcever/$romtype" 2>/dev/null
